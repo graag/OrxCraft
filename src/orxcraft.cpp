@@ -54,6 +54,12 @@ orxSTATUS OrxCraft::Init ()
 {
     orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+      // Creates main viewport
+    orxVIEWPORT* objectViewport = orxViewport_CreateFromConfig("ObjectViewport");
+
+      // Gets main camera
+    orxCAMERA* objectCamera = orxViewport_GetCamera(objectViewport);
+
     // Load things we want to edit from config
     InitConfig ();
     SetupConfig ();
