@@ -54,11 +54,10 @@ orxSTATUS OrxCraft::Init ()
 {
     orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-      // Creates main viewport
-    orxVIEWPORT* objectViewport = orxViewport_CreateFromConfig("ObjectViewport");
-
-      // Gets main camera
-    orxCAMERA* objectCamera = orxViewport_GetCamera(objectViewport);
+    // Creates spritesheet viewport
+    m_spriteSheetViewport = orxViewport_CreateFromConfig("SpriteSheetViewport");
+    // Gets spritesheet camera
+    m_spriteSheetCamera = orxViewport_GetCamera(objectViewport);
 
     // Load things we want to edit from config
     InitConfig ();
@@ -284,3 +283,5 @@ int main(int argc, char **argv)
   // Done!
   return EXIT_SUCCESS;
 }
+
+// vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

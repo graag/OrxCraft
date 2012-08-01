@@ -88,6 +88,8 @@ private:
 
     //! @todo Need a base class
     ScrollGUICEGUI	    *m_scrollGUI;
+    orxVIEWPORT         *m_spriteSheetViewport;
+    orxCAMERA           *m_spriteSheetCamera;
 
     DialogManager	    *m_dialogManager;
     InfoWindow              *m_infoWindow;
@@ -102,3 +104,5 @@ private:
     bool m_dirty;
 };
 #endif // __OrxCraft_H_
+
+// vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab
