@@ -32,8 +32,19 @@ private:
 
     /** Calculate and render the editor grid */
     void DrawGrid ();
+    void UpdateScrollBars ();
 
     CEGUI::OpenGLRenderer *m_glRenderer;
+    orxVIEWPORT           *m_sheetViewport;
+    orxCAMERA             *m_sheetCamera;
+    orxOBJECT             *m_objectBarX;
+    orxOBJECT             *m_objectBarBgX;
+    orxOBJECT             *m_objectBarY;
+    orxOBJECT             *m_objectBarBgY;
+    orxOBJECT             *m_sheetBarX;
+    orxOBJECT             *m_sheetBarBgX;
+    orxOBJECT             *m_sheetBarY;
+    orxOBJECT             *m_sheetBarBgY;
 };
 
 #endif  // SCROLLGUICEGUI_H_
