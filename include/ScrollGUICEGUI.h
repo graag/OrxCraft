@@ -29,6 +29,7 @@ private:
     virtual void    OnCreate ();
     virtual void    OnDelete ();
     virtual orxBOOL OnRender ();
+    virtual void    Update (const orxCLOCK_INFO &_rstInfo);
 
     /** Calculate and render the editor grid */
     void DrawGrid ();
@@ -37,6 +38,8 @@ private:
     CEGUI::OpenGLRenderer *m_glRenderer;
     orxVIEWPORT           *m_sheetViewport;
     orxCAMERA             *m_sheetCamera;
+    orxVIEWPORT           *m_objectViewport;
+    orxCAMERA             *m_objectCamera;
     orxOBJECT             *m_objectBarX;
     orxOBJECT             *m_objectBarBgX;
     orxOBJECT             *m_objectBarY;
@@ -45,6 +48,8 @@ private:
     orxOBJECT             *m_sheetBarBgX;
     orxOBJECT             *m_sheetBarY;
     orxOBJECT             *m_sheetBarBgY;
+    orxOBJECT             *m_currentSheet;
+    orxOBJECT             *m_currentObject;
 };
 
 #endif  // SCROLLGUICEGUI_H_
