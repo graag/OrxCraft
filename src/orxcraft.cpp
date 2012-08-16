@@ -165,6 +165,7 @@ void OrxCraft::SetupConfig ()
 		// It's an object
 		m_objectList.push_back (sectionName);
 		CreateObject (sectionName);
+		orxConfig_PopSection ();
 		continue;
 	    }
 	    // Does it have a Texture property?
@@ -174,6 +175,7 @@ void OrxCraft::SetupConfig ()
 		// It's a graphic
 		m_graphicList.push_back (sectionName);
 		CreateObject (sectionName);
+		orxConfig_PopSection ();
 		continue;
 	    }
 	    // Does it have a Curve property?
@@ -182,6 +184,7 @@ void OrxCraft::SetupConfig ()
 	    {
 		// It's an FXSlot
 		m_fxSlotList.push_back (sectionName);
+		orxConfig_PopSection ();
 		continue;
 	    }
 	}
