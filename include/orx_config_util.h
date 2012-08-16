@@ -23,8 +23,8 @@ namespace orx_config_util
 void BoolToString (orxBOOL inBool, orxSTRING outString);
 /** Convert an Orx float to an Orx string */
 void FloatToString (orxFLOAT inFloat, orxSTRING outString);
-/** Convert an Orx config list to an Orx string */
-const orxSTRING ListToString (const orxSTRING prop);
+/** Convert an Orx config list to an Orx string. Allocates memory for the output string. */
+orxSTRING ListToString (const orxSTRING prop);
 /** Get all items in an Orx config list into a std::vector */
 void GetListIntoVector (const orxSTRING key, vector<const orxSTRING> &list);
 /** Convert an Orx config vector to an Orx string */

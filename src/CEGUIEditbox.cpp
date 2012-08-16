@@ -52,6 +52,8 @@ void CEGUIEditbox::SetText (const orxSTRING text)
 {
     orxASSERT (text != orxNULL);
 
+    // orxSTRING will be passed to CEGUI::String(char*) constructor which
+    // allocates new memory
     m_ceEditbox->setText (text);
 }
 
