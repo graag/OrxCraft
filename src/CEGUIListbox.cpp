@@ -39,6 +39,10 @@ void CEGUIListbox::Fill (const vector<const orxSTRING> &listItems)
     for (unsigned int i = 0; i < listItems.size (); i++)
     {
 	m_items.push_back (new CEGUI::ListboxTextItem (listItems.at (i)));
+	/* Attach the new item to the CEGUI::Combobox. ListboxItems by default
+	 * are delated when widget they are attached to is destoyed. Therefore
+	 * we should not delete them when m_items vector is destroyed.
+	 */
 	m_ceListbox->addItem (m_items.back ());
     }
 }

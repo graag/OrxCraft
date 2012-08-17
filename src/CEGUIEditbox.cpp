@@ -45,6 +45,7 @@ bool CEGUIEditbox::OnTextAccepted (const CEGUI::EventArgs &e)
 
 const orxSTRING CEGUIEditbox::GetText ()
 {
+    // Return Editbox contents. The returned string is owned by CEGUI widget.
     return m_ceEditbox->getText ().c_str ();
 }
 
