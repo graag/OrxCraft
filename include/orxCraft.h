@@ -74,8 +74,8 @@ private:
 	 orxBOOL _bUseEncryption);
 
     ScrollGUICEGUI	    *m_gui;
-
     DialogManager	    *m_dialogManager;
+
     /// Currently loaded config objects
     vector<const orxSTRING> m_objectList;
     /// Currently loaded config graphics
@@ -88,3 +88,4 @@ private:
 
 #endif // ORXCRAFT_H
 
+// vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

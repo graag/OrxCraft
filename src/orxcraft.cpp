@@ -5,7 +5,7 @@
  *
  */
 #define __SCROLL_IMPL__
-#include "OrxCraft.h"
+#include "orxCraft.h"
 #undef  __SCROLL_IMPL__
 
 #include "InfoWindow.h"
@@ -20,12 +20,10 @@
 
 // Widgets
 static const orxSTRING infoWindow = "O-InfoWindow";
-static const orxSTRING scrollGUI  = "ScrollGUI";
-static const orxSTRING objectEditor = "ObjectEditor";
 
 OrxCraft::OrxCraft () :
-    m_dialogManager (NULL),
-    m_gui           (NULL)
+    m_gui           (NULL),
+    m_dialogManager (NULL)
 {
 }
 
@@ -229,6 +227,8 @@ orxSTATUS orxFASTCALL OrxCraft::EventHandler(const orxEVENT *_pstEvent)
 	    case orxINPUT_TYPE_MOUSE_BUTTON:
 		OrxCraft::GetInstance ().OnMouseDown ();
 		break;
+	    default:
+	    	break;
 	    }
 	}
 	if(_pstEvent->eID == orxINPUT_EVENT_OFF)
@@ -269,11 +269,11 @@ orxBOOL orxFASTCALL OrxCraft::SaveConfigFunction
 
 int main(int argc, char **argv)
 {
-  // Executes game
-  OrxCraft::GetInstance ().Execute (argc, argv);
+    // Executes game
+    OrxCraft::GetInstance ().Execute (argc, argv);
 
-  // Done!
-  return EXIT_SUCCESS;
+    // Done!
+    return EXIT_SUCCESS;
 }
 
 void OrxCraft::SetSelectedFXSlot (const orxSTRING name)
@@ -281,3 +281,4 @@ void OrxCraft::SetSelectedFXSlot (const orxSTRING name)
     orxASSERT (false);
 }
 
+// vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab
