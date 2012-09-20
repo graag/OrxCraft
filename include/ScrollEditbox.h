@@ -7,6 +7,8 @@
  *
  */
 
+#include <string>
+
 #include "ScrollWidget.h"
 
 class ScrollFrameWindow;
@@ -17,13 +19,16 @@ class ScrollFrameWindow;
 class ScrollEditbox : public ScrollWidget
 {
 public:
+    /** C-tor */
     explicit ScrollEditbox (ScrollFrameWindow *dialog) :
 	ScrollWidget (dialog)
     {
     }
 
-    virtual const orxSTRING GetText () = 0;
-    virtual void SetText (const orxSTRING text) = 0;
+    /** Get the text contained in the Editbox */
+    virtual const std::string GetText () = 0;
+    /** Set the text contained in the Editbox */
+    virtual void SetText (const std::string& text) = 0;
 };
 
 #endif  // __SCROLL_EDITBOX_H__

@@ -12,10 +12,9 @@
 class InfoWindow : public ScrollFrameWindow
 {
 public:
-    virtual void Init (const orxSTRING widgetName);
-    virtual const orxSTRING GetName ();
-    virtual void OnMouseClick   (const orxSTRING widgetName);
-    virtual void OnTextAccepted (const orxSTRING widgetName);
+    virtual void Init (const std::string& widgetName);
+    virtual void OnMouseClick   (const std::string& widgetName);
+    virtual void OnTextAccepted (const std::string& widgetName);
 };
 
 #endif	// __INFOWINDOW_H__

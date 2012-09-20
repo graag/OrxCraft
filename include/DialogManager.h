@@ -16,6 +16,10 @@ class DialogManager
 {
 public:
     virtual void MakeDialog (const orxSTRING dialogName) = 0;
+    virtual DialogManager* GetInstance() = 0;
+
+protected:
+    DialogManager* instance_;
 };
 
 #endif	// DIALOGMANAGER_H_

@@ -10,6 +10,8 @@
 
 #include "CEDialogManager.h"
 
+#include <string>
+
 #include "CEGUI.h"
 
 #include "ScrollFrameWindow.h"
@@ -17,39 +19,67 @@
 // Dialogs
 #include "ObjectEditor.h"
 #include "FXSlotEditorWindow.h"
+#include "ListPopup.h"
 
 #include "CEGUICombobox.h"
 #include "CEGUIEditbox.h"
 #include "CEGUIListbox.h"
 #include "CEGUIPushButton.h"
 
+using std::string;
+
+DialogManager* CEDialogManager::GetInstance()
+{
+    if (!instance_)
+    {
+    	instance_ = new CEDialogManager();
+    }
+
+    return instance_;
+}
+
 void CEDialogManager::MakeDialog (const orxSTRING dialogName)
 {
     orxASSERT (dialogName != orxNULL);
 
+    CEGUI::Window* window = orxNULL;
     ScrollFrameWindow *dialog = orxNULL;
+    CEGUI::Window *windowRoot = orxNULL;
 
-    CEGUI::Window *windowRoot = NULL;
+    if (CEGUI::WindowManager::getSingleton().isWindowPresent(dialogName))
+    {
+	window = CEGUI::WindowManager::getSingleton().getWindow(dialogName);
+	window->activate();
+	return;
+    }
 
     if (orxString_Compare (dialogName, "ObjectEditor") == 0)
     {
-	dialog = new ObjectEditor ();
+	dialog = new ObjectEditor (dialogName);
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "ObjectEditor.layout");
     }
     else if (orxString_Compare (dialogName, "FXSlotEditor") == 0)
     {
-	dialog = new FXSlotEditorWindow ();
+	dialog = new FXSlotEditorWindow (dialogName);
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "FXSlotEditor.layout");
     }
+/*
+    else if (orxString_Compare (dialogName, "ListPopup") == 0)
+    {
+	dialog = new ListPopup (dialogName);
+	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
+	    "ListPopup.layout");
+    }
+*/
     else
     {
 	orxASSERT (false);
     }
 
     CEGUI::Window *rootWindow = CEGUI::System::getSingleton ().getGUISheet ();
-    CEGUI::Window* window = windowRoot->getChildAtIdx (0); 
+    window = windowRoot->getChildAtIdx (0); 
     rootWindow->addChildWindow (window);   
     
     int counter = window->getChildCount ();
@@ -86,12 +116,14 @@ void CEDialogManager::MakeDialog (const orxSTRING dialogName)
     }
 
     dialog->Init (dialogName);
+    window->activate();
 }
 
 void CEDialogManager::LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWindow* dialog)
 {
     const orxSTRING type = widget->getType ().c_str ();
-	const orxSTRING name = widget->getName ().c_str ();
+    const string name = widget->getName().c_str();
+
     if (orxString_Compare (type, "TaharezLook/Checkbox") == 0)
     {
 	orxASSERT (false);
@@ -104,25 +136,25 @@ void CEDialogManager::LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWindo
     else if (orxString_Compare (type, "TaharezLook/Combobox") == 0)
     {
 	CEGUICombobox *combobox = new CEGUICombobox (dialog);
-	combobox->Init (widget);
+	combobox->Init(name);
 	dialog->AddWidget (combobox);
     }
     else if (orxString_Compare (type, "TaharezLook/Editbox") == 0)
     {
 	CEGUIEditbox *editbox = new CEGUIEditbox (dialog);
-	editbox->Init (widget);
+	editbox->Init(name);
 	dialog->AddWidget (editbox);
     }
     else if (orxString_Compare (type, "TaharezLook/Listbox") == 0)
     {
 	CEGUIListbox *listbox = new CEGUIListbox (dialog);
-	listbox->Init (widget);
+	listbox->Init(name);
 	dialog->AddWidget (listbox);
     }
     else if (orxString_Compare (type, "TaharezLook/Button") == 0)
     {
 	CEGUIPushButton *pushbutton = new CEGUIPushButton (dialog);
-	pushbutton->Init (widget);
+	pushbutton->Init(name);
 	dialog->AddWidget (pushbutton);
     }
 }

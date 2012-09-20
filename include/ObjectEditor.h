@@ -13,28 +13,29 @@ class ScrollObject;
 class ScrollCombobox;
 class ScrollEditbox;
 class ScrollListbox;
+class ScrollPushButton;
+class ScrollWindowWidget;
 
 class ObjectEditor : public ScrollFrameWindow
 {
 public:
     //! C-tor
-    ObjectEditor ();
+    ObjectEditor (const std::string& name);
 
-    virtual void Init (const orxSTRING widgetName);
+    /** Initialize the window. */
+    virtual void Init (const std::string& widgetName);
 
     //! Initialize control items
     void SetupFields  ();
     //! Update all widgets to show current ScrollObject config values
     void UpdateFields () const;
 
-    virtual const orxSTRING GetName ();
-    
-    const orxSTRING GetText (const orxSTRING widgetName) const;
+    const std::string GetText (const std::string& widgetName) const;
     //! Set the ScrollObject being edited
     void SetObject (ScrollObject *object);
 
-    virtual void OnMouseClick   (const orxSTRING widgetName);
-    virtual void OnTextAccepted (const orxSTRING widgetName);
+    virtual void OnMouseClick   (const std::string& widgetName);
+    virtual void OnTextAccepted (const std::string& widgetName);
 
 private:
     ScrollObject *m_object;
@@ -78,6 +79,8 @@ private:
     ScrollEditbox *m_objColorR;
     ScrollEditbox *m_objColorG;
     ScrollEditbox *m_objColorB;
+
+    ScrollPushButton  *m_button;
 };
 
 #endif  // OBJECTEDITOR_H_

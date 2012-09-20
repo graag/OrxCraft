@@ -6,11 +6,20 @@
  */
 
 #include "CEGUICombobox.h"
+
+#include <vector>
+#include <string>
+#include <typeinfo>
+
 #include "ScrollFrameWindow.h"
 
 using CEGUI::Combobox;
 using CEGUI::Event;
 using CEGUI::Window;
+using std::string;
+using std::vector;
+
+using namespace std;
 
 CEGUICombobox::CEGUICombobox (ScrollFrameWindow *dialog) :
     ScrollCombobox (dialog),
@@ -18,53 +27,57 @@ CEGUICombobox::CEGUICombobox (ScrollFrameWindow *dialog) :
 {
 }
 
-void CEGUICombobox::Init (const orxSTRING widgetName)
+void CEGUICombobox::Init (const string& widgetName)
 {
-    const orxSTRING windowName = m_manager->GetName ();
-    Window *rootWindow = CEGUI::System::getSingleton ().getGUISheet ();
-    Window *window = rootWindow->getChild (windowName);
+    ScrollWidget::Init(widgetName);
 
-    Combobox *combobox = reinterpret_cast<Combobox *> (
-	window->getChild (widgetName));
+    const string windowName = m_manager->GetName();
+    // Get the root window
+    Window *rootWindow = CEGUI::System::getSingleton().getGUISheet();
+    // Get the parent window. No point in searching all windows.
+    Window *window = rootWindow->getChild(windowName);
+    // Get recursively the widget, this will handle tabs.
+    Window *widget = window->getChildRecursive(widgetName);
+    orxASSERT(widget != NULL);
+
+    /*
+     * Static cast is now safe as it is guarded by assert. This will be active
+     * only in debug build so -fno-rtti can be used for release build
+     */
+    orxASSERT( typeid(*widget) == typeid(CEGUI::Combobox) );
+    Combobox *combobox = static_cast<Combobox *> (widget);
+
+    // Subscribe to selection accepted event
     combobox->subscribeEvent (Combobox::EventListSelectionAccepted,
 	Event::Subscriber (&CEGUICombobox::OnSelectionAccepted, this));
 
-    m_ceCombobox = combobox;
-    m_widgetName = new char[strlen (widgetName) + 1];
-    strcpy (m_widgetName, widgetName);
-}
-
-void CEGUICombobox::Init (Window* widget)
-{
-    Combobox *combobox = reinterpret_cast<Combobox *> (widget);
-    combobox->subscribeEvent (Combobox::EventListSelectionAccepted,
-	Event::Subscriber (&CEGUICombobox::OnSelectionAccepted, this));
+    //! @todo Handle mouse events
 
     m_ceCombobox = combobox;
-    m_widgetName = new char[strlen (widget->getName().c_str()) + 1];
-    strcpy (m_widgetName, widget->getName().c_str());
 }
 
-void CEGUICombobox::Fill (const vector<const orxSTRING> &listItems)
+void CEGUICombobox::Fill (const vector<string> &listItems)
 {
     for (unsigned int i = 0; i < listItems.size (); i++)
     {
 	m_items.push_back (new CEGUI::ListboxTextItem (listItems.at (i)));
+	/*
+	 * Add item to CEGUI::Combobox.
+	 * Note that item ownership is passed to CEGUI.
+	 */
 	m_ceCombobox->addItem (m_items.back ());
     }
 }
 
-void CEGUICombobox::SelectItem (const orxSTRING text)
+void CEGUICombobox::SelectItem (const string& text)
 {
-    orxASSERT (text != orxNULL);
-
-    int i = 0;
+    unsigned int i = 0;
     std::vector<CEGUI::ListboxTextItem *>::const_iterator it;
     for (it = m_items.begin (); it != m_items.end (); ++it)
     {
-	const orxSTRING itemText = (*it)->getText ().c_str ();
+	string itemText = (*it)->getText ().c_str ();
 	// Wanted item exists in the items list
-	if (orxString_Compare (itemText, text) == 0)
+	if (itemText == text)
 	{
 	    // Set the edit box text accordingly
 	    m_ceCombobox->setText (text);
@@ -72,20 +85,41 @@ void CEGUICombobox::SelectItem (const orxSTRING text)
 	}
 	i++;
     }
+
+    // Item does not exist. Make a log entry.
+    if(i == m_items.size())
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+		"Cannot select item '%s'. Item not present in the Combobox.",
+		text.c_str());
 }
 
-const orxSTRING CEGUICombobox::GetSelectedItem () const
+const string CEGUICombobox::GetSelectedItem () const
 {
+    string text;
     CEGUI::ListboxItem *item = m_ceCombobox->getSelectedItem ();
-    return item->getText ().c_str ();
+
+    // Found a selected item?
+    if(item != NULL)
+    	text = item->getText ().c_str ();
+
+    return text;
 }
 
 bool CEGUICombobox::OnSelectionAccepted (const CEGUI::EventArgs &e)
 {
-    CEGUI::WindowEventArgs *args = (CEGUI::WindowEventArgs *) &e;
-    const orxSTRING widgetName = args->window->getName ().c_str ();
+    /*
+     * Static cast will be safe as this handler is connected only to
+     * Combobox::EventListSelectionAccepted signal which passes MouseEventArgs
+     * struct.
+     */
+    const CEGUI::WindowEventArgs *args =
+    	static_cast<const CEGUI::WindowEventArgs *>( &e );
+
+    string widgetName = args->window->getName ().c_str ();
+    // Pass the event to the ScrollFrameWindow
     m_manager->OnTextAccepted (widgetName);
 
+    // Notify that the event was handled
     return true;
 }
 

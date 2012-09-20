@@ -7,6 +7,8 @@
  *
  */
 
+#include <string>
+
 #include "ScrollFrameWindow.h"
 
 class ScrollCombobox;
@@ -16,26 +18,25 @@ class ScrollListbox;
 class FXSlotEditorWindow : public ScrollFrameWindow
 {
 public:
-    FXSlotEditorWindow ();
+    FXSlotEditorWindow (const std::string& name);
 
-    virtual void Init (const orxSTRING widgetName);
+    virtual void Init (const std::string& widgetName);
 
     //! Initialize control items 
     void SetupFields  ();
     //! Update all fields on the window using current values from config 
     void UpdateFields () const;
 
-    virtual const orxSTRING GetName ();
     //! Get the text of a widget
-    const orxSTRING GetText (const orxSTRING widgetName) const;
+    const std::string GetText (const std::string& widgetName) const;
     //! Set the FXSlot being edited
-    void SetContext (const orxSTRING sectionName);
+    void SetContext (const std::string& sectionName);
 
-    virtual void OnMouseClick   (const orxSTRING widgetName);
-    virtual void OnTextAccepted (const orxSTRING widgetName);
+    virtual void OnMouseClick   (const std::string& widgetName);
+    virtual void OnTextAccepted (const std::string& widgetName);
 
 private:
-    char m_context[255];
+    std::string m_context;
 
     ScrollCombobox *m_fxsType;
     ScrollCombobox *m_fxsCurve;

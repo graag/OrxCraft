@@ -7,22 +7,32 @@
 
 #include "ScrollFrameWindow.h"
 
+#include <string>
+#include <typeinfo>
+
 #include "ScrollCombobox.h"
 #include "ScrollEditbox.h"
 #include "ScrollListbox.h"
 
-ScrollFrameWindow::ScrollFrameWindow ()
+using namespace std;
+
+ScrollFrameWindow::ScrollFrameWindow (const string& name):
+    m_name(name)
 {
 }
 
-ScrollWidget * ScrollFrameWindow::FindWidget (const orxSTRING widgetName) const
+ScrollWidget * ScrollFrameWindow::FindWidget (const string& widgetName) const
 {
     ScrollWidget *theWidget = NULL;
+
+    /* Iterate through widgets vector.
+     * Return first occurence with specified name.
+     */
     vector<ScrollWidget *>::const_iterator widgIter;
     for (widgIter = m_widgetList.begin (); widgIter != m_widgetList.end ();
 	 ++widgIter)
     {
-	if (orxString_Compare ((*widgIter)->GetName (), widgetName) == 0)
+	if ((*widgIter)->GetName () == widgetName)
 	{
 	    theWidget = *widgIter;
 	    break;
@@ -32,56 +42,54 @@ ScrollWidget * ScrollFrameWindow::FindWidget (const orxSTRING widgetName) const
     return theWidget;
 }
 
-ScrollEditbox * ScrollFrameWindow::FindEditbox (
-    const orxSTRING widgetName) const
+ScrollEditbox * ScrollFrameWindow::FindEditbox (const string& widgetName) const
 {
     ScrollEditbox *theWidget = NULL;
-    vector<ScrollWidget *>::const_iterator widgIter;
-    for (widgIter = m_widgetList.begin (); widgIter != m_widgetList.end ();
-	 ++widgIter)
+    ScrollWidget *widget = NULL;
+
+    // Find the widget
+    widget = FindWidget(widgetName);
+
+    if(widget != NULL)
     {
-	if (orxString_Compare ((*widgIter)->GetName (), widgetName) == 0)
-	{
-	    theWidget = reinterpret_cast<ScrollEditbox *> (*widgIter);
-	    break;
-	}
+	theWidget = orxCRAFT_CAST<ScrollEditbox *> (widget);
+	orxASSERT( theWidget != NULL );
     }
-	 
+
     return theWidget;
 }
 
-ScrollCombobox * ScrollFrameWindow::FindCombobox (
-    const orxSTRING widgetName) const
+ScrollCombobox * ScrollFrameWindow::FindCombobox (const string& widgetName) const
 {
     ScrollCombobox *theWidget = NULL;
-    vector<ScrollWidget *>::const_iterator widgIter;
-    for (widgIter = m_widgetList.begin (); widgIter != m_widgetList.end ();
-	 ++widgIter)
+    ScrollWidget *widget = NULL;
+
+    // Find the widget
+    widget = FindWidget(widgetName);
+
+    if(widget != NULL)
     {
-	if (orxString_Compare ((*widgIter)->GetName (), widgetName) == 0)
-	{
-	    theWidget = reinterpret_cast<ScrollCombobox *> (*widgIter);
-	    break;
-	}
+	theWidget = orxCRAFT_CAST<ScrollCombobox *> (widget);
+	orxASSERT( theWidget != NULL );
     }
-	 
+
     return theWidget;
 }
 
-ScrollListbox * ScrollFrameWindow::FindListbox (const orxSTRING widgetName) const
+ScrollListbox * ScrollFrameWindow::FindListbox (const string& widgetName) const
 {
     ScrollListbox *theWidget = NULL;
-    vector<ScrollWidget *>::const_iterator widgIter;
-    for (widgIter = m_widgetList.begin (); widgIter != m_widgetList.end ();
-	 ++widgIter)
+    ScrollWidget *widget = NULL;
+
+    // Find the widget
+    widget = FindWidget(widgetName);
+
+    if(widget != NULL)
     {
-	if (orxString_Compare ((*widgIter)->GetName (), widgetName) == 0)
-	{
-	    theWidget = reinterpret_cast<ScrollListbox *> (*widgIter);
-	    break;
-	}
+	theWidget = orxCRAFT_CAST<ScrollListbox *> (widget);
+	orxASSERT( theWidget != NULL );
     }
-	 
+
     return theWidget;
 }
 

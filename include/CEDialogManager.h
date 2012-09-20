@@ -14,6 +14,7 @@ class CEDialogManager : public DialogManager
 {
 public:
     virtual void MakeDialog (const orxSTRING dialogName);
+    virtual DialogManager* GetInstance();
 
 private:
     void LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWindow* dialog);

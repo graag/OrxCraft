@@ -13,15 +13,17 @@
  *  Uncomment above define to prevent the embedded editor (ScrollEd) from
  *  being compiled
  */
-#include "Scroll.h"
-
 #include <vector>
+#include <string>
+
+#include "Scroll.h"
 
 class DialogManager;
 
 class ScrollGUICEGUI;
 
 using std::vector;
+using std::string;
 
 //! Main OrxCraft program class
 class OrxCraft : public Scroll<OrxCraft>
@@ -30,16 +32,17 @@ public:
     OrxCraft ();
 
     //! Get names of currently loaded objects
-    inline vector<const orxSTRING>& GetObjectList () { return m_objectList; }
+    inline std::vector<std::string>& GetObjectList () { return m_objectList; }
     //! Get names of currently loaded FXSlots
-    inline vector<const orxSTRING>& GetFXSlotList () { return m_fxSlotList; }
+    inline std::vector<std::string>& GetFXSlotList () { return m_fxSlotList; }
     //! Set selected FXSlot in FXSlot Editor
     void SetSelectedFXSlot (const orxSTRING name);
 
     //! Get names of currently loaded Graphics
-    inline vector<const orxSTRING>& GetGraphicList () { return m_graphicList; }
+    inline std::vector<std::string>& GetGraphicList () { return m_graphicList; }
 
     ScrollObject * GetObjectByName (const orxSTRING name) const;
+    DialogManager * GetDialogManager () { return m_dialogManager; }
 
     //! Setup loaded config section lists and create objects
     void SetupConfig ();
@@ -77,11 +80,11 @@ private:
     DialogManager	    *m_dialogManager;
 
     /// Currently loaded config objects
-    vector<const orxSTRING> m_objectList;
+    std::vector<std::string> m_objectList;
     /// Currently loaded config graphics
-    vector<const orxSTRING> m_graphicList;
+    std::vector<std::string> m_graphicList;
     /// Currently loaded FXSlots
-    vector<const orxSTRING> m_fxSlotList;
+    std::vector<std::string> m_fxSlotList;
 
     bool m_dirty;
 };

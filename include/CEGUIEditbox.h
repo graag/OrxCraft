@@ -7,9 +7,11 @@
  *
  */
 
-#include "ScrollEditbox.h"
+#include <string>
 
 #include "CEGUI.h"
+
+#include "ScrollEditbox.h"
 
 class ScrollFrameWindow;
 
@@ -17,15 +19,28 @@ class ScrollFrameWindow;
 class CEGUIEditbox : public ScrollEditbox
 {
 public:
+    /** C-tor */
     explicit CEGUIEditbox (ScrollFrameWindow *dialog);
-    virtual void Init (const orxSTRING widgetName);
-    virtual void Init (CEGUI::Window* widget);
 
-    virtual const orxSTRING GetText ();
-    virtual void SetText (const orxSTRING text);
+    /** Initialize the widget.
+     * @param[in] widgetName - the name will be used to select proper instace
+     * of the CEGUI widget
+     */
+    virtual void Init (const std::string& widgetName);
+
+    /** Get the text contained in the Editbox */
+    virtual const std::string GetText ();
+    /** Set the text contained in the Editbox */
+    virtual void SetText (const std::string& text);
 private:
+    /** Handler for CEGUI::Editbox::EventTextAccepted event
+     * (pressed Enter key).
+     *
+     * @param[in] e - WindowEventArgs event arguments passed from CEGUI.
+     */
     bool OnTextAccepted (const CEGUI::EventArgs &e);
 
+    //! Pointer to CEGUI widget
     CEGUI::Editbox *m_ceEditbox;
 };
 #endif  // __SCROLL_CEGUIEDITBOX_H__

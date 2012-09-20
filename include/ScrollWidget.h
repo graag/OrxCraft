@@ -7,43 +7,48 @@
  *
  */
 
+#include <string>
+
 #include "Scroll.h"
 
 class ScrollFrameWindow;
+
+/*
+ * For debug build perform a dynamic_cast.
+ * Remember to check that result != NULL.
+ * For release build static_cast is used.
+ */
+#ifndef __orxDEBUG__
+#define orxCRAFT_CAST dynamic_cast
+#else
+#define orxCRAFT_CAST static_cast
+#endif
 
 /**
  *  Base class for any type of user interface widget
  */
 class ScrollWidget
 {
-public:    
-    /** Let's make ScrollCheckbox happy for now (Conrad) */
-    ScrollWidget () :
-	m_widgetName (NULL),
-	m_manager    (NULL)
-    {
-    };
+public:
     /** Widget C-tor */
     explicit ScrollWidget (ScrollFrameWindow *dialog) :
-	m_widgetName (NULL),
 	m_manager    (dialog)
     {
     }
 
-    /** Initialize the widget */
-    virtual void Init (const orxSTRING widgetName) = 0;
+    /** Initialize the widget.
+     *
+     * @param[in] widgetName - the name will be used to select proper instace
+     * of the toolkit widget
+     */
+    virtual void Init (const std::string& widgetName)
+    { m_widgetName = widgetName; }
 
     /** Get the name of the widget */
-    inline const orxSTRING GetName () { return m_widgetName; }
-
-    /** Widget D-tor */
-    virtual ~ScrollWidget ()
-    {
-	delete [] m_widgetName;
-    }
+    inline const std::string& GetName () { return m_widgetName; }
 
 protected:
-    char              *m_widgetName;
+    std::string        m_widgetName;
     ScrollFrameWindow *m_manager;
 };
 

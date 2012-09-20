@@ -10,7 +10,7 @@
 #include "orx/orx.h"
 
 #include <vector>
-using std::vector;
+#include <string>
 
 /**
  *  Facility to help interacting with Orx config files. All the functions
@@ -26,7 +26,7 @@ void FloatToString (orxFLOAT inFloat, orxSTRING outString);
 /** Convert an Orx config list to an Orx string */
 const orxSTRING ListToString (const orxSTRING prop);
 /** Get all items in an Orx config list into a std::vector */
-void GetListIntoVector (const orxSTRING key, vector<const orxSTRING> &list);
+void GetListIntoVector (const orxSTRING key, std::vector<std::string> &list);
 /** Convert an Orx config vector to an Orx string */
 void VectorToString (const orxSTRING prop, orxU32 elementNum,
 		     orxSTRING outString);

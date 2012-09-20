@@ -7,9 +7,11 @@
  *
  */
 
-#include "ScrollPushButton.h"
+#include <string>
 
 #include "CEGUI.h"
+
+#include "ScrollPushButton.h"
 
 class ScrollFrameWindow;
 
@@ -17,15 +19,26 @@ class ScrollFrameWindow;
 class CEGUIPushButton : public ScrollPushButton
 {
 public:
+    /** C-tor */
     explicit CEGUIPushButton (ScrollFrameWindow *dialog);
-    virtual void Init (const orxSTRING widgetName);
-    virtual void Init (CEGUI::Window* widget);
+    /** Initialize the widget.
+     *
+     * @param[in] widgetName - the name will be used to select proper instace
+     * of the CEGUI widget
+     */
+    virtual void Init (const std::string& widgetName);
 
-    virtual void SetText (const orxSTRING text);
+    /** Set the text displayed on the Pushbutton */
+    virtual void SetText (const std::string& text);
 
 private:
+    /** Handler for CEGUI::Window::EventMouseClick event.
+     *
+     * @param[in] e - WindowEventArgs event arguments passed from CEGUI.
+     */
     bool OnClicked (const CEGUI::EventArgs &e);
 
+    //! Pointer to CEGUI widget
     CEGUI::PushButton *m_cePushButton;
 };
 #endif  // __CEGUIBUTTON_H__

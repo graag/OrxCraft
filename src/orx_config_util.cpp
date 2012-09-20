@@ -7,6 +7,12 @@
 
 #include "orx_config_util.h"
 
+#include <string>
+#include <vector>
+
+using std::vector;
+using std::string;
+
 namespace orx_config_util
 {
 
@@ -53,7 +59,7 @@ const orxSTRING ListToString (const orxSTRING prop)
     return buffer;
 }
 
-void GetListIntoVector (const orxSTRING key, vector<const orxSTRING> &list)
+void GetListIntoVector (const orxSTRING key, vector<string> &list)
 {
     orxASSERT (key != orxNULL);
     
@@ -62,7 +68,7 @@ void GetListIntoVector (const orxSTRING key, vector<const orxSTRING> &list)
     for (int i = 0; i < counter; i++)
     {
 	// Get and store next item
-	const orxSTRING property = orxConfig_GetListString (key, i);
+	string property = orxConfig_GetListString (key, i);
 	list.push_back (property);
     }
 }

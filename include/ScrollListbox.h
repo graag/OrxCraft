@@ -8,9 +8,9 @@
  */
 
 #include <vector>
-#include "ScrollWidget.h"
+#include <string>
 
-using std::vector;
+#include "ScrollWidget.h"
 
 /**
  *  Base class for a Listbox widget.
@@ -18,12 +18,17 @@ using std::vector;
 class ScrollListbox : public ScrollWidget
 {
 public:
+    /** C-tor */
     explicit ScrollListbox (ScrollFrameWindow *dialog) :
 	 ScrollWidget (dialog)
     {
     }
 
-    virtual void Fill (const vector<const orxSTRING> &listItems) = 0;
+    /** Populate the listbox contents.
+     *
+     * @param[in] listItems - vector of strings to display in the listbox.
+     */
+    virtual void Fill (const std::vector<std::string> &listItems) = 0;
 
 protected:
     virtual ~ScrollListbox () { }

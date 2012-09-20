@@ -7,33 +7,28 @@
 #include "InfoWindow.h"
 #include "orxCraft.h"
 
-void InfoWindow::Init (const orxSTRING widgetName)
+void InfoWindow::Init (const string& widgetName)
 {
+    ScrollFrameWindow::Init(widgetName);
 }
 
-const orxSTRING InfoWindow::GetName ()
+void InfoWindow::OnMouseClick (const string& widgetName)
 {
-    orxASSERT (false);
-    return orxNULL;
-}
-
-void InfoWindow::OnMouseClick (const orxSTRING widgetName)
-{
-    if (orxString_ICompare (widgetName, "ObjectSectionList") == 0)
+    if (widgetName == "ObjectSectionList")
     {
 	//const orxSTRING itemName = m_widgetManager->GetSelectedItem (widgetName);
     }
-    else if (orxString_ICompare (widgetName, "FXSlotSectionList") == 0)
+    else if (widgetName == "FXSlotSectionList")
     {
 	//const orxSTRING itemName = m_widgetManager->GetSelectedItem (widgetName);
     }
-    else if (orxString_ICompare (widgetName, "SaveConfig") == 0)
+    else if (widgetName == "SaveConfig")
     {
 	OrxCraft::GetInstance ().SaveEditorConfig ();
     }
 }
 
-void InfoWindow::OnTextAccepted (const orxSTRING widgetName)
+void InfoWindow::OnTextAccepted (const string& widgetName)
 {
     orxASSERT (false);
 }

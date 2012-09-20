@@ -7,11 +7,14 @@
 
 #include "CEGUIPushButton.h"
 
+#include <string>
+
 #include "ScrollFrameWindow.h"
 
 using CEGUI::PushButton;
 using CEGUI::Event;
 using CEGUI::Window;
+using std::string;
 
 CEGUIPushButton::CEGUIPushButton (ScrollFrameWindow *dialog) :
     ScrollPushButton (dialog),
@@ -19,46 +22,54 @@ CEGUIPushButton::CEGUIPushButton (ScrollFrameWindow *dialog) :
 {
 }
 
-void CEGUIPushButton::Init (const orxSTRING widgetName)
+void CEGUIPushButton::Init (const string& widgetName)
 {
-    const orxSTRING windowName = m_manager->GetName ();
-    Window *rootWindow = CEGUI::System::getSingleton ().getGUISheet ();
-    Window *window = rootWindow->getChild (windowName);
+    ScrollWidget::Init(widgetName);
 
-    PushButton *pushbutton = reinterpret_cast<PushButton *> (
-	window->getChild (widgetName));
+    const string windowName = m_manager->GetName();
+    // Get the root window
+    Window *rootWindow = CEGUI::System::getSingleton().getGUISheet();
+    // Get the parent window. No point in searching all windows.
+    Window *window = rootWindow->getChild(windowName);
+    // Get recursively the widget, this will handle tabs.
+    Window *widget = window->getChildRecursive(widgetName);
+    orxASSERT(widget != NULL);
+
+    /*
+     * Static cast is now safe as it is guarded by assert. This will be active
+     * only in debug build so -fno-rtti can be used for release build
+     */
+    orxASSERT( typeid(*widget) == typeid(PushButton) );
+    PushButton *pushbutton = static_cast<PushButton *> (widget);
+
+    // Subscribe to clicked event
     pushbutton->subscribeEvent (PushButton::EventClicked,
 	Event::Subscriber (&CEGUIPushButton::OnClicked, this));
 
-    m_cePushButton = pushbutton;
-    m_widgetName = new char[strlen (widgetName) + 1];
-    strcpy (m_widgetName, widgetName);
-}
-
-void CEGUIPushButton::Init (Window* widget)
-{
-    PushButton *pushbutton = reinterpret_cast<PushButton *> (widget);
-    pushbutton->subscribeEvent (PushButton::EventClicked,
-	Event::Subscriber (&CEGUIPushButton::OnClicked, this));
+    //! @todo Handle right click??
 
     m_cePushButton = pushbutton;
-    m_widgetName = new char[strlen (widget->getName().c_str()) + 1];
-    strcpy (m_widgetName, widget->getName().c_str());
 }
 
-void CEGUIPushButton::SetText (const orxSTRING text)
+void CEGUIPushButton::SetText (const string& text)
 {
-    orxASSERT (text != orxNULL);
-
     m_cePushButton->setText (text);
 }
 
 bool CEGUIPushButton::OnClicked (const CEGUI::EventArgs &e)
 {
-    CEGUI::WindowEventArgs *args = (CEGUI::WindowEventArgs *) &e;
-    const orxSTRING widgetName = args->window->getName ().c_str ();
+    /*
+     * Static cast will be safe as this handler is connected only to
+     * Editbox::EventClicked signal which passes WindowEventArgs struct.
+     */
+    const CEGUI::WindowEventArgs *args =
+    	static_cast<const CEGUI::WindowEventArgs *>( &e );
+
+    string widgetName = args->window->getName().c_str();
+    // Pass the event to the ScrollFrameWindow
     m_manager->OnMouseClick (widgetName);
 
+    // Notify that the event was handled
     return true;
 }
 

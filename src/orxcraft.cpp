@@ -140,7 +140,7 @@ void OrxCraft::SetupConfig ()
 {
     for (unsigned int i = 0; i < m_objectList.size (); i++)
     {
-	ScrollObject *obj = GetObjectByName (m_objectList.at (i));
+	ScrollObject *obj = GetObjectByName (m_objectList.at (i).c_str());
 	if (obj != orxNULL)
 	{
 	    DeleteObject (obj);

@@ -7,29 +7,45 @@
  *
  */
 
-#include "ScrollListbox.h"
+#include <string>
+#include <vector>
 
 #include "CEGUI.h"
 
-class ScrollFrameWindow;
+#include "ScrollListbox.h"
 
-using std::vector;
+class ScrollFrameWindow;
 
 /** CEGUI Implementation of a Listbox */
 class CEGUIListbox : public ScrollListbox
 {
 public:
+    /** C-tor */
     explicit CEGUIListbox (ScrollFrameWindow *dialog);
-    virtual void Init (const orxSTRING widgetName);
-    virtual void Init (CEGUI::Window* widget);
-    virtual void Fill (const vector<const orxSTRING> &listItems);
+    /** Initialize the widget.
+     *
+     * @param[in] widgetName - the name will be used to select proper instace
+     * of the CEGUI widget
+     */
+    virtual void Init (const std::string& widgetName);
+    /** Populate the listbox contents.
+     *
+     * @param[in] listItems - vector of strings to display in the listbox.
+     */
+    virtual void Fill (const std::vector<std::string> &listItems);
 
      //bool OnSelectionChanged (const CEGUI::EventArgs &e);
 private:
+    /** Handler for CEGUI::Window::EventMouseClick event.
+     *
+     * @param[in] e - WindowEventArgs event arguments passed from CEGUI.
+     */
     bool OnMouseClick (const CEGUI::EventArgs &e);
 
+    //! Pointer to CEGUI widget
     CEGUI::Listbox *m_ceListbox;
-    vector<CEGUI::ListboxTextItem *> m_items;
+    //! List of listbox items
+    std::vector<CEGUI::ListboxTextItem *> m_items;
 };
 #endif  // __CEGUILISTBOX_H__
 

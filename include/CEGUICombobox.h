@@ -7,12 +7,14 @@
  *
  */
 
-#include "ScrollCombobox.h"
+#include <vector>
+#include <string>
+
 #include "CEGUI.h"
 
-class ScrollFrameWindow;
+#include "ScrollCombobox.h"
 
-using std::vector;
+class ScrollFrameWindow;
 
 /** CEGUI implementation of a Combobox */
 class CEGUICombobox : public ScrollCombobox
@@ -20,20 +22,36 @@ class CEGUICombobox : public ScrollCombobox
 public:
     /** C-tor */
     explicit CEGUICombobox (ScrollFrameWindow *dialog);
-    /** Initialize the Combobox */
-    virtual void Init (const orxSTRING widgetName);
-    virtual void Init (CEGUI::Window* widget);
-    /** Fill the box with a list */
-    virtual void Fill (const vector<const orxSTRING> &listItems);
-
-    virtual void SelectItem (const orxSTRING text);
-    virtual const orxSTRING GetSelectedItem () const;
+    /** Initialize the widget.
+     *
+     * @param[in] widgetName - the name will be used to select proper instace
+     * of the CEGUI widget
+     */
+    virtual void Init (const std::string& widgetName);
+    /** Populate the listbox contents.
+     *
+     * @param[in] listItems - vector of strings to display in the listbox.
+     */
+    virtual void Fill (const std::vector<std::string> &listItems);
+    /** Select and item.
+     *
+     * @param[in] itemText - contents of the item to be selected.
+     */
+    virtual void SelectItem (const std::string& text);
+    /** Get the text of the selected item */
+    virtual const std::string GetSelectedItem () const;
 
 private:
+    /** Handler for CEGUI::Combobox::EventListSelectionAccepted event.
+     *
+     * @param[in] e - WindowEventArgs event arguments passed from CEGUI.
+     */
     bool OnSelectionAccepted (const CEGUI::EventArgs &e);
 
+    //! Pointer to CEGUI widget
     CEGUI::Combobox *m_ceCombobox;
-    vector<CEGUI::ListboxTextItem *> m_items;
+    //! List of combobox items
+    std::vector<CEGUI::ListboxTextItem *> m_items;
 };
 #endif  // __CEGUICOMBOBOX_H__
 

@@ -7,6 +7,8 @@
  *
  */
 
+#include <string>
+
 #include "ScrollWidget.h"
 
 class ScrollFrameWindow;
@@ -17,10 +19,14 @@ class ScrollFrameWindow;
 class ScrollPushButton : public ScrollWidget
 {
 public:
+    /** C-tor */
     explicit ScrollPushButton (ScrollFrameWindow *dialog) :
 	ScrollWidget (dialog)
     {
     }
+
+    /** Set the text displayed on the Pushbutton */
+    virtual void SetText (const std::string& text) = 0;
 };
 
 #endif  // __SCROLL_PUSH_BUTTON_H__

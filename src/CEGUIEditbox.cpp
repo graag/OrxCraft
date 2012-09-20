@@ -6,11 +6,15 @@
  */
 
 #include "CEGUIEditbox.h"
+
+#include <string>
+
 #include "ScrollFrameWindow.h"
 
 using CEGUI::Editbox;
 using CEGUI::Event;
 using CEGUI::Window;
+using std::string;
 
 CEGUIEditbox::CEGUIEditbox (ScrollFrameWindow *dialog) :
     ScrollEditbox (dialog),
@@ -18,51 +22,58 @@ CEGUIEditbox::CEGUIEditbox (ScrollFrameWindow *dialog) :
 {
 }
 
-void CEGUIEditbox::Init (const orxSTRING widgetName)
+void CEGUIEditbox::Init (const string& widgetName)
 {
-    const orxSTRING windowName = m_manager->GetName ();
-    Window *rootWindow = CEGUI::System::getSingleton ().getGUISheet ();
-    Window *window = rootWindow->getChild (windowName);
+    ScrollWidget::Init(widgetName);
 
-    Editbox *editbox = reinterpret_cast<Editbox *> (
-	window->getChild (widgetName));
+    const string windowName = m_manager->GetName();
+    // Get the root window
+    Window *rootWindow = CEGUI::System::getSingleton().getGUISheet();
+    // Get the parent window. No point in searching all windows.
+    Window *window = rootWindow->getChild(windowName);
+    // Get recursively the widget, this will handle tabs.
+    Window *widget = window->getChildRecursive(widgetName);
+    orxASSERT(widget != NULL);
+
+    /*
+     * Static cast is now safe as it is guarded by assert. Assert will be
+     * active only in debug build so -fno-rtti can be used for release build.
+     */
+    orxASSERT( typeid(*widget) == typeid(Editbox) );
+    Editbox *editbox = static_cast<Editbox *> (widget);
+
     editbox->subscribeEvent (Editbox::EventTextAccepted,
 	Event::Subscriber (&CEGUIEditbox::OnTextAccepted, this));
 
-    m_ceEditbox = editbox;
-    m_widgetName = new char[strlen (widgetName) + 1];
-    strcpy (m_widgetName, widgetName);
-}
-
-void CEGUIEditbox::Init (Window* widget)
-{
-    Editbox *editbox = reinterpret_cast<Editbox *> (widget);
-    editbox->subscribeEvent (Editbox::EventTextAccepted,
-	Event::Subscriber (&CEGUIEditbox::OnTextAccepted, this));
+    //! @todo Handle mouse events.
 
     m_ceEditbox = editbox;
-    m_widgetName = new char[strlen (widget->getName().c_str()) + 1];
-    strcpy (m_widgetName, widget->getName().c_str());
 }
 
 bool CEGUIEditbox::OnTextAccepted (const CEGUI::EventArgs &e)
 {
-    CEGUI::WindowEventArgs *args = (CEGUI::WindowEventArgs *) &e;
-    const orxSTRING widgetName = args->window->getName ().c_str ();
+    /*
+     * Static cast will be safe as this handler is connected only to
+     * Editbox::EventTextAccepted signal which passes WindowEventArgs struct.
+     */
+    const CEGUI::WindowEventArgs *args =
+    	static_cast<const CEGUI::WindowEventArgs *>( &e );
+
+    string widgetName = args->window->getName().c_str();
+    // Pass the event to the ScrollFrameWindow
     m_manager->OnTextAccepted (widgetName);
 
+    // Notify that the event was handled
     return true;
 }
 
-const orxSTRING CEGUIEditbox::GetText ()
+const string CEGUIEditbox::GetText ()
 {
     return m_ceEditbox->getText ().c_str ();
 }
 
-void CEGUIEditbox::SetText (const orxSTRING text)
+void CEGUIEditbox::SetText (const string& text)
 {
-    orxASSERT (text != orxNULL);
-
     m_ceEditbox->setText (text);
 }
 

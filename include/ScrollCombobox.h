@@ -8,9 +8,9 @@
  */
 
 #include <vector>
-#include "ScrollWidget.h"
+#include <string>
 
-using std::vector;
+#include "ScrollWidget.h"
 
 /**
  *  Base class for a Combobox (drop down list) widget.
@@ -18,18 +18,24 @@ using std::vector;
 class ScrollCombobox : public ScrollWidget
 {
 public:
-    //! C-tor
+    /** C-tor */
     explicit ScrollCombobox (ScrollFrameWindow *dialog) :
 	 ScrollWidget (dialog)
     {
     }
 
-    virtual void SelectItem (const orxSTRING itemText) = 0;
-    //! Get the text of the selected item
-    virtual const orxSTRING GetSelectedItem () const = 0;
-
-    /** Fill the box with a list */
-    virtual void Fill (const vector<const orxSTRING> &listItems) = 0;
+    /** Populate the listbox contents.
+     *
+     * @param[in] listItems - vector of strings to display in the listbox.
+     */
+    virtual void Fill (const std::vector<std::string> &listItems) = 0;
+    /** Select and item.
+     *
+     * @param[in] itemText - contents of the item to be selected.
+     */
+    virtual void SelectItem (const std::string& itemText) = 0;
+    /** Get the text of the selected item */
+    virtual const std::string GetSelectedItem () const = 0;
 };
 
 #endif  // SCROLLCOMBOBOX_H_
