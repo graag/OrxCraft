@@ -65,14 +65,12 @@ void CEDialogManager::MakeDialog (const orxSTRING dialogName)
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "FXSlotEditor.layout");
     }
-/*
     else if (orxString_Compare (dialogName, "ListPopup") == 0)
     {
 	dialog = new ListPopup (dialogName);
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "ListPopup.layout");
     }
-*/
     else
     {
 	orxASSERT (false);
