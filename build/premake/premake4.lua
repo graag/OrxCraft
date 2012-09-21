@@ -44,8 +44,6 @@ solution "orxCraft"
                  cegui_path .. "/include/CEGUI"}
     files {"../src/**.cpp", "../include/**.h"}
 
-    excludes {"../src/CEGUICheckbox.cpp"}
-
     libdirs {orxlib_path, ceguilib_path}
 
     links {"CEGUIBase", "CEGUIOpenGLRenderer"}

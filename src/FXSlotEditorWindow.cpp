@@ -1,3 +1,26 @@
+/*
+ *  Copyright (c) 2012 The orxCraft Project
+ *
+ *  This software is provided 'as-is', without any express or implied
+ *  warranty. In no event will the authors be held liable for any damages
+ *  arising from the use of this software.
+ *
+ *  Permission is granted to anyone to use this software for any purpose,
+ *  including commercial applications, and to alter it and redistribute it
+ *  freely, subject to the following restrictions:
+ *
+ *     1. The origin of this software must not be misrepresented; you must not
+ *     claim that you wrote the original software. If you use this software
+ *     in a product, an acknowledgment in the product documentation would be
+ *     appreciated but is not required.
+ *  
+ *     2. Altered source versions must be plainly marked as such, and must not be
+ *     misrepresented as being the original software.
+ *  
+ *     3. This notice may not be removed or altered from any source
+ *     distribution.
+ */
+
 /**
  * @file FXSlotEditorWindow.cpp
  * @date 2012-05-08
@@ -14,6 +37,7 @@
 
 #include "ScrollCombobox.h"
 #include "ScrollEditbox.h"
+#include "ScrollCheckbox.h"
 
 using std::string;
 
@@ -60,7 +84,7 @@ void FXSlotEditorWindow::Init (const string& widgetName)
     m_fxsAcceleration = FindEditbox ("FXSlotAcceleration");
     m_fxsAmplification = FindEditbox ("FXSlotAmplification");
     m_fxsPow = FindEditbox ("FXSlotPow");
-    m_fxsAbsolute = FindCombobox ("FXSlotAbsolute");
+    m_fxsAbsolute = FindCheckbox ("FXSlotAbsolute");
     m_fxsUseRotation = FindCombobox ("FXSlotUseRotation");
     m_fxsUseScale = FindCombobox ("FXSlotUseScale");
     m_fxsConfigName = FindCombobox ("FXSlotConfigName");
@@ -86,10 +110,6 @@ void FXSlotEditorWindow::SetupFields ()
     propList.clear ();
     orx_config_util::GetListIntoVector ("Curve", propList);
     m_fxsCurve->Fill (propList);
-
-    propList.clear ();
-    orx_config_util::GetListIntoVector ("Absolute", propList);
-    m_fxsAbsolute->Fill (propList);
 
     propList.clear ();
     orx_config_util::GetListIntoVector ("UseRotation", propList);
@@ -144,8 +164,7 @@ void FXSlotEditorWindow::UpdateFields () const
     orx_config_util::FloatToString (orxConfig_GetFloat ("Period"), buffer);
     m_fxsPeriod->SetText (buffer);
     // Absolute
-    orx_config_util::BoolToString (orxConfig_GetBool ("Absolute"), buffer);
-    m_fxsAbsolute->SelectItem (buffer);
+    m_fxsAbsolute->SetSelected (orxConfig_GetBool ("Absolute"));
     // Acceleration
     orx_config_util::FloatToString (orxConfig_GetFloat ("Acceleration"), buffer);
     m_fxsAcceleration->SetText (buffer);
@@ -258,9 +277,7 @@ void FXSlotEditorWindow::OnTextAccepted (const string& widgetName)
     }
     else if (widgetName == "FXSlotAbsolute")
     {
-	orxBOOL absolute;
-	orxString_ToBool(m_fxsAbsolute->GetSelectedItem().c_str(), &absolute,
-		          orxNULL);
+	orxBOOL absolute = m_fxsAbsolute->IsSelected();
 	orxConfig_SetBool ("Absolute", absolute);
     }
     else if (widgetName == "FXSlotAcceleration")
