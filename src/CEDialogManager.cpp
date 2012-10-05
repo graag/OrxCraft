@@ -13,10 +13,10 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *  
+ *
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *  
+ *
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
@@ -27,7 +27,7 @@
  * @author fritz@fritzmahnke.com
  *
  * CEGUI implementation of the Dialog Manager.
- * 
+ *
  * @todo Make sure dialogs get destroyed on program quit
  */
 
@@ -51,47 +51,70 @@
 #include "CEGUIPushButton.h"
 
 using std::string;
+using std::make_pair;
+
+CEDialogManager::~CEDialogManager ()
+{
+    DialogMapIterator iter;
+
+    // Iterate through DialogMap and destroy both CEGUI::Windows and dialogs
+    for (iter = m_dialogList.begin (); iter != m_dialogList.end (); ++iter)
+    {
+	CEGUI::WindowManager::getSingleton().destroyWindow(
+		iter->second->GetWindowName());
+	delete iter->second;
+    }
+    m_dialogList.clear();
+};
 
 DialogManager* CEDialogManager::GetInstance()
 {
-    if (!instance_)
+    if (!m_instance)
     {
-    	instance_ = new CEDialogManager();
+	m_instance = new CEDialogManager();
     }
 
-    return instance_;
+    return m_instance;
 }
 
-void CEDialogManager::MakeDialog (const orxSTRING dialogName)
+ScrollFrameWindow* CEDialogManager::MakeDialog (const string& dialogName,
+	const string& dialogOptions)
 {
-    orxASSERT (dialogName != orxNULL);
-
     CEGUI::Window* window = orxNULL;
     ScrollFrameWindow *dialog = orxNULL;
     CEGUI::Window *windowRoot = orxNULL;
 
-    if (CEGUI::WindowManager::getSingleton().isWindowPresent(dialogName))
-    {
-	window = CEGUI::WindowManager::getSingleton().getWindow(dialogName);
+    /*
+     * Check if dialog identified by name and options does not already exist.
+     * If so activate it's window.
+     */
+    dialog = GetDialog(dialogName, dialogOptions);
+    if(dialog != NULL) {
+	orxASSERT(
+		CEGUI::WindowManager::getSingleton().isWindowPresent(
+		    dialog->GetWindowName())
+		);
+	window = CEGUI::WindowManager::getSingleton().getWindow(
+		dialog->GetWindowName());
 	window->activate();
-	return;
+	return dialog;
     }
 
-    if (orxString_Compare (dialogName, "ObjectEditor") == 0)
+    if (dialogName == "ObjectEditor")
     {
 	dialog = new ObjectEditor (dialogName);
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "ObjectEditor.layout");
     }
-    else if (orxString_Compare (dialogName, "FXSlotEditor") == 0)
+    else if (dialogName == "FXSlotEditor")
     {
 	dialog = new FXSlotEditorWindow (dialogName);
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "FXSlotEditor.layout");
     }
-    else if (orxString_Compare (dialogName, "ListPopup") == 0)
+    else if (dialogName == "ListPopup")
     {
-	dialog = new ListPopup (dialogName);
+	dialog = new ListPopup (dialogName, dialogOptions);
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "ListPopup.layout");
     }
@@ -101,9 +124,9 @@ void CEDialogManager::MakeDialog (const orxSTRING dialogName)
     }
 
     CEGUI::Window *rootWindow = CEGUI::System::getSingleton ().getGUISheet ();
-    window = windowRoot->getChildAtIdx (0); 
-    rootWindow->addChildWindow (window);   
-    
+    window = windowRoot->getChildAtIdx (0);
+    rootWindow->addChildWindow (window);
+
     int counter = window->getChildCount ();
     for (int i = 0; i < counter; i++)
     {
@@ -139,6 +162,9 @@ void CEDialogManager::MakeDialog (const orxSTRING dialogName)
 
     dialog->Init (dialogName);
     window->activate();
+    m_dialogList[dialog->GetId()] = dialog;
+
+    return dialog;
 }
 
 void CEDialogManager::LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWindow* dialog)
@@ -176,6 +202,31 @@ void CEDialogManager::LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWindo
 	pushbutton->Init(name);
 	dialog->AddWidget (pushbutton);
     }
+}
+
+void CEDialogManager::DestroyDialog(const string& dialogName,
+	const string& dialogOptions)
+{
+    ScrollFrameWindow* dialog = GetDialog(dialogName, dialogOptions);
+
+    orxASSERT(dialog != NULL);
+
+    CEGUI::WindowManager::getSingleton().destroyWindow(
+	    dialog->GetWindowName());
+    m_dialogList.erase(dialog->GetId());
+    delete dialog;
+}
+
+void CEDialogManager::DestroyDialog(unsigned int id)
+{
+    ScrollFrameWindow* dialog = GetDialog(id);
+
+    orxASSERT(dialog != NULL);
+
+    CEGUI::WindowManager::getSingleton().destroyWindow(
+	    dialog->GetWindowName());
+    m_dialogList.erase(dialog->GetId());
+    delete dialog;
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

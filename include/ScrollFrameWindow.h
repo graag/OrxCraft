@@ -46,8 +46,12 @@ class ScrollCheckbox;
 class ScrollFrameWindow
 {
 public:
-    //! C-tor
-    ScrollFrameWindow (const std::string& name);
+    /** C-tor
+     * @param[in] name - name of the dialog
+     * @param[in] options - string with dialog options (optional)
+     */
+    ScrollFrameWindow (const std::string& name,
+	    const std::string& options = "");
 
     /** Find a widget by its name.
      * @param[in] widgetName - name of the widget.
@@ -80,10 +84,14 @@ public:
      */
     virtual void Init (const std::string& windowName)
     { m_windowName = windowName; }
-    /** Get dialog name */
+    /** Get the unique dialog identifier. */
+    virtual unsigned int GetId() { return m_id; }
+    /** Get the dialog name */
     virtual const std::string& GetName() { return m_name; }
     /** Get the name of underlying toolkit window. */
     virtual const std::string& GetWindowName () { return m_windowName; }
+    /** Get the options specified upon dialog creation. */
+    virtual const std::string& GetOptions() { return m_options; }
     /** Left mouse click event handler.
      * @param widgetName - name of the widget that originated the event.
      */
@@ -98,7 +106,6 @@ public:
      */
     virtual void AddWidget (ScrollWidget *widget);
 
-protected:
     //! D-tor
     virtual ~ScrollFrameWindow ()
     {
@@ -109,14 +116,22 @@ protected:
 	{
 	    delete *iter;
 	}
+	m_widgetList.clear();
     };
 
+protected:
+    // Pool of ids. It is incremented whenever new dialog is created.
+    static unsigned int         m_idPool;
+    // Unique id of this dialog
+    unsigned int                m_id;
     // Widgets contained in the window
     std::vector<ScrollWidget *> m_widgetList;
     // Name of the underlying toolkit window
     std::string                 m_windowName;
     // Name of the dialog
     std::string                 m_name;
+    // Options used for creation of the dialog
+    std::string                 m_options;
 };
 
 #endif  // __SCROLLFRAMEWINDOW_H__

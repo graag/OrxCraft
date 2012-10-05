@@ -26,23 +26,82 @@
  * @date 2012-05-11
  * @author fritz@fritzmahnke.com
  *
- * The Dialog Manager is responsible for creating the program's various user
- * interfaces and their widgets (controls). The DialogManager base class is the
- * interface inherited by concrete implementations.
+ * The Dialog Manager is responsible for creating and destroying the program's
+ * various user interfaces and their widgets (controls). The DialogManager base
+ * class is the interface inherited by concrete implementations.
  */
 #ifndef DIALOGMANAGER_H_
 #define DIALOGMANAGER_H_
 
-#include "Scroll.h"
+#include <string>
+#include <map>
+
+#include "ScrollFrameWindow.h"
+
+//! DialogMap - type used for dialog window storage by the DialogManager
+typedef std::map<unsigned int, ScrollFrameWindow*> DialogMap;
+//! DialogMap iterator
+typedef std::map<unsigned int, ScrollFrameWindow*>::iterator DialogMapIterator;
+//! DialogMap const iterator
+typedef std::map<unsigned int,
+	ScrollFrameWindow*>::const_iterator DialogMapConstIterator;
 
 class DialogManager
 {
 public:
-    virtual void MakeDialog (const orxSTRING dialogName) = 0;
+    /** Create new dialog window.
+     * @param[in] dialogName - name of the new dialog specifies predefined
+     *                         dialog type
+     * @param[in] dialogOptions - options passed to the new dialog (optional)
+     */
+    virtual ScrollFrameWindow* MakeDialog (const std::string& dialogName,
+	    const std::string& dialogOptions = "") = 0;
+    //! Return an instance of the DialogManager singleton.
     virtual DialogManager* GetInstance() = 0;
+    /** Destroy a dialog window managed by the DialogManager
+     * @param[in] id - unique ID of the dialog window
+     */
+    virtual void DestroyDialog(unsigned int id) = 0;
+    /** Destroy a dialog window managed by the DialogManager,
+     * identified by its name and options.
+     * @param[in] dialogName - name of the dialog
+     * @param[in] dialogOptions - options of the dialog
+     */
+    virtual void DestroyDialog(const std::string& dialogName,
+	    const std::string& dialogOptions = "") = 0;
+    /** Get a dialog window managed by the DialogManager
+     * @param[in] id - unique ID of the dialog window
+     * @return a pointer to the dialog if found, NULL otherwise
+     */
+    virtual ScrollFrameWindow* GetDialog(unsigned int id);
+    /** Get a dialog window managed by the DialogManager,
+     * identified by its name and options.
+     * @param[in] dialogName - name of the dialog
+     * @param[in] dialogOptions - options of the dialog
+     * @return a pointer to the dialog if found, NULL otherwise
+     */
+    virtual ScrollFrameWindow* GetDialog(const std::string& dialogName,
+	    const std::string& dialogOptions = "");
+
+    //! D-tor
+    virtual ~DialogManager ()
+    {
+	DialogMapIterator iter;
+	for (iter = m_dialogList.begin ();
+	    iter != m_dialogList.end ();
+	    ++iter)
+	{
+	    delete iter->second;
+	}
+	m_dialogList.clear();
+    };
 
 protected:
-    DialogManager* instance_;
+    // Pointer to an instance of the DialogManager singleton
+    DialogManager* m_instance;
+
+    // Dialogs managed by the manager
+    DialogMap m_dialogList;
 };
 
 #endif	// DIALOGMANAGER_H_

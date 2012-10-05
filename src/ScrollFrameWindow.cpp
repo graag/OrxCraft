@@ -40,9 +40,17 @@
 
 using namespace std;
 
-ScrollFrameWindow::ScrollFrameWindow (const string& name):
-    m_name(name)
+unsigned int ScrollFrameWindow::m_idPool = 0;
+
+ScrollFrameWindow::ScrollFrameWindow (const string& name,
+	const string& options):
+    m_id(0),
+    m_name(name),
+    m_options(options)
 {
+    // Assign an unique ID
+    m_id = m_idPool;
+    m_idPool++;
 }
 
 ScrollWidget * ScrollFrameWindow::FindWidget (const string& widgetName) const
