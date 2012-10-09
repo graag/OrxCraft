@@ -33,6 +33,7 @@
 
 #include "CEDialogManager.h"
 
+#include "limits.h"
 #include <string>
 
 #include "CEGUI.h"
@@ -69,17 +70,20 @@ CEDialogManager::~CEDialogManager ()
 
 DialogManager* CEDialogManager::GetInstance()
 {
-    if (!m_instance)
+    if (!DialogManager::m_instance)
     {
-	m_instance = new CEDialogManager();
+	DialogManager::m_instance = new CEDialogManager();
     }
 
-    return m_instance;
+    return DialogManager::m_instance;
 }
 
 ScrollFrameWindow* CEDialogManager::MakeDialog (const string& dialogName,
 	const string& dialogOptions)
 {
+    // Number of characters that represent maximum value of unsigned int.
+    static int num_size = log10(UINT_MAX)+2;
+
     CEGUI::Window* window = orxNULL;
     ScrollFrameWindow *dialog = orxNULL;
     CEGUI::Window *windowRoot = orxNULL;
@@ -100,32 +104,55 @@ ScrollFrameWindow* CEDialogManager::MakeDialog (const string& dialogName,
 	return dialog;
     }
 
+    /*
+     * The windows will be created with unique prefixes based on unique dialog
+     * IDs. This will prevent name clashes between several instances of one
+     * dialog instanciated with different options.
+     *
+     * num_buf is a Buffer to store window unique ID in string form
+     */
+    char num_buf[num_size];
+
     if (dialogName == "ObjectEditor")
     {
 	dialog = new ObjectEditor (dialogName);
+	// Generate a unique prefix
+	int result = snprintf(num_buf, num_size, "%d_", dialog->GetId());
+	orxASSERT(result < num_size); // Make sure snprintf succeeded
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
-	    "ObjectEditor.layout");
+	    "ObjectEditor.layout", num_buf);
     }
     else if (dialogName == "FXSlotEditor")
     {
 	dialog = new FXSlotEditorWindow (dialogName);
+	// Generate a unique prefix
+	int result = snprintf(num_buf, num_size, "%d_", dialog->GetId());
+	orxASSERT(result < num_size); // Make sure snprintf succeeded
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
-	    "FXSlotEditor.layout");
+	    "FXSlotEditor.layout", num_buf);
     }
     else if (dialogName == "ListPopup")
     {
 	dialog = new ListPopup (dialogName, dialogOptions);
+	// Generate a unique prefix
+	int result = snprintf(num_buf, num_size, "%d_", dialog->GetId());
+	orxASSERT(result < num_size); // Make sure snprintf succeeded
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
-	    "ListPopup.layout");
+	    "ListPopup.layout", num_buf);
     }
     else
     {
 	orxASSERT (false);
     }
 
+    // Get pointers to the global root window and the dialog window
     CEGUI::Window *rootWindow = CEGUI::System::getSingleton ().getGUISheet ();
     window = windowRoot->getChildAtIdx (0);
+    // Transfer dialog ownership to the global root window.
     rootWindow->addChildWindow (window);
+    // The temporary root defined in dialog layout is not needed anymore.
+    CEGUI::WindowManager::getSingleton().destroyWindow(windowRoot);
+    dialog->SetWindowName(window->getName().c_str());
 
     int counter = window->getChildCount ();
     for (int i = 0; i < counter; i++)
@@ -160,7 +187,7 @@ ScrollFrameWindow* CEDialogManager::MakeDialog (const string& dialogName,
 	}
     }
 
-    dialog->Init (dialogName);
+    dialog->Init();
     window->activate();
     m_dialogList[dialog->GetId()] = dialog;
 
@@ -207,24 +234,30 @@ void CEDialogManager::LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWindo
 void CEDialogManager::DestroyDialog(const string& dialogName,
 	const string& dialogOptions)
 {
+    // Search for the dialog in the list of dialogs controlled by the manager.
     ScrollFrameWindow* dialog = GetDialog(dialogName, dialogOptions);
 
     orxASSERT(dialog != NULL);
 
+    // Destroy the CEGUI window
     CEGUI::WindowManager::getSingleton().destroyWindow(
 	    dialog->GetWindowName());
+    // Remove the dialog from the list and destroy it
     m_dialogList.erase(dialog->GetId());
     delete dialog;
 }
 
 void CEDialogManager::DestroyDialog(unsigned int id)
 {
+    // Search for the dialog in the list of dialogs controlled by the manager.
     ScrollFrameWindow* dialog = GetDialog(id);
 
     orxASSERT(dialog != NULL);
 
+    // Destroy the CEGUI window
     CEGUI::WindowManager::getSingleton().destroyWindow(
 	    dialog->GetWindowName());
+    // Remove the dialog from the list and destroy it
     m_dialogList.erase(dialog->GetId());
     delete dialog;
 }

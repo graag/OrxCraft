@@ -13,10 +13,10 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *  
+ *
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *  
+ *
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
@@ -65,12 +65,24 @@ public:
      * of the toolkit widget
      */
     virtual void Init (const std::string& widgetName)
-    { m_widgetName = widgetName; }
+    {
+    	m_widgetUniqueName = widgetName;
+    	m_widgetName = ExtractCommonName(widgetName);
+    }
 
     /** Get the name of the widget */
     inline const std::string& GetName () { return m_widgetName; }
+    /** Get the unique name of the widget: name prefixed by "ID_". */
+    inline const std::string& GetUniqueName () { return m_widgetUniqueName; }
+    /** Remove unique prefix from widget name
+     * @param[in] widgetName - name of the widget.
+     * @return widgetName with "ID_" prefix removed.
+     */
+    const std::string ExtractCommonName(const std::string& widgetName) const
+    { return widgetName.substr(widgetName.find("_") + 1); }
 
 protected:
+    std::string        m_widgetUniqueName;
     std::string        m_widgetName;
     ScrollFrameWindow *m_manager;
 };

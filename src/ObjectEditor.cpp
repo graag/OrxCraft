@@ -13,10 +13,10 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *  
+ *
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *  
+ *
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
@@ -39,6 +39,7 @@
 #include "ScrollCombobox.h"
 #include "ScrollEditbox.h"
 #include "ScrollPushButton.h"
+#include "CEDialogManager.h"
 
 using std::string;
 using std::vector;
@@ -88,10 +89,8 @@ ObjectEditor::ObjectEditor (const string& name) :
 {
 }
 
-void ObjectEditor::Init (const string& widgetName)
+void ObjectEditor::Init ()
 {
-    ScrollFrameWindow::Init(widgetName);
-
     m_objConfigName = FindCombobox ("ObjectConfigName");
     m_objAlpha = FindEditbox ("ObjAlpha");
     m_objAngVelocity = FindEditbox ("ObjAngularVelocity");
@@ -99,7 +98,7 @@ void ObjectEditor::Init (const string& widgetName)
     m_objPosY = FindEditbox ("ObjPos1");
     m_objPosZ = FindEditbox ("ObjPos2");
     m_objFXList = FindEditbox ("ObjFXList");
-    m_objChildList = FindListbox ("ChildList");
+    m_objChildList = FindListbox ("ObjChildList");
     m_objAnimFreq = FindEditbox ("ObjAnimFreq");
     m_objAnimSet = FindEditbox ("ObjAnimSet");
     m_objAutoScroll = FindCombobox ("ObjAutoScroll");
@@ -126,12 +125,53 @@ void ObjectEditor::Init (const string& widgetName)
     m_objShaderList = FindEditbox ("ObjShaderList");
     m_objSoundList = FindEditbox ("ObjSoundList");
     m_objSpawner = FindEditbox ("ObjSpawner");
-    m_objUseParentSpace = FindCombobox ("ObjUseParentSpace"); 
+    m_objUseParentSpace = FindCombobox ("ObjUseParentSpace");
     m_objUseRelativeSpeed = FindCombobox ("ObjUseRelativeSpeed");
     m_objColorR = FindEditbox ("ObjColor0");
     m_objColorG = FindEditbox ("ObjColor1");
     m_objColorB = FindEditbox ("ObjColor2");
     m_button = (ScrollPushButton*)FindWidget("ButtonChildList");
+
+    orxASSERT(m_objConfigName != NULL);
+    orxASSERT(m_objAlpha != NULL);
+    orxASSERT(m_objAngVelocity != NULL);
+    orxASSERT(m_objPosX != NULL);
+    orxASSERT(m_objPosY != NULL);
+    orxASSERT(m_objPosZ != NULL);
+    orxASSERT(m_objFXList != NULL);
+    orxASSERT(m_objChildList != NULL);
+    orxASSERT(m_objAnimFreq != NULL);
+    orxASSERT(m_objAnimSet != NULL);
+    orxASSERT(m_objAutoScroll != NULL);
+    orxASSERT(m_objBlendMode != NULL);
+    orxASSERT(m_objBody != NULL);
+    orxASSERT(m_objChildJointList != NULL);
+    orxASSERT(m_objClock != NULL);
+    orxASSERT(m_objDepthScale != NULL);
+    orxASSERT(m_objGraphic != NULL);
+    orxASSERT(m_objFlip != NULL);
+    orxASSERT(m_objLifeTime != NULL);
+    orxASSERT(m_objParentCam != NULL);
+    orxASSERT(m_objRepeatX != NULL);
+    orxASSERT(m_objRepeatY != NULL);
+    orxASSERT(m_objRepeatZ != NULL);
+    orxASSERT(m_objRotation != NULL);
+    orxASSERT(m_objScaleX != NULL);
+    orxASSERT(m_objScaleY != NULL);
+    orxASSERT(m_objScaleZ != NULL);
+    orxASSERT(m_objSpeedX != NULL);
+    orxASSERT(m_objSpeedY != NULL);
+    orxASSERT(m_objSpeedZ != NULL);
+    orxASSERT(m_objSmoothing != NULL);
+    orxASSERT(m_objShaderList != NULL);
+    orxASSERT(m_objSoundList != NULL);
+    orxASSERT(m_objSpawner != NULL);
+    orxASSERT(m_objUseParentSpace != NULL);
+    orxASSERT(m_objUseRelativeSpeed != NULL);
+    orxASSERT(m_objColorR != NULL);
+    orxASSERT(m_objColorG != NULL);
+    orxASSERT(m_objColorB != NULL);
+    orxASSERT(m_button != NULL);
 
     SetupFields ();
 }
@@ -197,7 +237,7 @@ void ObjectEditor::UpdateFields () const
     if (m_object != orxNULL)
     {
 	char buffer[255];
-	
+
 	const orxSTRING name = m_object->GetModelName ();
 
 	// Config name
@@ -493,6 +533,15 @@ void ObjectEditor::OnTextAccepted (const string& widgetName)
 
     // Update object in editor
     OrxCraft::GetInstance ().NeedObjectUpdate ();
+}
+
+void ObjectEditor::OnDestroy ()
+{
+    CEDialogManager::GetInstance()->DestroyDialog(m_id);
+    /*
+     * Beyond this point the dialog was destroyed (delete was issued).
+     * Make sure in is not accessed anymore.
+     */
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

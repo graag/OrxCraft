@@ -39,6 +39,8 @@
 
 using std::string;
 
+DialogManager* DialogManager::m_instance = NULL;
+
 ScrollFrameWindow* DialogManager::GetDialog(const string& dialogName,
         const string& dialogOptions)
 {

@@ -13,10 +13,10 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *  
+ *
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *  
+ *
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
@@ -49,7 +49,7 @@ void CEGUIPushButton::Init (const string& widgetName)
 {
     ScrollWidget::Init(widgetName);
 
-    const string windowName = m_manager->GetName();
+    const string windowName = m_manager->GetWindowName();
     // Get the root window
     Window *rootWindow = CEGUI::System::getSingleton().getGUISheet();
     // Get the parent window. No point in searching all windows.
@@ -81,6 +81,7 @@ void CEGUIPushButton::SetText (const string& text)
 
 bool CEGUIPushButton::OnClicked (const CEGUI::EventArgs &e)
 {
+#ifdef __orxDEBUG__
     /*
      * Static cast will be safe as this handler is connected only to
      * Editbox::EventClicked signal which passes WindowEventArgs struct.
@@ -89,8 +90,11 @@ bool CEGUIPushButton::OnClicked (const CEGUI::EventArgs &e)
     	static_cast<const CEGUI::WindowEventArgs *>( &e );
 
     string widgetName = args->window->getName().c_str();
+    orxASSERT(widgetName == m_widgetUniqueName);
+#endif // __orxDEBUG__
+
     // Pass the event to the ScrollFrameWindow
-    m_manager->OnMouseClick (widgetName);
+    m_manager->OnMouseClick (m_widgetName);
 
     // Notify that the event was handled
     return true;

@@ -32,6 +32,8 @@
 
 #include <string>
 
+#include "CEGUI.h"
+
 #include "ScrollFrameWindow.h"
 
 class ScrollListbox;
@@ -41,12 +43,18 @@ class ListPopup : public ScrollFrameWindow
 public:
     ListPopup(const std::string& name, const std::string& options = "");
 
-    virtual void Init (const std::string& widgetName);
+    virtual void Init ();
     virtual void OnMouseClick   (const std::string& widgetName);
     virtual void OnTextAccepted (const std::string& widgetName);
     virtual void OnDestroy ();
 
 private:
+    /** Handler for CEGUI::Window::EventCloseClicked event.
+     *
+     * @param[in] e - WindowEventArgs event arguments passed from CEGUI.
+     */
+    bool OnCloseClicked (const CEGUI::EventArgs &e);
+
     ScrollListbox *m_contentList;
 };
 

@@ -30,10 +30,8 @@
 #include "InfoWindow.h"
 #include "orxCraft.h"
 
-void InfoWindow::Init (const string& widgetName)
-{
-    ScrollFrameWindow::Init(widgetName);
-}
+void InfoWindow::Init ()
+{}
 
 void InfoWindow::OnMouseClick (const string& widgetName)
 {

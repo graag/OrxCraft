@@ -38,6 +38,7 @@
 #include "ScrollCombobox.h"
 #include "ScrollEditbox.h"
 #include "ScrollCheckbox.h"
+#include "CEDialogManager.h"
 
 using std::string;
 
@@ -65,10 +66,8 @@ FXSlotEditorWindow::FXSlotEditorWindow (const string& name) :
 {
 }
 
-void FXSlotEditorWindow::Init (const string& widgetName)
+void FXSlotEditorWindow::Init ()
 {
-    ScrollFrameWindow::Init(widgetName);
-
     m_fxsType = FindCombobox ("FXSlotType");
     m_fxsCurve = FindCombobox ("FXSlotCurve");
     m_fxsStartTime = FindEditbox ("FXSlotStartTime");
@@ -88,6 +87,26 @@ void FXSlotEditorWindow::Init (const string& widgetName)
     m_fxsUseRotation = FindCombobox ("FXSlotUseRotation");
     m_fxsUseScale = FindCombobox ("FXSlotUseScale");
     m_fxsConfigName = FindCombobox ("FXSlotConfigName");
+
+    orxASSERT(m_fxsType != NULL);
+    orxASSERT(m_fxsCurve != NULL);
+    orxASSERT(m_fxsStartTime != NULL);
+    orxASSERT(m_fxsEndTime != NULL);
+    orxASSERT(m_fxsStartValue0 != NULL);
+    orxASSERT(m_fxsStartValue1 != NULL);
+    orxASSERT(m_fxsStartValue2 != NULL);
+    orxASSERT(m_fxsEndValue0 != NULL);
+    orxASSERT(m_fxsEndValue1 != NULL);
+    orxASSERT(m_fxsEndValue2 != NULL);
+    orxASSERT(m_fxsPhase != NULL);
+    orxASSERT(m_fxsPeriod != NULL);
+    orxASSERT(m_fxsAcceleration != NULL);
+    orxASSERT(m_fxsAmplification != NULL);
+    orxASSERT(m_fxsPow != NULL);
+    orxASSERT(m_fxsAbsolute != NULL);
+    orxASSERT(m_fxsUseRotation != NULL);
+    orxASSERT(m_fxsUseScale != NULL);
+    orxASSERT(m_fxsConfigName != NULL);
 
     SetupFields ();
 
@@ -318,6 +337,15 @@ void FXSlotEditorWindow::OnTextAccepted (const string& widgetName)
     orxConfig_PopSection ();
 
     OrxCraft::GetInstance ().NeedObjectUpdate ();
+}
+
+void FXSlotEditorWindow::OnDestroy ()
+{
+    CEDialogManager::GetInstance()->DestroyDialog(m_id);
+    /*
+     * Beyond this point the dialog was destroyed (delete was issued).
+     * Make sure in is not accessed anymore.
+     */
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

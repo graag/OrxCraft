@@ -13,10 +13,10 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *  
+ *
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *  
+ *
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
@@ -32,17 +32,30 @@
 #include <string>
 
 #include "orxCraft.h"
+#include "CEDialogManager.h"
 
 using std::string;
+using CEGUI::Event;
+using CEGUI::Window;
+using CEGUI::FrameWindow;
 
 ListPopup::ListPopup(const string& name, const string& options):
     ScrollFrameWindow(name, options),
     m_contentList(NULL)
 {}
 
-void ListPopup::Init (const string& widgetName)
+void ListPopup::Init ()
 {
-    ScrollFrameWindow::Init(widgetName);
+    orxASSERT(
+	    CEGUI::WindowManager::getSingleton().isWindowPresent(
+		m_windowName)
+	    );
+    Window* window = CEGUI::WindowManager::getSingleton().getWindow(
+	    m_windowName);
+
+    // Subscribe to close window event
+    window->subscribeEvent (FrameWindow::EventCloseClicked,
+	    Event::Subscriber (&ListPopup::OnCloseClicked, this));
 }
 
 void ListPopup::OnMouseClick (const string& widgetName)
@@ -57,9 +70,19 @@ void ListPopup::OnTextAccepted (const string& widgetName)
 
 void ListPopup::OnDestroy ()
 {
-    // This is rather baaaaad :(
-    // delete m_window; 
-    delete this;
+    CEDialogManager::GetInstance()->DestroyDialog(m_id);
+    /*
+     * Beyond this point the dialog was destroyed (delete was issued).
+     * Make sure in is not accessed anymore.
+     */
+}
+
+bool ListPopup::OnCloseClicked (const CEGUI::EventArgs &e)
+{
+    OnDestroy();
+
+    // Notify that the event was handled
+    return true;
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

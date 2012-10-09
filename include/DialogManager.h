@@ -13,10 +13,10 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *  
+ *
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *  
+ *
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
@@ -56,8 +56,6 @@ public:
      */
     virtual ScrollFrameWindow* MakeDialog (const std::string& dialogName,
 	    const std::string& dialogOptions = "") = 0;
-    //! Return an instance of the DialogManager singleton.
-    virtual DialogManager* GetInstance() = 0;
     /** Destroy a dialog window managed by the DialogManager
      * @param[in] id - unique ID of the dialog window
      */
@@ -98,7 +96,7 @@ public:
 
 protected:
     // Pointer to an instance of the DialogManager singleton
-    DialogManager* m_instance;
+    static DialogManager* m_instance;
 
     // Dialogs managed by the manager
     DialogMap m_dialogList;

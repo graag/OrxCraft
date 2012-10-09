@@ -79,15 +79,14 @@ public:
      */
     ScrollListbox *FindListbox (const std::string& widgetName) const;
 
-    /** Initialize the window.
-     * @param[in] windowName - name of the underlying toolkit window.
-     */
-    virtual void Init (const std::string& windowName)
-    { m_windowName = windowName; }
+    //! Initialize the window.
+    virtual void Init () = 0;
     /** Get the unique dialog identifier. */
-    virtual unsigned int GetId() { return m_id; }
+    virtual unsigned int GetId() const { return m_id; }
     /** Get the dialog name */
     virtual const std::string& GetName() { return m_name; }
+    virtual const void SetWindowName(const std::string& windowName)
+    { m_windowName = windowName; }
     /** Get the name of underlying toolkit window. */
     virtual const std::string& GetWindowName () { return m_windowName; }
     /** Get the options specified upon dialog creation. */
@@ -100,6 +99,7 @@ public:
      * @param widgetName - name of the widget that originated the event.
      */
     virtual void OnTextAccepted (const std::string& widgetName) = 0;
+    virtual void OnDestroy () = 0;
 
     /** Add new widget to the window.
      * @param widget - a pointer to ScrollWidget

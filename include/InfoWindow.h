@@ -35,7 +35,7 @@
 class InfoWindow : public ScrollFrameWindow
 {
 public:
-    virtual void Init (const std::string& widgetName);
+    virtual void Init ();
     virtual void OnMouseClick   (const std::string& widgetName);
     virtual void OnTextAccepted (const std::string& widgetName);
 };

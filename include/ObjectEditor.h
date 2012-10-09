@@ -46,7 +46,7 @@ public:
     ObjectEditor (const std::string& name);
 
     /** Initialize the window. */
-    virtual void Init (const std::string& widgetName);
+    virtual void Init ();
 
     //! Initialize control items
     void SetupFields  ();
@@ -59,6 +59,7 @@ public:
 
     virtual void OnMouseClick   (const std::string& widgetName);
     virtual void OnTextAccepted (const std::string& widgetName);
+    virtual void OnDestroy ();
 
 private:
     ScrollObject *m_object;

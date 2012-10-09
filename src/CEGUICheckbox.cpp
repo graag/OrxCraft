@@ -49,7 +49,7 @@ void CEGUICheckbox::Init (const string& widgetName)
 {
     ScrollWidget::Init(widgetName);
 
-    const string& windowName = m_manager->GetName ();
+    const string& windowName = m_manager->GetWindowName ();
     // Get the root window
     Window *rootWindow = CEGUI::System::getSingleton().getGUISheet();
     // Get the parent window. No point in searching all windows.
@@ -86,10 +86,19 @@ const orxBOOL CEGUICheckbox::IsSelected () const
 
 bool CEGUICheckbox::OnCheckStateChanged (const CEGUI::EventArgs &e)
 {
-    // Our item has been checked or unchecked, update our item accordingly.
-    CEGUI::WindowEventArgs *args = (CEGUI::WindowEventArgs *) &e;
-    const orxSTRING widgetName = args->window->getName ().c_str ();
-    m_manager->OnTextAccepted (widgetName);
+#ifdef __orxDEBUG__
+    /*
+     * Static cast will be safe as this handler is connected only to
+     * Window::EventMouseClick signal which passes MouseEventArgs struct.
+     */
+    const CEGUI::WindowEventArgs *args =
+    	static_cast<const CEGUI::WindowEventArgs *>( &e );
+
+    string widgetName = args->window->getName().c_str();
+    orxASSERT(widgetName == m_widgetUniqueName);
+#endif // __orxDEBUG__
+
+    m_manager->OnTextAccepted (m_widgetName);
 
     return true;
 }

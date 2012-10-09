@@ -44,7 +44,7 @@ class FXSlotEditorWindow : public ScrollFrameWindow
 public:
     FXSlotEditorWindow (const std::string& name);
 
-    virtual void Init (const std::string& widgetName);
+    virtual void Init ();
 
     //! Initialize control items 
     void SetupFields  ();
@@ -58,6 +58,7 @@ public:
 
     virtual void OnMouseClick   (const std::string& widgetName);
     virtual void OnTextAccepted (const std::string& widgetName);
+    virtual void OnDestroy ();
 
 private:
     std::string m_context;

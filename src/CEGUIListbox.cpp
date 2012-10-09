@@ -51,7 +51,7 @@ void CEGUIListbox::Init (const string& widgetName)
 {
     ScrollWidget::Init(widgetName);
 
-    const string windowName = m_manager->GetName();
+    const string windowName = m_manager->GetWindowName();
     // Get the root window
     Window *rootWindow = CEGUI::System::getSingleton().getGUISheet();
     // Get the parent window. No point in searching all windows.
@@ -95,6 +95,7 @@ void CEGUIListbox::Fill (const vector<string> &listItems)
 
 bool CEGUIListbox::OnMouseClick (const CEGUI::EventArgs &e)
 {
+#ifdef __orxDEBUG__
     /*
      * Static cast will be safe as this handler is connected only to
      * Window::EventMouseClick signal which passes MouseEventArgs struct.
@@ -103,8 +104,11 @@ bool CEGUIListbox::OnMouseClick (const CEGUI::EventArgs &e)
     	static_cast<const CEGUI::WindowEventArgs *>( &e );
 
     string widgetName = args->window->getName().c_str();
+    orxASSERT(widgetName == m_widgetUniqueName);
+#endif // __orxDEBUG__
+
     // Pass the event to the ScrollFrameWindow
-    m_manager->OnMouseClick(widgetName);
+    m_manager->OnMouseClick(m_widgetName);
 
     //! @todo Handle left vs right clicks
 

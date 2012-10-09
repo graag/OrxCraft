@@ -100,7 +100,7 @@ orxSTATUS OrxCraft::Init ()
     LoadUserSettings ();
 
     // Create instance of dialog manager
-    m_dialogManager = new CEDialogManager ();
+    m_dialogManager = CEDialogManager::GetInstance();
 
     // Init GUI system
     m_gui = new ScrollGUICEGUI ();
