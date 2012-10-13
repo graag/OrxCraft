@@ -68,14 +68,14 @@ CEDialogManager::~CEDialogManager ()
     m_dialogList.clear();
 };
 
-DialogManager* CEDialogManager::GetInstance()
+DialogManager& CEDialogManager::GetInstance()
 {
     if (!DialogManager::m_instance)
     {
 	DialogManager::m_instance = new CEDialogManager();
     }
 
-    return DialogManager::m_instance;
+    return *(DialogManager::m_instance);
 }
 
 ScrollFrameWindow* CEDialogManager::MakeDialog (const string& dialogName,

@@ -42,7 +42,7 @@ class CEDialogManager : public DialogManager
 {
 public:
     //! Return an instance of the DialogManager singleton.
-    static DialogManager* GetInstance();
+    static DialogManager& GetInstance();
     /** Create new dialog window.
      * @param[in] dialogName - name of the new dialog specifies predefined
      *                         dialog type:
