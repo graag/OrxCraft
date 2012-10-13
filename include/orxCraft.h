@@ -107,6 +107,9 @@ private:
     void OnMouseUp ();
     //! Key press callback.
     void OnKeyPress (const orxSTRING key);
+    //! Key release callback.
+    void OnKeyRelease (const orxSTRING key);
+    void KeyRepeat();
 
     //! Auto save current project state to a project.ini.swp files.
     orxSTATUS SaveBackup() const;
