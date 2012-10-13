@@ -34,15 +34,23 @@
 
 #include "orxCraft.h"
 #include "orx_config_util.h"
+#include "orxcraft_util.h"
 
 #include "DialogManager.h"
 #include "ScrollCombobox.h"
 #include "ScrollEditbox.h"
 #include "ScrollPushButton.h"
 #include "CEDialogManager.h"
+#include "ListPopup.h"
 
 using std::string;
 using std::vector;
+
+typedef struct {
+    ScrollObject* object;
+    string        property;
+} PopupData;
+
 
 ObjectEditor::ObjectEditor (const string& name) :
     ScrollFrameWindow(name),
@@ -98,7 +106,7 @@ void ObjectEditor::Init ()
     m_objPosY = FindEditbox ("ObjPos1");
     m_objPosZ = FindEditbox ("ObjPos2");
     m_objFXList = FindEditbox ("ObjFXList");
-    m_objChildList = FindListbox ("ObjChildList");
+    m_objChildList = FindEditbox ("ObjChildList");
     m_objAnimFreq = FindEditbox ("ObjAnimFreq");
     m_objAnimSet = FindEditbox ("ObjAnimSet");
     m_objAutoScroll = FindCombobox ("ObjAutoScroll");
@@ -232,6 +240,11 @@ void ObjectEditor::SetObject (ScrollObject *object)
     UpdateFields ();
 }
 
+ScrollObject* ObjectEditor::GetObject()
+{
+    return m_object;
+}
+
 void ObjectEditor::UpdateFields () const
 {
     if (m_object != orxNULL)
@@ -255,7 +268,7 @@ void ObjectEditor::UpdateFields () const
 	orx_config_util::FloatToString (orxConfig_GetFloat ("AnimationFrequency"), buffer);
 	m_objAnimFreq->SetText (buffer);
 	// AnimationSet
-	const orxSTRING aS = orx_config_util::ListToString ("AnimationSet");
+	const string& aS = orx_config_util::ListToString ("AnimationSet");
 	m_objAnimSet->SetText (aS);
 	// AutoScroll
 	vector<string> aSc;
@@ -266,14 +279,15 @@ void ObjectEditor::UpdateFields () const
 	orx_config_util::GetListIntoVector ("BlendMode", bl);
 	m_objBlendMode->Fill(bl);
 	// Body
-	const orxSTRING body = orx_config_util::ListToString ("Body");
+	const string& body = orx_config_util::ListToString ("Body");
 	m_objBody->SetText (body);
 	// ChildList
-	/** @todo ChildList */
+	const string& children = orx_config_util::ListToString("ChildList");
+	m_objChildList->SetText(children);
 	// ChildJointList
 	/** @todo ChildJointList */
 	// Clock
-	const orxSTRING clock = orx_config_util::ListToString ("Clock");
+	const string& clock = orx_config_util::ListToString ("Clock");
 	m_objClock->SetText (clock);
 	// Color
 	orx_config_util::VectorToString ("Color", 0, buffer);
@@ -286,19 +300,19 @@ void ObjectEditor::UpdateFields () const
 	orx_config_util::BoolToString (orxConfig_GetBool ("DepthScale"), buffer);
 	m_objDepthScale->SelectItem (buffer);
 	// Graphic
-	const orxSTRING graphic = orx_config_util::ListToString ("Graphic");
+	const string& graphic = orx_config_util::ListToString ("Graphic");
 	m_objGraphic->SelectItem (graphic);
 	// Flip
-	const orxSTRING flip = orx_config_util::ListToString ("Flip");
+	const string& flip = orx_config_util::ListToString ("Flip");
 	m_objFlip->SelectItem (flip);
 	// FXList
-	const orxSTRING fxList = orx_config_util::ListToString ("FXList");
+	const string& fxList = orx_config_util::ListToString ("FXList");
 	m_objFXList->SetText (fxList);
 	// LifeTime
 	orx_config_util::FloatToString (orxConfig_GetFloat ("LifeTime"), buffer);
 	m_objLifeTime->SetText (buffer);
 	// ParentCamera
-	const orxSTRING parentCam = orx_config_util::ListToString ("ParentCamera");
+	const string& parentCam = orx_config_util::ListToString ("ParentCamera");
 	m_objParentCam->SetText (parentCam);
 	// Position
 	orx_config_util::VectorToString ("Position", 0, buffer);
@@ -336,7 +350,7 @@ void ObjectEditor::UpdateFields () const
 	// SoundList
 	//! @todo SoundList
 	// Spawner
-	const orxSTRING spawner = orx_config_util::ListToString ("Spawner");
+	const string& spawner = orx_config_util::ListToString ("Spawner");
 	m_objSpawner->SetText (spawner);
 	// Smoothing
 	orx_config_util::BoolToString (orxConfig_GetBool ("Smoothing"), buffer);
@@ -360,8 +374,27 @@ void ObjectEditor::OnMouseClick (const string& widgetName)
 
     if (widgetName == "ButtonChildList")
     {
-	OrxCraft::GetInstance().GetDialogManager()->MakeDialog("ListPopup");
-	orxLOG("Button Pushed!!");
+	ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
+		CEDialogManager::GetInstance().MakeDialog(
+		"ListPopup", string(m_object->GetName()) + ": Child List"));
+
+	// Potential children are all objects
+	//! @todo Are those only objects (ones with graphic defined) or also other entities??
+	vector<std::string>& objects = OrxCraft::GetInstance().GetObjectList();
+	vector<std::string> selection;
+
+	m_object->PushConfigSection();
+	const orxSTRING sec = orxConfig_GetCurrentSection();
+	orx_config_util::GetListIntoVector("ChildList", selection);
+	m_object->PopConfigSection();
+
+	popup->Fill(objects);
+	popup->SetSelection(selection);
+	PopupData* data = new PopupData;
+	data->object = m_object;
+	data->property = "ChildList";
+	popup->SetUserData(data);
+	popup->SetParent(this);
     }
 }
 
@@ -451,6 +484,14 @@ void ObjectEditor::OnTextAccepted (const string& widgetName)
 	const string& flip = m_objFlip->GetSelectedItem();
 	orxConfig_SetString("Flip", flip.c_str());
     }
+    else if (widgetName == "ObjChildList")
+    {
+	const string& children = m_objChildList->GetText();
+	if(children.empty())
+	    orxConfig_ClearValue("ChildList");
+	else
+	    orx_config_util::SetList("ChildList", children.c_str());
+    }
     else if (widgetName == "ObjFXList")
     {
 	orxASSERT (false);
@@ -535,9 +576,31 @@ void ObjectEditor::OnTextAccepted (const string& widgetName)
     OrxCraft::GetInstance ().NeedObjectUpdate ();
 }
 
+void ObjectEditor::OnPopupFinish(const string& popupName,
+	const string& popupTitle)
+{
+    ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
+	    CEDialogManager::GetInstance().GetDialog(popupName, popupTitle));
+    const vector<string>& selection = popup->GetSelection();
+    PopupData* data = static_cast<PopupData *>( popup->GetUserData() );
+
+    data->object->PushConfigSection();
+    if(selection.empty())
+	orxConfig_ClearValue(data->property.c_str());
+    else
+    	//! @todo prepare SetList(string, vector<string>
+	orx_config_util::SetList(data->property.c_str(),
+		orxcraft_util::ListToString(selection).c_str());
+    data->object->PopConfigSection();
+
+    UpdateFields();
+    // Update object in editor
+    OrxCraft::GetInstance ().NeedObjectUpdate ();
+}
+
 void ObjectEditor::OnDestroy ()
 {
-    CEDialogManager::GetInstance()->DestroyDialog(m_id);
+    CEDialogManager::GetInstance().DestroyDialog(m_id);
     /*
      * Beyond this point the dialog was destroyed (delete was issued).
      * Make sure in is not accessed anymore.

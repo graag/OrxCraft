@@ -41,12 +41,25 @@ class ScrollListbox;
 class ListPopup : public ScrollFrameWindow
 {
 public:
-    ListPopup(const std::string& name, const std::string& options = "");
+    ListPopup(const std::string& name, const std::string& title = "");
 
     virtual void Init ();
     virtual void OnMouseClick   (const std::string& widgetName);
     virtual void OnTextAccepted (const std::string& widgetName);
+    virtual void OnPopupFinish  (const std::string& popupName,
+	    const std::string& popupTitle = "");
     virtual void OnDestroy ();
+    virtual void Fill (const std::vector<std::string>& dataList);
+    virtual void SetSelection (const std::vector<std::string>& selectionList);
+    virtual std::vector<std::string> GetSelection();
+    virtual void SetUserData(void* data)
+    { m_userData = data; }
+    virtual void* GetUserData()
+    { return m_userData; }
+    virtual void SetParent(ScrollFrameWindow* parent)
+    { m_parent = parent; }
+    virtual void* GetParent()
+    { return m_parent; }
 
 private:
     /** Handler for CEGUI::Window::EventCloseClicked event.
@@ -55,7 +68,9 @@ private:
      */
     bool OnCloseClicked (const CEGUI::EventArgs &e);
 
-    ScrollListbox *m_contentList;
+    ScrollListbox*     m_contentList;
+    ScrollFrameWindow* m_parent;
+    void*              m_userData;
 };
 
 #endif	// __LISTPOPUP_H__

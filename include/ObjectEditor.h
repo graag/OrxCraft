@@ -56,9 +56,12 @@ public:
     const std::string GetText (const std::string& widgetName) const;
     //! Set the ScrollObject being edited
     void SetObject (ScrollObject *object);
+    ScrollObject* GetObject();
 
     virtual void OnMouseClick   (const std::string& widgetName);
     virtual void OnTextAccepted (const std::string& widgetName);
+    virtual void OnPopupFinish  (const std::string& popupName,
+	    const std::string& popupTitle = "");
     virtual void OnDestroy ();
 
 private:
@@ -71,7 +74,7 @@ private:
     ScrollEditbox *m_objPosY;
     ScrollEditbox *m_objPosZ;
     ScrollEditbox *m_objFXList;
-    ScrollListbox *m_objChildList;
+    ScrollEditbox *m_objChildList;
     ScrollEditbox *m_objAnimFreq;
     ScrollEditbox *m_objAnimSet;
     ScrollCombobox *m_objAutoScroll;
