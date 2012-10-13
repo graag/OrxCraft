@@ -226,7 +226,7 @@ void OrxCraft::Update (const orxCLOCK_INFO &_rstInfo)
     const orxSTRING kbdInput= orxKeyboard_ReadString();
     if(orxString_GetLength(kbdInput) != 0)
     {
-    	m_gui->InputString(kbdInput);
+	m_gui->InputString(kbdInput);
     }
 
     KeyRepeat();
@@ -255,6 +255,9 @@ void OrxCraft::SetupConfig ()
 	}
     }
     m_objectList.clear ();
+    m_graphicList.clear();
+    m_fxList.clear();
+    m_fxSlotList.clear();
 
     for (int i = 0, sectionCounter = orxConfig_GetSectionCounter ();
 	 i < sectionCounter;
@@ -279,7 +282,17 @@ void OrxCraft::SetupConfig ()
 	    {
 		// It's a graphic
 		m_graphicList.push_back (sectionName);
+		//! @todo DO we really want to create graphics ???
+		//! @todo If yes than delete them first as for objects
 		CreateObject (sectionName);
+		continue;
+	    }
+	    // Does it have a SlotList property?
+	    const orxSTRING slotList = orxConfig_GetString ("SlotList");
+	    if (orxString_Compare (slotList, "") != 0)
+	    {
+		// It's a graphic
+		m_fxList.push_back (sectionName);
 		continue;
 	    }
 	    // Does it have a Curve property?

@@ -56,6 +56,8 @@ public:
 
     //! Get names of currently loaded objects
     inline std::vector<std::string>& GetObjectList () { return m_objectList; }
+    //! Get names of currently loaded FXs
+    inline std::vector<std::string>& GetFXList () { return m_fxList; }
     //! Get names of currently loaded FXSlots
     inline std::vector<std::string>& GetFXSlotList () { return m_fxSlotList; }
     //! Set selected FXSlot in FXSlot Editor
@@ -143,6 +145,8 @@ private:
     std::vector<std::string> m_objectList;
     /// Currently loaded config graphics
     std::vector<std::string> m_graphicList;
+    /// Currently loaded FXs
+    std::vector<std::string> m_fxList;
     /// Currently loaded FXSlots
     std::vector<std::string> m_fxSlotList;
 

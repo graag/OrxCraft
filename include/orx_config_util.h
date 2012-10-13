@@ -54,6 +54,8 @@ void GetListIntoVector (const orxSTRING key, std::vector<std::string> &list);
 void VectorToString (const orxSTRING prop, orxU32 elementNum,
 		     orxSTRING outString);
 void SetList (const std::string& prop, const std::string& inputString);
+void SetList (const std::string& prop,
+	const std::vector<std::string>& inputList);
 }   // namespace orx_config_util
 
 #endif // ORX_CONFIG_UTIL_H

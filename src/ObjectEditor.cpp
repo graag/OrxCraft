@@ -93,7 +93,8 @@ ObjectEditor::ObjectEditor (const string& name) :
     m_objUseRelativeSpeed (NULL),
     m_objColorR (NULL),
     m_objColorG (NULL),
-    m_objColorB (NULL)
+    m_objColorB (NULL),
+    m_buttonChildList(NULL)
 {
 }
 
@@ -138,7 +139,8 @@ void ObjectEditor::Init ()
     m_objColorR = FindEditbox ("ObjColor0");
     m_objColorG = FindEditbox ("ObjColor1");
     m_objColorB = FindEditbox ("ObjColor2");
-    m_button = (ScrollPushButton*)FindWidget("ButtonChildList");
+    m_buttonChildList = (ScrollPushButton*)FindWidget("ButtonChildList");
+    m_buttonFXList = (ScrollPushButton*)FindWidget("ButtonFXList");
 
     orxASSERT(m_objConfigName != NULL);
     orxASSERT(m_objAlpha != NULL);
@@ -179,7 +181,7 @@ void ObjectEditor::Init ()
     orxASSERT(m_objColorR != NULL);
     orxASSERT(m_objColorG != NULL);
     orxASSERT(m_objColorB != NULL);
-    orxASSERT(m_button != NULL);
+    orxASSERT(m_buttonChildList != NULL);
 
     SetupFields ();
 }
@@ -376,7 +378,7 @@ void ObjectEditor::OnMouseClick (const string& widgetName)
     {
 	ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
 		CEDialogManager::GetInstance().MakeDialog(
-		"ListPopup", string(m_object->GetName()) + ": Child List"));
+		"ListPopup", string(m_object->GetModelName()) + ": Child List"));
 
 	// Potential children are all objects
 	//! @todo Are those only objects (ones with graphic defined) or also other entities??
@@ -384,7 +386,6 @@ void ObjectEditor::OnMouseClick (const string& widgetName)
 	vector<std::string> selection;
 
 	m_object->PushConfigSection();
-	const orxSTRING sec = orxConfig_GetCurrentSection();
 	orx_config_util::GetListIntoVector("ChildList", selection);
 	m_object->PopConfigSection();
 
@@ -393,6 +394,29 @@ void ObjectEditor::OnMouseClick (const string& widgetName)
 	PopupData* data = new PopupData;
 	data->object = m_object;
 	data->property = "ChildList";
+	popup->SetUserData(data);
+	popup->SetParent(this);
+    }
+    if (widgetName == "ButtonFXList")
+    {
+	ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
+		CEDialogManager::GetInstance().MakeDialog(
+		"ListPopup", string(m_object->GetModelName()) + ": FX List"));
+
+	// Potential children are all objects
+	//! @todo Are those only objects (ones with graphic defined) or also other entities??
+	vector<std::string>& objects = OrxCraft::GetInstance().GetFXList();
+	vector<std::string> selection;
+
+	m_object->PushConfigSection();
+	orx_config_util::GetListIntoVector("FXList", selection);
+	m_object->PopConfigSection();
+
+	popup->Fill(objects);
+	popup->SetSelection(selection);
+	PopupData* data = new PopupData;
+	data->object = m_object;
+	data->property = "FXList";
 	popup->SetUserData(data);
 	popup->SetParent(this);
     }

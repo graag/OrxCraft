@@ -107,7 +107,8 @@ private:
     ScrollEditbox *m_objColorG;
     ScrollEditbox *m_objColorB;
 
-    ScrollPushButton  *m_button;
+    ScrollPushButton  *m_buttonChildList;
+    ScrollPushButton  *m_buttonFXList;
 };
 
 #endif  // OBJECTEDITOR_H_

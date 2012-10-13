@@ -114,12 +114,17 @@ void VectorToString (const orxSTRING prop,
 void SetList (const string& prop, const string& inputString)
 {
     const vector<string>& list = orxcraft_util::StringToList(inputString);
-    unsigned int count = list.size();
+    SetList(prop, list);
+}
+
+void SetList (const string& prop, const vector<string>& inputList)
+{
+    unsigned int count = inputList.size();
     const orxSTRING array[count];
 
     for(unsigned int i=0; i<count; i++)
     {
-	array[i] = list[i].c_str();
+	array[i] = inputList[i].c_str();
     }
 
     orxConfig_SetStringList(prop.c_str(), array, count);
