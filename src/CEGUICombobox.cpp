@@ -81,6 +81,7 @@ void CEGUICombobox::Init (const string& widgetName)
 
 void CEGUICombobox::Fill (const vector<string> &listItems)
 {
+    // Iterate through list of items
     for (unsigned int i = 0; i < listItems.size (); i++)
     {
 	m_items.push_back (new CEGUI::ListboxTextItem (listItems.at (i)));
@@ -103,7 +104,7 @@ void CEGUICombobox::SelectItem (const string& text)
 	if (itemText == text)
 	{
 	    // Set the edit box text accordingly
-	    m_ceCombobox->setText (text);
+	    m_ceCombobox->setItemSelectState (*it, true);
 	    break;
 	}
 	i++;

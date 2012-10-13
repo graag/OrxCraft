@@ -44,6 +44,7 @@ namespace orx_config_util
 
 void BoolToString (orxBOOL inBool, orxSTRING outString)
 {
+    // Min buffer size: 6
     if (inBool)
     {
 	sprintf (outString, "%s", "true");
@@ -57,6 +58,8 @@ void BoolToString (orxBOOL inBool, orxSTRING outString)
 void FloatToString (const orxFLOAT inFloat,
 					   orxSTRING outString)
 {
+    // Min buffer size: 48 (FLT_MAX:~3.4e38 - 39 digits + sign + decimal point
+    // + 6 digits after decimal point + null char)
     sprintf (outString, "%f", inFloat);
 }
 
@@ -93,6 +96,8 @@ void GetListIntoVector (const orxSTRING key, vector<string> &list)
 void VectorToString (const orxSTRING prop,
 				 orxU32 elementNum, orxSTRING outString)
 {
+    // Min buffer size: 48 (FLT_MAX:~3.4e38 - 39 digits + sign + decimal point
+    // + 6 digits after decimal point + null char)
     orxASSERT (elementNum < 3);
 
     orxVECTOR propertyAsVector;

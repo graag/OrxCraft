@@ -151,11 +151,9 @@ void FXSlotEditorWindow::UpdateFields () const
     orxConfig_PushSection (m_context.c_str());
 
     // Type
-    const string& type = orx_config_util::ListToString ("Type");
-    m_fxsType->SelectItem (type);
+    m_fxsType->SelectItem (orxConfig_GetString("Type"));
     // Curve
-    const string& curve = orx_config_util::ListToString ("Curve");
-    m_fxsCurve->SelectItem (curve);
+    m_fxsCurve->SelectItem (orxConfig_GetString("Curve"));
     // StartTime
     orx_config_util::FloatToString (orxConfig_GetFloat ("StartTime"), buffer);
     m_fxsStartTime->SetText (buffer);

@@ -270,8 +270,7 @@ void ObjectEditor::UpdateFields () const
 	orx_config_util::FloatToString (orxConfig_GetFloat ("AnimationFrequency"), buffer);
 	m_objAnimFreq->SetText (buffer);
 	// AnimationSet
-	const string& aS = orx_config_util::ListToString ("AnimationSet");
-	m_objAnimSet->SetText (aS);
+	m_objAnimSet->SetText (orxConfig_GetString("AnimationSet"));
 	// AutoScroll
 	vector<string> aSc;
 	orx_config_util::GetListIntoVector ("AutoScroll", aSc);
@@ -281,16 +280,14 @@ void ObjectEditor::UpdateFields () const
 	orx_config_util::GetListIntoVector ("BlendMode", bl);
 	m_objBlendMode->Fill(bl);
 	// Body
-	const string& body = orx_config_util::ListToString ("Body");
-	m_objBody->SetText (body);
+	m_objBody->SetText (orxConfig_GetString("Body"));
 	// ChildList
 	const string& children = orx_config_util::ListToString("ChildList");
 	m_objChildList->SetText(children);
 	// ChildJointList
 	/** @todo ChildJointList */
 	// Clock
-	const string& clock = orx_config_util::ListToString ("Clock");
-	m_objClock->SetText (clock);
+	m_objClock->SetText (orxConfig_GetString("Clock"));
 	// Color
 	orx_config_util::VectorToString ("Color", 0, buffer);
 	m_objColorR->SetText (buffer);
@@ -302,11 +299,9 @@ void ObjectEditor::UpdateFields () const
 	orx_config_util::BoolToString (orxConfig_GetBool ("DepthScale"), buffer);
 	m_objDepthScale->SelectItem (buffer);
 	// Graphic
-	const string& graphic = orx_config_util::ListToString ("Graphic");
-	m_objGraphic->SelectItem (graphic);
+	m_objGraphic->SelectItem (orxConfig_GetString("Graphic"));
 	// Flip
-	const string& flip = orx_config_util::ListToString ("Flip");
-	m_objFlip->SelectItem (flip);
+	m_objFlip->SelectItem (orxConfig_GetString("Flip"));
 	// FXList
 	const string& fxList = orx_config_util::ListToString ("FXList");
 	m_objFXList->SetText (fxList);
@@ -314,8 +309,7 @@ void ObjectEditor::UpdateFields () const
 	orx_config_util::FloatToString (orxConfig_GetFloat ("LifeTime"), buffer);
 	m_objLifeTime->SetText (buffer);
 	// ParentCamera
-	const string& parentCam = orx_config_util::ListToString ("ParentCamera");
-	m_objParentCam->SetText (parentCam);
+	m_objParentCam->SetText (orxConfig_GetString("ParentCamera"));
 	// Position
 	orx_config_util::VectorToString ("Position", 0, buffer);
 	m_objPosX->SetText (buffer);
@@ -352,8 +346,7 @@ void ObjectEditor::UpdateFields () const
 	// SoundList
 	//! @todo SoundList
 	// Spawner
-	const string& spawner = orx_config_util::ListToString ("Spawner");
-	m_objSpawner->SetText (spawner);
+	m_objSpawner->SetText (orxConfig_GetString("Spawner"));
 	// Smoothing
 	orx_config_util::BoolToString (orxConfig_GetBool ("Smoothing"), buffer);
 	m_objSmoothing->SelectItem (buffer);

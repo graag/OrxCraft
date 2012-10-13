@@ -274,6 +274,7 @@ void OrxCraft::SetupConfig ()
 		// It's an object
 		m_objectList.push_back (sectionName);
 		CreateObject (sectionName);
+		orxConfig_PopSection ();
 		continue;
 	    }
 	    // Does it have a Texture property?
@@ -285,6 +286,7 @@ void OrxCraft::SetupConfig ()
 		//! @todo DO we really want to create graphics ???
 		//! @todo If yes than delete them first as for objects
 		CreateObject (sectionName);
+		orxConfig_PopSection ();
 		continue;
 	    }
 	    // Does it have a SlotList property?
@@ -301,6 +303,7 @@ void OrxCraft::SetupConfig ()
 	    {
 		// It's an FXSlot
 		m_fxSlotList.push_back (sectionName);
+		orxConfig_PopSection ();
 		continue;
 	    }
 	}
