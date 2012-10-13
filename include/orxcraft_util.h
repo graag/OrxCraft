@@ -13,20 +13,20 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *  
+ *
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *  
+ *
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
 
-#ifndef ORX_CONFIG_UTIL_H
-#define ORX_CONFIG_UTIL_H
+#ifndef ORXCRAFT_UTIL_H
+#define ORXCRAFT_UTIL_H
 /**
- * @file orx_config_util.h
- * @date 2012-05-09
- * @author fritz@fritzmahnke.com
+ * @file orxcraft_util.h
+ * @date 2012-10-10
+ * @author graag@o2.pl
  *
  */
 
@@ -36,26 +36,18 @@
 #include <string>
 
 /**
- *  Facility to help interacting with Orx config files. All the functions
- *  below are designed to work with an Orx config section that has been
- *  previously pushed onto the stack.
  */
-namespace orx_config_util
+namespace orxcraft_util
 {
-/** Convert an Orx bool to an Orx string */
-void BoolToString (orxBOOL inBool, orxSTRING outString);
-/** Convert an Orx float to an Orx string */
-void FloatToString (orxFLOAT inFloat, orxSTRING outString);
-/** Convert an Orx config list to an Orx string */
-std::string ListToString (const std::string& prop);
-/** Get all items in an Orx config list into a std::vector */
-void GetListIntoVector (const orxSTRING key, std::vector<std::string> &list);
-/** Convert an Orx config vector to an Orx string */
-void VectorToString (const orxSTRING prop, orxU32 elementNum,
-		     orxSTRING outString);
-void SetList (const std::string& prop, const std::string& inputString);
-}   // namespace orx_config_util
+std::string ListToString(const std::vector<std::string>& list,
+	const std::string& separator = " # ");
+std::vector<std::string> StringToList(const std::string& inputString,
+	const char& separator = '#');
+std::string LTrim(const std::string& inputString);
+std::string RTrim(const std::string& inputString);
+std::string Trim(const std::string& inputString);
+}   // namespace orxcraft_util
 
-#endif // ORX_CONFIG_UTIL_H
+#endif // ORXCRAFT_UTIL_H
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

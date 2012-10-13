@@ -13,10 +13,10 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *  
+ *
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *  
+ *
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
@@ -29,12 +29,15 @@
  */
 
 #include "orx_config_util.h"
+#include "orxcraft_util.h"
 
 #include <string>
 #include <vector>
+#include <sstream>
 
 using std::vector;
 using std::string;
+using std::ostringstream;
 
 namespace orx_config_util
 {
@@ -57,29 +60,20 @@ void FloatToString (const orxFLOAT inFloat,
     sprintf (outString, "%f", inFloat);
 }
 
-const orxSTRING ListToString (const orxSTRING prop)
+string ListToString (const string& prop)
 {
-    orxASSERT (prop != orxNULL);
+    ostringstream buffer;
+    string separator = " # ";
 
-    char newBuffer[2048];
-    char buffer[2048];
-    buffer[0] = '\0';
-    const char *separator = " # ";
+    orxS32 counter = orxConfig_GetListCounter(prop.c_str());
 
-    orxS32 counter = orxConfig_GetListCounter (prop);
-    for (int i = 0; i < counter; i++)
-    {
-	const orxSTRING propAsString = orxConfig_GetListString (prop, i);
-	sprintf (newBuffer, "%s", propAsString);
-	// At least one more property after this one?
-	if (i + 1 < counter)
-	{
-	    strcat (newBuffer, separator);
-	}
-	strcat (buffer, newBuffer);
+    for(int i=0; i<counter; i++) {
+	buffer<<orxConfig_GetListString(prop.c_str(), i);
+	if(i + 1 < counter)
+	    buffer<<separator;
     }
 
-    return buffer;
+    return buffer.str();
 }
 
 void GetListIntoVector (const orxSTRING key, vector<string> &list)
@@ -115,6 +109,20 @@ void VectorToString (const orxSTRING prop,
     case 2:
 	sprintf (outString, "%f", propertyAsVector.fZ);
     }
+}
+
+void SetList (const string& prop, const string& inputString)
+{
+    const vector<string>& list = orxcraft_util::StringToList(inputString);
+    unsigned int count = list.size();
+    const orxSTRING array[count];
+
+    for(unsigned int i=0; i<count; i++)
+    {
+	array[i] = list[i].c_str();
+    }
+
+    orxConfig_SetStringList(prop.c_str(), array, count);
 }
 
 }   // namespace orx_config_util
