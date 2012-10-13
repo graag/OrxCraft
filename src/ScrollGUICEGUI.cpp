@@ -29,6 +29,8 @@
  */
 #include "ScrollGUICEGUI.h"
 
+#include <string>
+
 #include "orxCraft.h"
 #include "ObjectEditor.h"
 #include "FXSlotEditorWindow.h"
@@ -36,7 +38,10 @@
 
 #include "constants.h"
 
+#include "utf8.h"
+
 using CEGUI::System;
+using std::string;
 
 ScrollGUICEGUI::ScrollGUICEGUI () :
     m_glRenderer (orxNULL)
@@ -126,7 +131,6 @@ void ScrollGUICEGUI::InputKeyPress (const orxSTRING orxKey)
 {
     using CEGUI::Key;
     int key = 0;
-    char inputChar = '\0';
 
     if (orxString_Compare (orxKey, "LeftArrow") == 0)
     {
@@ -144,55 +148,13 @@ void ScrollGUICEGUI::InputKeyPress (const orxSTRING orxKey)
     {
 	key = Key::ArrowDown;
     }
-    if (orxString_Compare (orxKey, "Char0") == 0)
+    if (orxString_Compare (orxKey, "Home") == 0)
     {
-	key = Key::Zero;
-	inputChar = '0';
+	key = Key::Home;
     }
-    if (orxString_Compare (orxKey, "Char1") == 0)
+    if (orxString_Compare (orxKey, "End") == 0)
     {
-	key = Key::One;
-	inputChar = '1';
-    }
-    if (orxString_Compare (orxKey, "Char2") == 0)
-    {
-	key = Key::Two;
-	inputChar = '2';
-    }
-    if (orxString_Compare (orxKey, "Char3") == 0)
-    {
-	key = Key::Three;
-	inputChar = '3';
-    }
-    if (orxString_Compare (orxKey, "Char4") == 0)
-    {
-	key = Key::Four;
-	inputChar = '4';
-    }
-    if (orxString_Compare (orxKey, "Char5") == 0)
-    {
-	key = Key::Five;
-	inputChar = '5';
-    }
-    if (orxString_Compare (orxKey, "Char6") == 0)
-    {
-	key = Key::Six;
-	inputChar = '6';
-    }
-    if (orxString_Compare (orxKey, "Char7") == 0)
-    {
-	key = Key::Seven;
-	inputChar = '7';
-    }
-    if (orxString_Compare (orxKey, "Char8") == 0)
-    {
-	key = Key::Eight;
-	inputChar = '8';
-    }
-    if (orxString_Compare (orxKey, "Char9") == 0)
-    {
-	key = Key::Nine;
-	inputChar = '9';
+	key = Key::End;
     }
     if (orxString_Compare (orxKey, "Delete") == 0)
     {
@@ -206,26 +168,49 @@ void ScrollGUICEGUI::InputKeyPress (const orxSTRING orxKey)
     {
 	key = Key::Return;
     }
-    if (orxString_Compare (orxKey, "Subtract") == 0)
+    if (orxString_Compare (orxKey, "LeftCtrl") == 0)
     {
-	key = Key::Subtract;
-	inputChar = '-';
+	key = Key::LeftControl;
     }
-    if (orxString_Compare (orxKey, "Period") == 0)
+    if (orxString_Compare (orxKey, "LeftShift") == 0)
     {
-	key = Key::Period;
-	inputChar = '.';
-    }
-    if (orxString_Compare (orxKey, "Dash") == 0)
-    {
-	key = Key::Minus;
-	inputChar = '-';
+	key = Key::LeftShift;
     }
 
     System::getSingleton ().injectKeyDown (key);
-    if (inputChar != '\0')
+}
+
+void ScrollGUICEGUI::InputKeyRelease (const orxSTRING orxKey)
+{
+    using CEGUI::Key;
+    int key = 0;
+
+    if (orxString_Compare (orxKey, "LeftCtrl") == 0)
     {
-	System::getSingleton ().injectChar (inputChar);
+	key = Key::LeftControl;
+    }
+    if (orxString_Compare (orxKey, "LeftShift") == 0)
+    {
+	key = Key::LeftShift;
+    }
+
+    System::getSingleton ().injectKeyUp (key);
+}
+
+void ScrollGUICEGUI::InputString (const string& inputString)
+{
+    using utf8::utf8to32;
+
+    /**
+     * CEGUI::System::injectChar expects utf32 encoding. Convert utf8 used by
+     * orx thanks to utf8-cpp library
+     */
+    vector<int> utf32result;
+    utf8to32(inputString.begin(),  inputString.end(), back_inserter(utf32result));
+
+    vector<int>::iterator iter;
+    for(iter = utf32result.begin(); iter != utf32result.end(); iter++) {
+	System::getSingleton().injectChar(*iter);
     }
 }
 

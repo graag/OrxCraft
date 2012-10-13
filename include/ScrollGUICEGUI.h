@@ -36,7 +36,7 @@
 #include "CEGUI.h"
 #include "RendererModules/OpenGL/CEGUIOpenGLRenderer.h"
 
-#include <vector>
+#include <string>
 
 class ScrollFrameWindow;
 
@@ -52,10 +52,12 @@ public:
     ~ScrollGUICEGUI ();
 
     void Init ();
-    void InputMouseMove ();
-    void InputMouseDown ();
-    void InputMouseUp ();
-    void InputKeyPress (const orxSTRING orxKey);
+    void InputMouseMove  ();
+    void InputMouseDown  ();
+    void InputMouseUp    ();
+    void InputKeyPress   (const orxSTRING orxKey);
+    void InputKeyRelease (const orxSTRING orxKey);
+    void InputString     (const std::string& inputString);
 
     class CEGUIScrollObject : public ScrollObject
     {

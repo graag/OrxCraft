@@ -59,6 +59,10 @@ const orxCHAR inputLeftArrow[]   = "LeftArrow";
 const orxCHAR inputRightArrow[]  = "RightArrow";
 const orxCHAR inputUpArrow[]     = "UpArrow";
 const orxCHAR inputDownArrow[]   = "DownArrow";
+const orxCHAR inputBackspace[]   = "Backspace";
+const orxCHAR inputDelete[]      = "Delete";
+
+const orxFLOAT inputRepeatDelay  = 0.05;
 
 #endif	// CONSTANTS_H
 

@@ -100,7 +100,7 @@ orxSTATUS OrxCraft::Init ()
     LoadUserSettings ();
 
     // Create instance of dialog manager
-    m_dialogManager = CEDialogManager::GetInstance();
+    m_dialogManager = &CEDialogManager::GetInstance();
 
     // Init GUI system
     m_gui = new ScrollGUICEGUI ();
@@ -222,6 +222,14 @@ void OrxCraft::Update (const orxCLOCK_INFO &_rstInfo)
 	// Pass input to GUI
 	m_gui->InputMouseMove ();
     }
+
+    const orxSTRING kbdInput= orxKeyboard_ReadString();
+    if(orxString_GetLength(kbdInput) != 0)
+    {
+    	m_gui->InputString(kbdInput);
+    }
+
+    KeyRepeat();
 }
 
 void OrxCraft::NeedObjectUpdate ()
@@ -327,6 +335,71 @@ void OrxCraft::OnKeyPress (const orxSTRING key)
     m_gui->InputKeyPress (key);
 }
 
+void OrxCraft::OnKeyRelease (const orxSTRING key)
+{
+    m_gui->InputKeyRelease (key);
+}
+
+void OrxCraft::KeyRepeat()
+{
+    static orxFLOAT backspaceTime = 0;
+    static orxFLOAT deleteTime = 0;
+    static orxFLOAT leftArrowTime = 0;
+    static orxFLOAT rightArrowTime = 0;
+    static orxFLOAT upArrowTime = 0;
+    static orxFLOAT downArrowTime = 0;
+
+    // Backspace
+    if (orxInput_IsActive (inputBackspace) &&
+	    !orxInput_HasNewStatus (inputBackspace) &&
+	    m_localTime > backspaceTime + inputRepeatDelay)
+    {
+	OrxCraft::GetInstance().OnKeyPress(inputBackspace);
+	backspaceTime = m_localTime;
+    }
+    // Delete
+    if (orxInput_IsActive (inputDelete) &&
+	    !orxInput_HasNewStatus (inputDelete) &&
+	    m_localTime > deleteTime + inputRepeatDelay)
+    {
+	OrxCraft::GetInstance().OnKeyPress(inputDelete);
+	deleteTime = m_localTime;
+    }
+    // LeftArrow
+    if (orxInput_IsActive (inputLeftArrow) &&
+	    !orxInput_HasNewStatus (inputLeftArrow) &&
+	    m_localTime > leftArrowTime + inputRepeatDelay)
+    {
+	OrxCraft::GetInstance().OnKeyPress(inputLeftArrow);
+	leftArrowTime = m_localTime;
+    }
+    // RightArrow
+    if (orxInput_IsActive (inputRightArrow) &&
+	    !orxInput_HasNewStatus (inputRightArrow) &&
+	    m_localTime > rightArrowTime + inputRepeatDelay)
+    {
+	OrxCraft::GetInstance().OnKeyPress(inputRightArrow);
+	rightArrowTime = m_localTime;
+    }
+    // UpArrow
+    if (orxInput_IsActive (inputUpArrow) &&
+	    !orxInput_HasNewStatus (inputUpArrow) &&
+	    m_localTime > upArrowTime + inputRepeatDelay)
+    {
+	OrxCraft::GetInstance().OnKeyPress(inputUpArrow);
+	upArrowTime = m_localTime;
+    }
+    // DownArrow
+    if (orxInput_IsActive (inputDownArrow) &&
+	    !orxInput_HasNewStatus (inputDownArrow) &&
+	    m_localTime > downArrowTime + inputRepeatDelay)
+    {
+	OrxCraft::GetInstance().OnKeyPress(inputDownArrow);
+	downArrowTime = m_localTime;
+    }
+}
+
+
 orxSTATUS orxFASTCALL OrxCraft::EventHandler (const orxEVENT *_pstEvent)
 {
     orxSTATUS result = orxSTATUS_SUCCESS;
@@ -345,7 +418,8 @@ orxSTATUS orxFASTCALL OrxCraft::EventHandler (const orxEVENT *_pstEvent)
 		OrxCraft::GetInstance ().OnKeyPress (pstPayload->zInputName);
 		break;
 	    case orxINPUT_TYPE_MOUSE_BUTTON:
-		OrxCraft::GetInstance ().OnMouseDown ();
+		if (orxString_Compare (inputLeftMB, pstPayload->zInputName) == 0)
+		    OrxCraft::GetInstance ().OnMouseDown ();
 		break;
 	    default:
 	    	break;
@@ -356,9 +430,17 @@ orxSTATUS orxFASTCALL OrxCraft::EventHandler (const orxEVENT *_pstEvent)
 	    orxINPUT_EVENT_PAYLOAD *pstPayload;
 	    pstPayload = reinterpret_cast<orxINPUT_EVENT_PAYLOAD *> (
 		_pstEvent->pstPayload);
-	    if (orxString_Compare (inputLeftMB, pstPayload->zInputName) == 0)
+	    switch (pstPayload->aeType[0])
 	    {
-		OrxCraft::GetInstance ().OnMouseUp ();
+	    case orxINPUT_TYPE_KEYBOARD_KEY:
+		OrxCraft::GetInstance ().OnKeyRelease (pstPayload->zInputName);
+		break;
+	    case orxINPUT_TYPE_MOUSE_BUTTON:
+		if (orxString_Compare (inputLeftMB, pstPayload->zInputName) == 0)
+		    OrxCraft::GetInstance ().OnMouseUp ();
+		break;
+	    default:
+	    	break;
 	    }
 	}
     }
