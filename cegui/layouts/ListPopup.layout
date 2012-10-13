@@ -14,6 +14,7 @@
             <Window Type="TaharezLook/Listbox" Name="ListPopup/SelectionList" >
                 <Property Name="Text" Value="List Box" />
                 <Property Name="UnifiedAreaRect" Value="{{0.0571739,0},{0.0347221,0},{0.957174,0},{0.45,0}}" />
+                <Property Name="MultiSelect" Value="True" />
             </Window>
             <Window Type="TaharezLook/Button" Name="ListPopup/DoneButton" >
                 <Property Name="Text" Value="Done" />

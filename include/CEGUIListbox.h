@@ -56,6 +56,8 @@ public:
      * @param[in] listItems - vector of strings to display in the listbox.
      */
     virtual void Fill (const std::vector<std::string> &listItems);
+    virtual void SetSelection(const std::vector<std::string> &listItems);
+    virtual const std::vector<std::string> GetSelection() const;
 
      //bool OnSelectionChanged (const CEGUI::EventArgs &e);
 private:

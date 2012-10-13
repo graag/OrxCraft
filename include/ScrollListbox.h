@@ -52,6 +52,8 @@ public:
      * @param[in] listItems - vector of strings to display in the listbox.
      */
     virtual void Fill (const std::vector<std::string> &listItems) = 0;
+    virtual void SetSelection(const std::vector<std::string> &listItems) = 0;
+    virtual const std::vector<std::string> GetSelection() const = 0;
 
 protected:
     virtual ~ScrollListbox () { }

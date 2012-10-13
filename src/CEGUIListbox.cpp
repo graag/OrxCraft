@@ -36,6 +36,7 @@
 #include "ScrollFrameWindow.h"
 
 using CEGUI::Listbox;
+using CEGUI::ListboxItem;
 using CEGUI::Event;
 using CEGUI::Window;
 using std::string;
@@ -85,12 +86,48 @@ void CEGUIListbox::Fill (const vector<string> &listItems)
     for (unsigned int i = 0; i < listItems.size (); i++)
     {
 	m_items.push_back (new CEGUI::ListboxTextItem (listItems.at (i)));
+	m_items.back()->setSelectionBrushImage(
+		"TaharezLook", "ListboxSelectionBrush");
+	m_items.back()->setSelectionColours(0x99ff0000);
 	/*
 	 * Add item to CEGUI::Listbox.
 	 * Note that item ownership is passed to CEGUI.
 	 */
 	m_ceListbox->addItem (m_items.back ());
     }
+}
+
+void CEGUIListbox::SetSelection(const vector<string> &listItems)
+{
+    m_ceListbox->clearAllSelections();
+
+    vector<string>::const_iterator iter;
+    for(iter = listItems.begin(); iter != listItems.end(); iter++)
+    {
+	ListboxItem* item = m_ceListbox->findItemWithText(*iter, NULL);
+	orxASSERT(item != NULL);
+	m_ceListbox->setItemSelectState(item, true);
+    }
+}
+
+const vector<string> CEGUIListbox::GetSelection() const
+{
+    size_t count = m_ceListbox->getSelectedCount();
+    vector<string> selection;
+
+    if(count == 0)
+	return selection;
+
+    ListboxItem* item = m_ceListbox->getFirstSelectedItem();
+    selection.push_back(item->getText().c_str());
+
+    for(size_t i=1; i<count; i++)
+    {
+	item = m_ceListbox->getNextSelected(item);
+	selection.push_back(item->getText().c_str());
+    }
+
+    return selection;
 }
 
 bool CEGUIListbox::OnMouseClick (const CEGUI::EventArgs &e)
