@@ -13,10 +13,10 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *  
+ *
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *  
+ *
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
@@ -151,10 +151,10 @@ void FXSlotEditorWindow::UpdateFields () const
     orxConfig_PushSection (m_context.c_str());
 
     // Type
-    const orxSTRING type = orx_config_util::ListToString ("Type");
+    const string& type = orx_config_util::ListToString ("Type");
     m_fxsType->SelectItem (type);
     // Curve
-    const orxSTRING curve = orx_config_util::ListToString ("Curve");
+    const string& curve = orx_config_util::ListToString ("Curve");
     m_fxsCurve->SelectItem (curve);
     // StartTime
     orx_config_util::FloatToString (orxConfig_GetFloat ("StartTime"), buffer);
@@ -339,9 +339,15 @@ void FXSlotEditorWindow::OnTextAccepted (const string& widgetName)
     OrxCraft::GetInstance ().NeedObjectUpdate ();
 }
 
+void FXSlotEditorWindow::OnPopupFinish (const string& popupName,
+	const string& popupTitle)
+{
+    orxASSERT (false);
+}
+
 void FXSlotEditorWindow::OnDestroy ()
 {
-    CEDialogManager::GetInstance()->DestroyDialog(m_id);
+    CEDialogManager::GetInstance().DestroyDialog(m_id);
     /*
      * Beyond this point the dialog was destroyed (delete was issued).
      * Make sure in is not accessed anymore.

@@ -43,10 +43,10 @@ using namespace std;
 unsigned int ScrollFrameWindow::m_idPool = 0;
 
 ScrollFrameWindow::ScrollFrameWindow (const string& name,
-	const string& options):
+	const string& title):
     m_id(0),
     m_name(name),
-    m_options(options)
+    m_title(title)
 {
     // Assign an unique ID
     m_id = m_idPool;

@@ -58,6 +58,8 @@ public:
 
     virtual void OnMouseClick   (const std::string& widgetName);
     virtual void OnTextAccepted (const std::string& widgetName);
+    virtual void OnPopupFinish  (const std::string& popupName,
+	    const std::string& popupTitle = "");
     virtual void OnDestroy ();
 
 private:

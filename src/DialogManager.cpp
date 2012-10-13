@@ -42,7 +42,7 @@ using std::string;
 DialogManager* DialogManager::m_instance = NULL;
 
 ScrollFrameWindow* DialogManager::GetDialog(const string& dialogName,
-        const string& dialogOptions)
+        const string& dialogTitle)
 {
     ScrollFrameWindow *theDialog = NULL;
 
@@ -53,7 +53,7 @@ ScrollFrameWindow* DialogManager::GetDialog(const string& dialogName,
     DialogMapConstIterator dialogIter = m_dialogList.begin();
     for(;dialogIter != m_dialogList.end(); dialogIter++) {
 	if(dialogIter->second->GetName() == dialogName &&
-		dialogIter->second->GetOptions() == dialogOptions) {
+		dialogIter->second->GetWindowTitle() == dialogTitle) {
 	    theDialog = dialogIter->second;
 	    break;
 	}

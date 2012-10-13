@@ -52,10 +52,10 @@ public:
     /** Create new dialog window.
      * @param[in] dialogName - name of the new dialog specifies predefined
      *                         dialog type
-     * @param[in] dialogOptions - options passed to the new dialog (optional)
+     * @param[in] dialogTitle - title of the dialog (optional)
      */
     virtual ScrollFrameWindow* MakeDialog (const std::string& dialogName,
-	    const std::string& dialogOptions = "") = 0;
+	    const std::string& dialogTitle = "") = 0;
     /** Destroy a dialog window managed by the DialogManager
      * @param[in] id - unique ID of the dialog window
      */

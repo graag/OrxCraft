@@ -48,10 +48,13 @@ class ScrollFrameWindow
 public:
     /** C-tor
      * @param[in] name - name of the dialog
-     * @param[in] options - string with dialog options (optional)
+     * @param[in] title - string with dialog title, if not specified the
+     *                      dialog name is used as a title. The title
+     *                      identifies different instaces of the same dialog
+     *                      type.
      */
     ScrollFrameWindow (const std::string& name,
-	    const std::string& options = "");
+	    const std::string& title = "");
 
     /** Find a widget by its name.
      * @param[in] widgetName - name of the widget.
@@ -89,8 +92,8 @@ public:
     { m_windowName = windowName; }
     /** Get the name of underlying toolkit window. */
     virtual const std::string& GetWindowName () { return m_windowName; }
-    /** Get the options specified upon dialog creation. */
-    virtual const std::string& GetOptions() { return m_options; }
+    /** Get the window title. */
+    virtual const std::string& GetWindowTitle() { return m_title; }
     /** Left mouse click event handler.
      * @param widgetName - name of the widget that originated the event.
      */
@@ -99,7 +102,9 @@ public:
      * @param widgetName - name of the widget that originated the event.
      */
     virtual void OnTextAccepted (const std::string& widgetName) = 0;
-    virtual void OnDestroy () = 0;
+    virtual void OnPopupFinish  (const std::string& popupName,
+	    const std::string& popupTitle = "") = 0;
+    virtual void OnDestroy      () = 0;
 
     /** Add new widget to the window.
      * @param widget - a pointer to ScrollWidget
@@ -131,7 +136,7 @@ protected:
     // Name of the dialog
     std::string                 m_name;
     // Options used for creation of the dialog
-    std::string                 m_options;
+    std::string                 m_title;
 };
 
 #endif  // __SCROLLFRAMEWINDOW_H__
