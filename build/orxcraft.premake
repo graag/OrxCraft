@@ -5,7 +5,7 @@
 ORX_DIR = "../../orx"
 
 -- Path to Scroll
-SCROLL_DIR = "../../scroll"
+SCROLL_DIR = "../../Scroll"
 
 -- Path to CEGUI
 CEGUI_DIR = "../../CEGUI-v0-7"
