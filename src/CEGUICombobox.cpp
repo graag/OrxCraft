@@ -95,6 +95,9 @@ void CEGUICombobox::Fill (const vector<string> &listItems)
 
 void CEGUICombobox::SelectItem (const string& text)
 {
+    m_ceCombobox->clearAllSelections();
+    if(text.empty()) return;
+
     unsigned int i = 0;
     std::vector<CEGUI::ListboxTextItem *>::const_iterator it;
     for (it = m_items.begin (); it != m_items.end (); ++it)
@@ -112,9 +115,14 @@ void CEGUICombobox::SelectItem (const string& text)
 
     // Item does not exist. Make a log entry.
     if(i == m_items.size())
+    {
+	string title = m_manager->GetWindowTitle();
+	if(title.empty())
+	    title = m_manager->GetName();
 	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
-		"Cannot select item '%s'. Item not present in the Combobox.",
-		text.c_str());
+		"Cannot select item '%s' for '%s' from '%s'. Item not present in the Combobox.",
+		text.c_str(), m_widgetName.c_str(), title.c_str());
+    }
 }
 
 const string CEGUICombobox::GetSelectedItem () const
@@ -124,7 +132,7 @@ const string CEGUICombobox::GetSelectedItem () const
 
     // Found a selected item?
     if(item != NULL)
-    	text = item->getText ().c_str ();
+	text = item->getText ().c_str ();
 
     return text;
 }

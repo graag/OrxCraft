@@ -105,8 +105,19 @@ void CEGUIListbox::SetSelection(const vector<string> &listItems)
     for(iter = listItems.begin(); iter != listItems.end(); iter++)
     {
 	ListboxItem* item = m_ceListbox->findItemWithText(*iter, NULL);
-	orxASSERT(item != NULL);
-	m_ceListbox->setItemSelectState(item, true);
+	if(item != NULL)
+	{
+	    m_ceListbox->setItemSelectState(item, true);
+	}
+	else
+	{
+	    string title = m_manager->GetWindowTitle();
+	    if(title.empty())
+		title = m_manager->GetName();
+	    orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+		    "Cannot select item '%s' for '%s' from '%s'. Item does not exits.",
+		    iter->c_str(), m_widgetName.c_str(), title.c_str());
+	}
     }
 }
 
