@@ -41,7 +41,7 @@ class ScrollFrameWindow;
  * Remember to check that result != NULL.
  * For release build static_cast is used.
  */
-#ifndef __orxDEBUG__
+#ifdef __orxDEBUG__
 #define orxCRAFT_CAST dynamic_cast
 #else
 #define orxCRAFT_CAST static_cast

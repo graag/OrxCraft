@@ -132,7 +132,7 @@ void SetList (const string& prop, const vector<string>& inputList)
 	array[i] = inputList[i].c_str();
     }
 
-    orxConfig_SetStringList(prop.c_str(), array, count);
+    orxConfig_SetListString(prop.c_str(), array, count);
 }
 
 }   // namespace orx_config_util
