@@ -34,9 +34,7 @@
 #include "InfoWindow.h"
 #include "ObjectEditor.h"
 #include "FXSlotEditorWindow.h"
-
 #include "ScrollGUICEGUI.h"
-
 #include "CEDialogManager.h"
 
 #include "constants.h"
@@ -70,7 +68,11 @@ ScrollObject * OrxCraft::GetObjectByName (const orxSTRING name) const
 	 obj != orxNULL;
 	 obj = GetNextObject (obj))
     {
-	if (orxString_Compare (name, obj->GetModelName ()) == 0)
+	// We are only interested in editable objects (directly loaded by
+	// OrxCraft) not in auto created children objects. Filter children out
+	// using FlagSave.
+	if(obj->TestFlags(ScrollObject::FlagSave) && 
+		orxString_Compare (name, obj->GetModelName ()) == 0)
 	{
 	    foundObject = obj;
 	    break;
@@ -246,14 +248,28 @@ void OrxCraft::InitConfig ()
 
 void OrxCraft::SetupConfig ()
 {
-    for (unsigned int i = 0; i < m_objectList.size (); i++)
+    // For all current objects
+    for(ScrollObject *obj = GetNextObject(), *nextObj = GetNextObject(obj);
+        obj;
+        obj = nextObj, nextObj = GetNextObject(nextObj))
     {
-	ScrollObject *obj = GetObjectByName (m_objectList.at (i).c_str());
-	if (obj != orxNULL)
+	// Do not delete OrxCraft internal objects
+	obj->PushConfigSection();
+	if (orxConfig_GetBool ("OrxCraftSection") == orxTRUE) {
+	    obj->PopConfigSection();
+	    continue;
+	}
+	obj->PopConfigSection();
+	// Only delete editable objects (directly loaded by OrxCraft). This
+	// will make sure we do not interfere with orx/Scroll auto destruction
+	// of child objects.
+	if(obj->TestFlags(ScrollObject::FlagSave))
 	{
-	    DeleteObject (obj);
+	    // Deletes it
+	    DeleteObject(obj);
 	}
     }
+
     m_objectList.clear ();
     m_graphicList.clear();
     m_fxList.clear();
@@ -269,11 +285,24 @@ void OrxCraft::SetupConfig ()
 	{
 	    const orxSTRING graphic = orxConfig_GetString ("Graphic");
 	    // Does it have a Graphic property?
+	    // @todo What about composite objects as in tutorials Frame and
+	    //      Physics? ChildList property? But then how to build object
+	    //      hieratchy?
 	    if (orxString_Compare (graphic, "") != 0)
 	    {
 		// It's an object
 		m_objectList.push_back (sectionName);
-		CreateObject (sectionName);
+		ScrollObject* newObj = CreateObject (sectionName);
+		// Mark it with FlagSave. FlagSave is used by ScrollEd to mark
+		// objects that should be written explicetely to map. We will
+		// use it to mark editable objects (the ones loaded by OrxCraft
+		// directly.) This will allow to handle properly cases with
+		// children. When an object with ChildList is created its
+		// children are created by orx on the fly and will not have
+		// FlagSave set. We do not want to destroy them by hand, as
+		// they are auto destroyed by orx (we would end up with double
+		// free).
+		newObj->SetFlags(ScrollObject::FlagSave);
 		orxConfig_PopSection ();
 		continue;
 	    }
@@ -285,7 +314,8 @@ void OrxCraft::SetupConfig ()
 		m_graphicList.push_back (sectionName);
 		//! @todo DO we really want to create graphics ???
 		//! @todo If yes than delete them first as for objects
-		CreateObject (sectionName);
+		// ScrollObject* newObj = CreateObject (sectionName); 
+		// newObj->SetFlags(ScrollObject::FlagSave); 
 		orxConfig_PopSection ();
 		continue;
 	    }
@@ -295,6 +325,7 @@ void OrxCraft::SetupConfig ()
 	    {
 		// It's a graphic
 		m_fxList.push_back (sectionName);
+		orxConfig_PopSection ();
 		continue;
 	    }
 	    // Does it have a Curve property?
@@ -309,6 +340,9 @@ void OrxCraft::SetupConfig ()
 	}
 	orxConfig_PopSection ();
     }
+
+    if(m_dialogManager != NULL)
+	m_dialogManager->OnReset();
 }
 
 void OrxCraft::LoadUserSettings ()
