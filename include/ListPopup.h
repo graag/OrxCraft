@@ -49,6 +49,7 @@ public:
     virtual void OnPopupFinish  (const std::string& popupName,
 	    const std::string& popupTitle = "");
     virtual void OnDestroy ();
+    virtual void OnReset () {};
     virtual void Fill (const std::vector<std::string>& dataList);
     virtual void SetSelection (const std::vector<std::string>& selectionList);
     virtual std::vector<std::string> GetSelection();

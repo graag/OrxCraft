@@ -51,7 +51,6 @@ typedef struct {
     string        property;
 } PopupData;
 
-
 ObjectEditor::ObjectEditor (const string& name) :
     ScrollFrameWindow(name),
     m_object (NULL),
@@ -272,13 +271,9 @@ void ObjectEditor::UpdateFields () const
 	// AnimationSet
 	m_objAnimSet->SetText (orxConfig_GetString("AnimationSet"));
 	// AutoScroll
-	vector<string> aSc;
-	orx_config_util::GetListIntoVector ("AutoScroll", aSc);
-	m_objAutoScroll->Fill(aSc);
+	m_objAutoScroll->SelectItem(orxConfig_GetString("AutoScroll"));
 	// BlendMode
-	vector<string> bl;
-	orx_config_util::GetListIntoVector ("BlendMode", bl);
-	m_objBlendMode->Fill(bl);
+	m_objBlendMode->SelectItem(orxConfig_GetString("BlendMode"));
 	// Body
 	m_objBody->SetText (orxConfig_GetString("Body"));
 	// ChildList
@@ -372,6 +367,7 @@ void ObjectEditor::OnMouseClick (const string& widgetName)
 	ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
 		CEDialogManager::GetInstance().MakeDialog(
 		"ListPopup", string(m_object->GetModelName()) + ": Child List"));
+	orxASSERT(popup != orxNULL);
 
 	// Potential children are all objects
 	//! @todo Are those only objects (ones with graphic defined) or also other entities??
@@ -511,7 +507,11 @@ void ObjectEditor::OnTextAccepted (const string& widgetName)
     }
     else if (widgetName == "ObjFXList")
     {
-	orxASSERT (false);
+	const string& fxs = m_objFXList->GetText();
+	if(fxs.empty())
+	    orxConfig_ClearValue("FXList");
+	else
+	    orx_config_util::SetList("FXList", fxs.c_str());
     }
     else if (widgetName == "ObjLifeTime")
     {
@@ -622,6 +622,15 @@ void ObjectEditor::OnDestroy ()
      * Beyond this point the dialog was destroyed (delete was issued).
      * Make sure in is not accessed anymore.
      */
+}
+
+void ObjectEditor::OnReset ()
+{
+    const string& name = m_objConfigName->GetSelectedItem ();
+    //! @todo Better not to have this in the Scroll singleton
+    ScrollObject *object =
+	OrxCraft::GetInstance ().GetObjectByName (name.c_str());
+    SetObject (object);
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

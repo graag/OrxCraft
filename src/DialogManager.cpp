@@ -74,4 +74,14 @@ ScrollFrameWindow* DialogManager::GetDialog(unsigned int id)
     return theDialog;
 }
 
+void DialogManager::OnReset()
+{
+    /**
+     * Iterate through DialogMap and notify dialogs on Reset event.
+     */
+    DialogMapConstIterator dialogIter = m_dialogList.begin();
+    for(;dialogIter != m_dialogList.end(); dialogIter++)
+	dialogIter->second->OnReset();
+}
+
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

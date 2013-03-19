@@ -105,6 +105,7 @@ public:
     virtual void OnPopupFinish  (const std::string& popupName,
 	    const std::string& popupTitle = "") = 0;
     virtual void OnDestroy      () = 0;
+    virtual void OnReset        () = 0;
 
     /** Add new widget to the window.
      * @param widget - a pointer to ScrollWidget

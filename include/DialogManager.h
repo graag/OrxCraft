@@ -81,6 +81,8 @@ public:
     virtual ScrollFrameWindow* GetDialog(const std::string& dialogName,
 	    const std::string& dialogOptions = "");
 
+    void OnReset();
+
     //! D-tor
     virtual ~DialogManager ()
     {

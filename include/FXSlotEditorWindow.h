@@ -61,6 +61,7 @@ public:
     virtual void OnPopupFinish  (const std::string& popupName,
 	    const std::string& popupTitle = "");
     virtual void OnDestroy ();
+    virtual void OnReset() {};
 
 private:
     std::string m_context;
