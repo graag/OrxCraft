@@ -37,6 +37,8 @@
 #include <cctype>
 #include <functional>
 
+#include "ScrollObject.h"
+
 using std::vector;
 using std::string;
 using std::istringstream;
@@ -47,8 +49,45 @@ using std::not1;
 using std::ptr_fun;
 using std::isspace;
 
-namespace orxcraft_util
+namespace orxUtil
 {
+
+string BoolToString (orxBOOL inBool)
+{
+    if (inBool)
+    {
+	return "true";
+    }
+    else
+    {
+	return "false";
+    }
+}
+
+string FloatToString (const orxFLOAT inFloat)
+{
+    ostringstream buffer;
+    buffer<<inFloat;
+    return buffer.str();
+}
+
+orxBOOL StringToBool( const string& input)
+{
+    orxBOOL value;
+    orxSTATUS result;
+    result = orxString_ToBool(input.c_str(), &value, orxNULL);
+    orxASSERT(result == orxSTATUS_SUCCESS);
+    return value;
+}
+
+orxFLOAT StringToFloat( const string& input)
+{
+    orxFLOAT value;
+    orxSTATUS result;
+    result = orxString_ToFloat(input.c_str(), &value, orxNULL);
+    orxASSERT(result == orxSTATUS_SUCCESS);
+    return value;
+}
 
 string ListToString(const vector<string>& list,
 	const string& separator)
@@ -66,7 +105,7 @@ string ListToString(const vector<string>& list,
     return buffer.str();
 }
 
-vector<string> StringToList(const std::string& inputString,
+vector<string> StringToList(const string& inputString,
 	const char& separator)
 {
     vector<string> list;
@@ -144,6 +183,36 @@ string Trim(const string& inputString)
 
     // Return substring based on the iterators.
     return string(start, stop);
+}
+
+bool IsChild(const ScrollObject* obj, const ScrollObject* parent)
+{
+    return IsChild(obj->GetOrxObject(), parent->GetOrxObject());
+}
+
+bool IsChild(const orxOBJECT* obj, const orxOBJECT* parent)
+{
+    bool result = false;
+
+    for (orxOBJECT *child = orxObject_GetOwnedChild(parent);
+	 child != orxNULL;
+	 child = orxObject_GetOwnedSibling(child))
+    {
+	if(orxString_Compare(
+		    orxObject_GetName(child),
+		    orxObject_GetName(obj)) == 0
+	  )
+	{
+	    result = true;
+	    break;
+	}
+	if(IsChild(obj, child)) {
+	    result = true;
+	    break;
+	}
+    }
+
+    return result;
 }
 
 } // namespace orxcraft_util
