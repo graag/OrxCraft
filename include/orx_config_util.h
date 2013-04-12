@@ -40,22 +40,58 @@
  *  below are designed to work with an Orx config section that has been
  *  previously pushed onto the stack.
  */
-namespace orx_config_util
+namespace orxConf
 {
-/** Convert an Orx bool to an Orx string */
-void BoolToString (orxBOOL inBool, orxSTRING outString);
-/** Convert an Orx float to an Orx string */
-void FloatToString (orxFLOAT inFloat, orxSTRING outString);
-/** Convert an Orx config list to an Orx string */
-std::string ListToString (const std::string& prop);
-/** Get all items in an Orx config list into a std::vector */
-void GetListIntoVector (const orxSTRING key, std::vector<std::string> &list);
-/** Convert an Orx config vector to an Orx string */
-void VectorToString (const orxSTRING prop, orxU32 elementNum,
-		     orxSTRING outString);
-void SetList (const std::string& prop, const std::string& inputString);
-void SetList (const std::string& prop,
-	const std::vector<std::string>& inputList);
+/** Extract config values */
+
+/** Get bool value from orxConfig */
+orxBOOL GetBool( const std::string& prop );
+/** Get bool value as string from orxConfig */
+std::string GetBoolAsString( const std::string& prop );
+/** Get float value from orxConfig */
+orxFLOAT GetFloat( const std::string& prop );
+/** Get bool value as string from orxConfig */
+std::string GetFloatAsString( const std::string& prop );
+/** Get a list from orxConfig as string */
+std::string GetListAsString( const std::string& prop );
+/** Get all items in a list from orxConfig into a std::vector */
+void GetListAsVector(
+	const std::string& prop, std::vector<std::string>& list );
+/** Get a vector element from orxConfig */
+orxFLOAT GetVectorElement( const std::string& prop, orxU32 elementNum );
+/** Get a vector element from orxConfig into a string */
+std::string GetVectorElementAsString(
+	const std::string& prop, orxU32 elementNum
+	);
+/** Get a vector from orxConfig as std::vector<float> */
+std::vector<orxFLOAT> GetVector( const std::string& prop );
+
+/** Update config values */
+
+/** Set a bool value in orxConfig */
+orxSTATUS SetBool( const std::string& prop, orxBOOL value );
+/** Set a bool value in orxConfig from string */
+orxSTATUS SetBool( const std::string& prop, const std::string& value );
+/** Set a float value in orxConfig */
+orxSTATUS SetFloat( const std::string& prop, orxFLOAT value );
+/** Set a float value in orxConfig from string */
+orxSTATUS SetFloat( const std::string& prop, const std::string& value );
+/** Set a vector element in orxConfig */
+orxSTATUS SetVectorElement(
+	const std::string& prop, orxU32 elementNum, orxFLOAT value
+	);
+/** Set a vector element in orxConfig from string */
+orxSTATUS SetVectorElement(
+	const std::string& prop, orxU32 elementNum, const std::string& value
+	);
+/** Set a vector in orxConfig */
+orxSTATUS SetVector( const std::string& prop, const std::vector<float>& vec );
+/** Set a list in orxConfig */
+orxSTATUS SetList(
+	const std::string& prop, const std::vector<std::string>& inputList
+	);
+/** Set a list in orxConfig from string */
+orxSTATUS SetList( const std::string& prop, const std::string& inputString );
 }   // namespace orx_config_util
 
 #endif // ORX_CONFIG_UTIL_H
