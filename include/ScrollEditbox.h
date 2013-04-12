@@ -52,6 +52,12 @@ public:
     virtual const std::string GetText () = 0;
     /** Set the text contained in the Editbox */
     virtual void SetText (const std::string& text) = 0;
+    /** Set wiget data from orx config for currently selected section.  */
+    virtual void ConfigRead();
+    /** Set orx config attribute value for currently selected section based on
+     * widget data.
+     */
+    virtual void ConfigUpdate();
 };
 
 #endif  // __SCROLL_EDITBOX_H__

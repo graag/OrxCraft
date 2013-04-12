@@ -47,6 +47,18 @@ class ScrollFrameWindow;
 #define orxCRAFT_CAST static_cast
 #endif
 
+typedef enum __orxCRAFT_WIDGET_DATA_TYPES_t
+{
+    orxCRAFT_WIDGET_DATA_STRING = 0,
+    orxCRAFT_WIDGET_DATA_BOOL,
+    orxCRAFT_WIDGET_DATA_INT,
+    orxCRAFT_WIDGET_DATA_FLOAT,
+    orxCRAFT_WIDGET_DATA_VECTOR0,
+    orxCRAFT_WIDGET_DATA_VECTOR1,
+    orxCRAFT_WIDGET_DATA_VECTOR2,
+    orxCRAFT_WIDGET_DATA_LIST
+} orxCRAFT_WIDGET_DATA_TYPES;
+
 /**
  *  Base class for any type of user interface widget
  */
@@ -80,11 +92,29 @@ public:
      */
     const std::string ExtractCommonName(const std::string& widgetName) const
     { return widgetName.substr(widgetName.find("_") + 1); }
+    /** Bind widget to orx config attribute.
+     * @param[in] configName - name of orx config attribute
+     * @param[in] type - type of data used by orx config attribute. Valid
+     *                   values defined by orxCRAFT_WIDGET_DATA_TYPES
+     */
+    inline void ConfigBind(const std::string& configName,
+    	    const orxCRAFT_WIDGET_DATA_TYPES type=orxCRAFT_WIDGET_DATA_STRING)
+    { m_configName = configName; m_dataType = type; }
+    inline const std::string& GetConfigName() { return m_configName; }
+    /** Set wiget data from orx config for currently selected section.
+     */
+    virtual void ConfigRead() = 0;
+    /** Set orx config attribute value for currently selected section based on
+     * widget data.
+     */
+    virtual void ConfigUpdate() = 0;
 
 protected:
     std::string        m_widgetUniqueName;
     std::string        m_widgetName;
+    std::string        m_configName;
     ScrollFrameWindow *m_manager;
+    orxCRAFT_WIDGET_DATA_TYPES m_dataType;
 };
 
 #endif  // __SCROLLWIDGET_H__

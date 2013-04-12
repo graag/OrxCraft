@@ -55,16 +55,16 @@ public:
      *
      * @param[in] select - checkbox is selected (true/false)
      */
-    virtual void SetSelected (const orxBOOL select=true);
+    virtual void SetSelection (const orxBOOL select=true);
     /** Get selected status */
-    virtual const orxBOOL IsSelected () const;
+    virtual const orxBOOL GetSelection () const;
 
 private:
     /** Handler for CEGUI::Checkbox::EventCheckStateChanged event.
      *
      * @param[in] e - WindowEventArgs event arguments passed from CEGUI.
      */
-    bool OnCheckStateChanged (const CEGUI::EventArgs &e);
+    bool OnCheckStateChanged(const CEGUI::EventArgs &e);
 
     //! Pointer to CEGUI widget
     CEGUI::Checkbox *m_ceCheckbox;

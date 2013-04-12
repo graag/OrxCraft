@@ -21,42 +21,40 @@
  *     distribution.
  */
 
-#ifndef __SCROLL_CHECKBOX_H__
-#define __SCROLL_CHECKBOX_H__
 /**
- * @file ScrollCheckbox.h
- * @date 2012-05-07
- * @author fritz@fritzmahnke.com
+ * @file ScrollCheckbox.cpp
+ * @date 2013-03-28
+ * @author graag@o2.pl
  *
  */
 
-#include "ScrollWidget.h"
+#include "ScrollCheckbox.h"
 
-class ScrollFrameWindow;
+#include <string>
 
-/**
- *  Interface for a Checkbox widget.
- */
-class ScrollCheckbox : public ScrollWidget
+#include "ScrollFrameWindow.h"
+
+using std::string;
+
+void ScrollCheckbox::ConfigRead()
 {
-public:
-    explicit ScrollCheckbox(ScrollFrameWindow *dialog) :
-	ScrollWidget(dialog)
-    {
-    }; 
+    orxASSERT(!m_configName.empty());
+    orxASSERT(m_dataType == orxCRAFT_WIDGET_DATA_BOOL)
+    SetSelection(orxConfig_GetBool (m_configName.c_str()));
+}
 
-    virtual void SetSelection(const orxBOOL select) = 0;
-    virtual const orxBOOL GetSelection() const = 0;
-    /** Set wiget data from orx config for currently selected section.  */
-    virtual void ConfigRead();
-    /** Set orx config attribute value for currently selected section based on
-     * widget data.
-     */
-    virtual void ConfigUpdate();
+void ScrollCheckbox::ConfigUpdate()
+{
+    orxASSERT(!m_configName.empty());
+    orxASSERT(m_dataType == orxCRAFT_WIDGET_DATA_BOOL)
 
-};
-
-#endif  // __SCROLL_CHECKBOX_H__
+    orxSTATUS status;
+    status = orxConfig_SetBool (m_configName.c_str(), GetSelection());
+    if(status != orxSTATUS_SUCCESS)
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+		"Failed to update config from widget %s status.",
+		m_widgetName.c_str());
+}
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab
 

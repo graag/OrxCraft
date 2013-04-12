@@ -60,16 +60,16 @@ public:
      *
      * @param[in] itemText - contents of the item to be selected.
      */
-    virtual void SelectItem (const std::string& text);
+    virtual void SetSelection(const std::string& text);
     /** Get the text of the selected item */
-    virtual const std::string GetSelectedItem () const;
+    virtual const std::string GetSelection() const;
 
 private:
     /** Handler for CEGUI::Combobox::EventListSelectionAccepted event.
      *
      * @param[in] e - WindowEventArgs event arguments passed from CEGUI.
      */
-    bool OnSelectionAccepted (const CEGUI::EventArgs &e);
+    bool OnSelectionAccepted(const CEGUI::EventArgs &e);
 
     //! Pointer to CEGUI widget
     CEGUI::Combobox *m_ceCombobox;

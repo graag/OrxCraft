@@ -52,16 +52,17 @@ public:
     virtual void Init (const std::string& widgetName);
 
     /** Get the text contained in the Editbox */
-    virtual const std::string GetText ();
+    virtual const std::string GetText();
     /** Set the text contained in the Editbox */
-    virtual void SetText (const std::string& text);
+    virtual void SetText(const std::string& text);
+
 private:
     /** Handler for CEGUI::Editbox::EventTextAccepted event
      * (pressed Enter key).
      *
      * @param[in] e - WindowEventArgs event arguments passed from CEGUI.
      */
-    bool OnTextAccepted (const CEGUI::EventArgs &e);
+    bool OnTextAccepted(const CEGUI::EventArgs &e);
 
     //! Pointer to CEGUI widget
     CEGUI::Editbox *m_ceEditbox;

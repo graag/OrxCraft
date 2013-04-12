@@ -43,13 +43,17 @@ class ScrollPushButton : public ScrollWidget
 {
 public:
     /** C-tor */
-    explicit ScrollPushButton (ScrollFrameWindow *dialog) :
-	ScrollWidget (dialog)
+    explicit ScrollPushButton(ScrollFrameWindow *dialog) :
+	ScrollWidget(dialog)
     {
     }
 
     /** Set the text displayed on the Pushbutton */
-    virtual void SetText (const std::string& text) = 0;
+    virtual void SetText(const std::string& text) = 0;
+    /** Not implemented */
+    virtual void ConfigRead();
+    /** Not implemented */
+    virtual void ConfigUpdate();
 };
 
 #endif  // __SCROLL_PUSH_BUTTON_H__

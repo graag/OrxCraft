@@ -53,13 +53,17 @@ public:
 
     /** Set the text displayed on the Pushbutton */
     virtual void SetText (const std::string& text);
+    /** CEGUIPushButton does not implement this method. */
+    virtual void ConfigRead();
+    /** CEGUIPushButton does not implement this method. */
+    virtual void ConfigUpdate() const;
 
 private:
     /** Handler for CEGUI::Window::EventMouseClick event.
      *
      * @param[in] e - WindowEventArgs event arguments passed from CEGUI.
      */
-    bool OnClicked (const CEGUI::EventArgs &e);
+    bool OnClicked(const CEGUI::EventArgs &e);
 
     //! Pointer to CEGUI widget
     CEGUI::PushButton *m_cePushButton;

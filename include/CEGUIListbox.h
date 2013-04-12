@@ -50,12 +50,12 @@ public:
      * @param[in] widgetName - the name will be used to select proper instace
      * of the CEGUI widget
      */
-    virtual void Init (const std::string& widgetName);
+    virtual void Init(const std::string& widgetName);
     /** Populate the listbox contents.
      *
      * @param[in] listItems - vector of strings to display in the listbox.
      */
-    virtual void Fill (const std::vector<std::string> &listItems);
+    virtual void Fill(const std::vector<std::string> &listItems);
     virtual void SetSelection(const std::vector<std::string> &listItems);
     virtual const std::vector<std::string> GetSelection() const;
 
@@ -65,7 +65,7 @@ private:
      *
      * @param[in] e - WindowEventArgs event arguments passed from CEGUI.
      */
-    bool OnMouseClick (const CEGUI::EventArgs &e);
+    bool OnMouseClick(const CEGUI::EventArgs &e);
 
     //! Pointer to CEGUI widget
     CEGUI::Listbox *m_ceListbox;

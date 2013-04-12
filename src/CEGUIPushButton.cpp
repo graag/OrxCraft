@@ -79,6 +79,20 @@ void CEGUIPushButton::SetText (const string& text)
     m_cePushButton->setText (text);
 }
 
+void CEGUIPushButton::ConfigRead()
+{
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+	    "CEGUIPushButton::ConfigRead is not implemented.");
+    orxASSERT(false);
+}
+
+void CEGUIPushButton::ConfigUpdate() const
+{
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+	    "CEGUIPushButton::ConfigUpdate is not implemented.");
+    orxASSERT(false);
+}
+
 bool CEGUIPushButton::OnClicked (const CEGUI::EventArgs &e)
 {
 #ifdef __orxDEBUG__

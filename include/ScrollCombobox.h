@@ -42,8 +42,8 @@ class ScrollCombobox : public ScrollWidget
 {
 public:
     /** C-tor */
-    explicit ScrollCombobox (ScrollFrameWindow *dialog) :
-	 ScrollWidget (dialog)
+    explicit ScrollCombobox(ScrollFrameWindow *dialog) :
+	 ScrollWidget(dialog)
     {
     }
 
@@ -51,14 +51,20 @@ public:
      *
      * @param[in] listItems - vector of strings to display in the listbox.
      */
-    virtual void Fill (const std::vector<std::string> &listItems) = 0;
+    virtual void Fill(const std::vector<std::string> &listItems) = 0;
     /** Select and item.
      *
      * @param[in] itemText - contents of the item to be selected.
      */
-    virtual void SelectItem (const std::string& itemText) = 0;
+    virtual void SetSelection(const std::string& itemText) = 0;
     /** Get the text of the selected item */
-    virtual const std::string GetSelectedItem () const = 0;
+    virtual const std::string GetSelection() const = 0;
+    /** Set wiget data from orx config for currently selected section.  */
+    virtual void ConfigRead();
+    /** Set orx config attribute value for currently selected section based on
+     * widget data.
+     */
+    virtual void ConfigUpdate();
 };
 
 #endif  // SCROLLCOMBOBOX_H_

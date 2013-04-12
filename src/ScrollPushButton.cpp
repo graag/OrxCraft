@@ -13,50 +13,36 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *  
+ *
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *  
+ *
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
 
-#ifndef __SCROLL_CHECKBOX_H__
-#define __SCROLL_CHECKBOX_H__
 /**
- * @file ScrollCheckbox.h
- * @date 2012-05-07
- * @author fritz@fritzmahnke.com
+ * @file ScrollPushButton.cpp
+ * @date 2013-03-29
+ * @author graag@o2.pl
  *
  */
 
-#include "ScrollWidget.h"
+#include "ScrollPushButton.h"
 
-class ScrollFrameWindow;
-
-/**
- *  Interface for a Checkbox widget.
- */
-class ScrollCheckbox : public ScrollWidget
+void ScrollPushButton::ConfigRead()
 {
-public:
-    explicit ScrollCheckbox(ScrollFrameWindow *dialog) :
-	ScrollWidget(dialog)
-    {
-    }; 
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+            "ScrollPushButton::ConfigRead is not implemented.");
+    orxASSERT( false );
+}
 
-    virtual void SetSelection(const orxBOOL select) = 0;
-    virtual const orxBOOL GetSelection() const = 0;
-    /** Set wiget data from orx config for currently selected section.  */
-    virtual void ConfigRead();
-    /** Set orx config attribute value for currently selected section based on
-     * widget data.
-     */
-    virtual void ConfigUpdate();
-
-};
-
-#endif  // __SCROLL_CHECKBOX_H__
+void ScrollPushButton::ConfigUpdate()
+{
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+            "ScrollPushButton::ConfigUpdate is not implemented.");
+    orxASSERT( false );
+}
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab
 

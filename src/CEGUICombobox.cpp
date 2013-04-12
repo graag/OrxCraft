@@ -93,21 +93,21 @@ void CEGUICombobox::Fill (const vector<string> &listItems)
     }
 }
 
-void CEGUICombobox::SelectItem (const string& text)
+void CEGUICombobox::SetSelection(const string& text)
 {
     m_ceCombobox->clearAllSelections();
     if(text.empty()) return;
 
     unsigned int i = 0;
     std::vector<CEGUI::ListboxTextItem *>::const_iterator it;
-    for (it = m_items.begin (); it != m_items.end (); ++it)
+    for (it = m_items.begin(); it != m_items.end(); ++it)
     {
-	string itemText = (*it)->getText ().c_str ();
+	string itemText = (*it)->getText().c_str();
 	// Wanted item exists in the items list
 	if (itemText == text)
 	{
 	    // Set the edit box text accordingly
-	    m_ceCombobox->setItemSelectState (*it, true);
+	    m_ceCombobox->setItemSelectState(*it, true);
 	    break;
 	}
 	i++;
@@ -125,19 +125,19 @@ void CEGUICombobox::SelectItem (const string& text)
     }
 }
 
-const string CEGUICombobox::GetSelectedItem () const
+const string CEGUICombobox::GetSelection() const
 {
     string text;
-    CEGUI::ListboxItem *item = m_ceCombobox->getSelectedItem ();
+    CEGUI::ListboxItem *item = m_ceCombobox->getSelectedItem();
 
     // Found a selected item?
     if(item != NULL)
-	text = item->getText ().c_str ();
+	text = item->getText().c_str();
 
     return text;
 }
 
-bool CEGUICombobox::OnSelectionAccepted (const CEGUI::EventArgs &e)
+bool CEGUICombobox::OnSelectionAccepted(const CEGUI::EventArgs &e)
 {
 #ifdef __orxDEBUG__
     /*

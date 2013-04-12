@@ -74,17 +74,17 @@ void CEGUICheckbox::Init (const string& widgetName)
     m_ceCheckbox = checkbox;
 }
 
-void CEGUICheckbox::SetSelected (const orxBOOL select)
+void CEGUICheckbox::SetSelection(const orxBOOL select)
 {
     m_ceCheckbox->setSelected(select);
 }
 
-const orxBOOL CEGUICheckbox::IsSelected () const
+const orxBOOL CEGUICheckbox::GetSelection() const
 {
     return m_ceCheckbox->isSelected();
 }
 
-bool CEGUICheckbox::OnCheckStateChanged (const CEGUI::EventArgs &e)
+bool CEGUICheckbox::OnCheckStateChanged(const CEGUI::EventArgs &e)
 {
 #ifdef __orxDEBUG__
     /*

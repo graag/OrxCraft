@@ -13,50 +13,47 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *  
+ *
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *  
+ *
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
 
-#ifndef __SCROLL_CHECKBOX_H__
-#define __SCROLL_CHECKBOX_H__
 /**
- * @file ScrollCheckbox.h
- * @date 2012-05-07
- * @author fritz@fritzmahnke.com
+ * @file ScrollCombobox.cpp
+ * @date 2013-03-28
+ * @author graag@o2.pl
  *
  */
 
-#include "ScrollWidget.h"
+#include "ScrollCombobox.h"
 
-class ScrollFrameWindow;
+#include <vector>
+#include <string>
 
-/**
- *  Interface for a Checkbox widget.
- */
-class ScrollCheckbox : public ScrollWidget
+#include "ScrollFrameWindow.h"
+
+void ScrollCombobox::ConfigRead()
 {
-public:
-    explicit ScrollCheckbox(ScrollFrameWindow *dialog) :
-	ScrollWidget(dialog)
-    {
-    }; 
+    orxASSERT(!m_configName.empty());
+    orxASSERT(m_dataType == orxCRAFT_WIDGET_DATA_STRING)
+    SetSelection(orxConfig_GetString(m_configName.c_str()));
+}
 
-    virtual void SetSelection(const orxBOOL select) = 0;
-    virtual const orxBOOL GetSelection() const = 0;
-    /** Set wiget data from orx config for currently selected section.  */
-    virtual void ConfigRead();
-    /** Set orx config attribute value for currently selected section based on
-     * widget data.
-     */
-    virtual void ConfigUpdate();
+void ScrollCombobox::ConfigUpdate()
+{
+    orxASSERT(!m_configName.empty());
+    orxASSERT(m_dataType == orxCRAFT_WIDGET_DATA_STRING)
 
-};
-
-#endif  // __SCROLL_CHECKBOX_H__
+    orxSTATUS status;
+    status = orxConfig_SetString(m_configName.c_str(), GetSelection().c_str());
+    if(status != orxSTATUS_SUCCESS)
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+		"Failed to update config from widget %s status.",
+		m_widgetName.c_str());
+}
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab
 

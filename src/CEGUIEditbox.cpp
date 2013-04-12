@@ -32,6 +32,8 @@
 
 #include <string>
 
+#include "orx_config_util.h"
+
 #include "ScrollFrameWindow.h"
 
 using CEGUI::Editbox;
