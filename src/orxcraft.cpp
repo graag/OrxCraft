@@ -38,6 +38,7 @@
 #include "CEDialogManager.h"
 
 #include "constants.h"
+#include "orxcraft_util.h"
 
 #include <string>
 
@@ -60,7 +61,7 @@ OrxCraft::OrxCraft () :
 {
 }
 
-ScrollObject * OrxCraft::GetObjectByName (const orxSTRING name) const
+ScrollObject * OrxCraft::GetObjectByName (const string& name) const
 {
     ScrollObject *foundObject = NULL;
 
@@ -71,14 +72,33 @@ ScrollObject * OrxCraft::GetObjectByName (const orxSTRING name) const
 	// We are only interested in editable objects (directly loaded by
 	// OrxCraft) not in auto created children objects. Filter children out
 	// using FlagSave.
-	if(obj->TestFlags(ScrollObject::FlagSave) && 
-		orxString_Compare (name, obj->GetModelName ()) == 0)
+	if(obj->TestFlags(ScrollObject::FlagSave) &&
+		name == obj->GetModelName())
 	{
 	    foundObject = obj;
 	    break;
 	}
     }
     return foundObject;
+}
+
+vector<string> OrxCraft::GetObjectListSafe(const string& name)
+{
+    vector<string>::iterator it;
+    vector<string> result;
+    ScrollObject* obj = GetObjectByName(name);
+
+    for(it=m_objectList.begin(); it != m_objectList.end(); it++) {
+	// Cannot be child of self
+	if(*it == name)
+	    continue;
+	ScrollObject* parent = GetObjectByName(*it);
+	// Check if obj is not child of "it" to avoid cycles
+	if(!orxUtil::IsChild(obj, parent)) {
+	    result.push_back(*it);
+	}
+    }
+    return result;
 }
 
 orxSTATUS OrxCraft::Init ()
@@ -622,11 +642,6 @@ int main (int argc, char **argv)
 
     // Done!
     return EXIT_SUCCESS;
-}
-
-void OrxCraft::SetSelectedFXSlot (const orxSTRING name)
-{
-    orxASSERT (false);
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

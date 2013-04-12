@@ -56,12 +56,11 @@ public:
 
     //! Get names of currently loaded objects
     inline std::vector<std::string>& GetObjectList () { return m_objectList; }
+    std::vector<std::string> GetObjectListSafe(const std::string& name);
     //! Get names of currently loaded FXs
     inline std::vector<std::string>& GetFXList () { return m_fxList; }
     //! Get names of currently loaded FXSlots
     inline std::vector<std::string>& GetFXSlotList () { return m_fxSlotList; }
-    //! Set selected FXSlot in FXSlot Editor
-    void SetSelectedFXSlot (const orxSTRING name);
 
     //! Get names of currently loaded Graphics
     inline std::vector<std::string>& GetGraphicList () { return m_graphicList; }
@@ -71,7 +70,7 @@ public:
      *
      * @return an object if found, orxNULL otherwise.
      */
-    ScrollObject * GetObjectByName (const orxSTRING name) const;
+    ScrollObject * GetObjectByName (const std::string& name) const;
     DialogManager * GetDialogManager () { return m_dialogManager; }
 
     //! Setup loaded config section lists and create objects.

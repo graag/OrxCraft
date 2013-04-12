@@ -44,68 +44,49 @@ using std::string;
 
 FXSlotEditorWindow::FXSlotEditorWindow (const string& name) :
     ScrollFrameWindow(name),
-    m_fxsType (NULL),
-    m_fxsCurve (NULL),
-    m_fxsStartTime (NULL),
-    m_fxsEndTime (NULL),
-    m_fxsStartValue0 (NULL),
-    m_fxsStartValue1 (NULL),
-    m_fxsStartValue2 (NULL),
-    m_fxsEndValue0 (NULL),
-    m_fxsEndValue1 (NULL),
-    m_fxsEndValue2 (NULL),
-    m_fxsPhase (NULL),
-    m_fxsPeriod (NULL),
-    m_fxsAcceleration (NULL),
-    m_fxsAmplification (NULL),
-    m_fxsPow (NULL),
-    m_fxsAbsolute (NULL),
-    m_fxsUseRotation (NULL),
-    m_fxsUseScale (NULL),
     m_fxsConfigName (NULL)
 {
 }
 
 void FXSlotEditorWindow::Init ()
 {
-    m_fxsType = FindCombobox ("FXSlotType");
-    m_fxsCurve = FindCombobox ("FXSlotCurve");
-    m_fxsStartTime = FindEditbox ("FXSlotStartTime");
-    m_fxsEndTime = FindEditbox ("FXSlotEndTime");
-    m_fxsStartValue0 = FindEditbox ("FXSlotStartValue0");
-    m_fxsStartValue1 = FindEditbox ("FXSlotStartValue1");
-    m_fxsStartValue2 = FindEditbox ("FXSlotStartValue2");
-    m_fxsEndValue0 = FindEditbox ("FXSlotEndValue0");
-    m_fxsEndValue1 = FindEditbox ("FXSlotEndValue1");
-    m_fxsEndValue2 = FindEditbox ("FXSlotEndValue2");
-    m_fxsPhase = FindEditbox ("FXSlotPhase");
-    m_fxsPeriod = FindEditbox ("FXSlotPeriod");
-    m_fxsAcceleration = FindEditbox ("FXSlotAcceleration");
-    m_fxsAmplification = FindEditbox ("FXSlotAmplification");
-    m_fxsPow = FindEditbox ("FXSlotPow");
-    m_fxsAbsolute = FindCheckbox ("FXSlotAbsolute");
-    m_fxsUseRotation = FindCombobox ("FXSlotUseRotation");
-    m_fxsUseScale = FindCombobox ("FXSlotUseScale");
-    m_fxsConfigName = FindCombobox ("FXSlotConfigName");
+    FindWidget("FXSlotType")->ConfigBind("Type");
+    FindWidget("FXSlotCurve")->ConfigBind("Curve");
+    FindWidget("FXSlotStartTime")->ConfigBind(
+	    "StartTime", orxCRAFT_WIDGET_DATA_FLOAT);
+    FindWidget("FXSlotEndTime")->ConfigBind(
+	    "EndTime", orxCRAFT_WIDGET_DATA_FLOAT);
+    FindWidget("FXSlotStartValue0")->ConfigBind(
+	    "StartValue", orxCRAFT_WIDGET_DATA_VECTOR0);
+    FindWidget("FXSlotStartValue1")->ConfigBind(
+	    "StartValue", orxCRAFT_WIDGET_DATA_VECTOR1);
+    FindWidget("FXSlotStartValue2")->ConfigBind(
+	    "StartValue", orxCRAFT_WIDGET_DATA_VECTOR2);
+    FindWidget("FXSlotEndValue0")->ConfigBind(
+	    "EndValue", orxCRAFT_WIDGET_DATA_VECTOR0);
+    FindWidget("FXSlotEndValue1")->ConfigBind(
+	    "EndValue", orxCRAFT_WIDGET_DATA_VECTOR1);
+    FindWidget("FXSlotEndValue2")->ConfigBind(
+	    "EndValue", orxCRAFT_WIDGET_DATA_VECTOR2);
+    FindWidget("FXSlotPhase")->ConfigBind(
+	    "Phase", orxCRAFT_WIDGET_DATA_FLOAT);
+    FindWidget("FXSlotPeriod")->ConfigBind(
+	    "Period", orxCRAFT_WIDGET_DATA_FLOAT);
+    FindWidget("FXSlotAcceleration")->ConfigBind(
+	    "Acceleration", orxCRAFT_WIDGET_DATA_FLOAT);
+    FindWidget("FXSlotAmplification")->ConfigBind(
+	    "Amplification", orxCRAFT_WIDGET_DATA_FLOAT);
+    FindWidget("FXSlotPow")->ConfigBind(
+	    "Pow", orxCRAFT_WIDGET_DATA_FLOAT);
+    FindWidget("FXSlotAbsolute")->ConfigBind(
+	    "Absolute", orxCRAFT_WIDGET_DATA_BOOL);
+    FindWidget("FXSlotUseRotation")->ConfigBind(
+	    "UseRotation", orxCRAFT_WIDGET_DATA_BOOL);
+    FindWidget("FXSlotUseScale")->ConfigBind(
+	    "UseScale", orxCRAFT_WIDGET_DATA_BOOL);
 
-    orxASSERT(m_fxsType != NULL);
-    orxASSERT(m_fxsCurve != NULL);
-    orxASSERT(m_fxsStartTime != NULL);
-    orxASSERT(m_fxsEndTime != NULL);
-    orxASSERT(m_fxsStartValue0 != NULL);
-    orxASSERT(m_fxsStartValue1 != NULL);
-    orxASSERT(m_fxsStartValue2 != NULL);
-    orxASSERT(m_fxsEndValue0 != NULL);
-    orxASSERT(m_fxsEndValue1 != NULL);
-    orxASSERT(m_fxsEndValue2 != NULL);
-    orxASSERT(m_fxsPhase != NULL);
-    orxASSERT(m_fxsPeriod != NULL);
-    orxASSERT(m_fxsAcceleration != NULL);
-    orxASSERT(m_fxsAmplification != NULL);
-    orxASSERT(m_fxsPow != NULL);
-    orxASSERT(m_fxsAbsolute != NULL);
-    orxASSERT(m_fxsUseRotation != NULL);
-    orxASSERT(m_fxsUseScale != NULL);
+    // No Auto ConfigBing for this one
+    m_fxsConfigName = FindCombobox ("FXSlotConfigName");
     orxASSERT(m_fxsConfigName != NULL);
 
     SetupFields ();
@@ -113,92 +94,47 @@ void FXSlotEditorWindow::Init ()
     SetContext ("FXS-Darken");
 }
 
-void FXSlotEditorWindow::SetupFields ()
+void FXSlotEditorWindow::SetupFields()
 {
     vector<string> propList;
-    propList = OrxCraft::GetInstance ().GetFXSlotList ();
-    m_fxsConfigName->Fill (propList);
+    propList = OrxCraft::GetInstance().GetFXSlotList();
+    m_fxsConfigName->Fill(propList);
 
-    orxConfig_PushSection ("FXSlotEditorWindow");
+    orxConfig_PushSection("FXSlotEditorWindow");
 
     // Fill combo boxes
+    ScrollCombobox* box;
 
-    orx_config_util::GetListIntoVector ("Type", propList);
-    m_fxsType->Fill (propList);
+    propList.clear();
+    box = FindCombobox("FXSlotType");
+    orxASSERT(box != orxNULL);
+    orxConf::GetListAsVector("Type", propList);
+    box->Fill(propList);
 
-    propList.clear ();
-    orx_config_util::GetListIntoVector ("Curve", propList);
-    m_fxsCurve->Fill (propList);
-
-    propList.clear ();
-    orx_config_util::GetListIntoVector ("UseRotation", propList);
-    m_fxsUseRotation->Fill (propList);
-
-    propList.clear ();
-    orx_config_util::GetListIntoVector ("UseScale", propList);
-    m_fxsUseScale->Fill (propList);
+    propList.clear();
+    box = FindCombobox("FXSlotCurve");
+    orxASSERT(box != orxNULL);
+    orxConf::GetListAsVector ("Curve", propList);
+    box->Fill (propList);
 
     orxConfig_PopSection ();
 }
 
 void FXSlotEditorWindow::UpdateFields () const
 {
-    char buffer[255];
-
     // Config name
-    m_fxsConfigName->SelectItem (m_context);
+    m_fxsConfigName->SetSelection(m_context);
 
-    orxConfig_PushSection (m_context.c_str());
+    orxConfig_PushSection(m_context.c_str());
 
-    // Type
-    m_fxsType->SelectItem (orxConfig_GetString("Type"));
-    // Curve
-    m_fxsCurve->SelectItem (orxConfig_GetString("Curve"));
-    // StartTime
-    orx_config_util::FloatToString (orxConfig_GetFloat ("StartTime"), buffer);
-    m_fxsStartTime->SetText (buffer);
-    // EndTime
-    orx_config_util::FloatToString (orxConfig_GetFloat ("EndTime"), buffer);
-    m_fxsEndTime->SetText (buffer);
-    // StartValue
-    orx_config_util::VectorToString ("StartValue", 0, buffer);
-    m_fxsStartValue0->SetText (buffer);
-    orx_config_util::VectorToString ("StartValue", 1, buffer);
-    m_fxsStartValue1->SetText (buffer);
-    orx_config_util::VectorToString ("StartValue", 2, buffer);
-    m_fxsStartValue2->SetText (buffer);
-    // EndValue
-    orx_config_util::VectorToString ("EndValue", 0, buffer);
-    m_fxsEndValue0->SetText (buffer);
-    orx_config_util::VectorToString ("EndValue", 1, buffer);
-    m_fxsEndValue1->SetText (buffer);
-    orx_config_util::VectorToString ("EndValue", 2, buffer);
-    m_fxsEndValue2->SetText (buffer);
-    // Phase
-    orx_config_util::FloatToString (orxConfig_GetFloat ("Phase"), buffer);
-    m_fxsPhase->SetText (buffer);
-    // Period
-    orx_config_util::FloatToString (orxConfig_GetFloat ("Period"), buffer);
-    m_fxsPeriod->SetText (buffer);
-    // Absolute
-    m_fxsAbsolute->SetSelected (orxConfig_GetBool ("Absolute"));
-    // Acceleration
-    orx_config_util::FloatToString (orxConfig_GetFloat ("Acceleration"), buffer);
-    m_fxsAcceleration->SetText (buffer);
-    // Amplification
-    orx_config_util::FloatToString (orxConfig_GetFloat ("Amplification"), buffer);
-    m_fxsAmplification->SetText (buffer);
-    // Pow
-    orx_config_util::FloatToString (orxConfig_GetFloat ("Pow"), buffer);
-    m_fxsPow->SetText (buffer);
-    // UseRotation
-    orx_config_util::BoolToString (orxConfig_GetBool ("UseRotation"), buffer);
-    m_fxsUseRotation->SelectItem (buffer);
-    // UseScale
-    orx_config_util::BoolToString (orxConfig_GetBool ("UseScale"), buffer);
-    m_fxsUseScale->SelectItem (buffer);
+    vector<ScrollWidget *>::const_iterator it;
+    for(it = m_widgetList.begin(); it != m_widgetList.end(); it++) {
+	if((*it)->GetName() == "FXSlotConfigName")
+		continue;
+	(*it)->ConfigRead();
+    }
 
-    orxConfig_PopSection ();
+    orxConfig_PopSection();
 }
 
 const string FXSlotEditorWindow::GetText (const string& widgetName) const
@@ -222,125 +158,29 @@ void FXSlotEditorWindow::OnTextAccepted (const string& widgetName)
 {
     if (widgetName == "FXSlotConfigName")
     {
-	const string& name = m_fxsConfigName->GetSelectedItem ();
+	const string& name = m_fxsConfigName->GetSelection();
 	//! @todo Better not to have this in the Scroll singleton
 	SetContext (name);
+    } else {
+
+	// Push config section of edited object
+	orxConfig_PushSection(m_context.c_str());
+
+	// Update Orx config in memory from value entered in control
+	ScrollWidget* box = FindWidget(widgetName);
+	orxASSERT(box != orxNULL);
+	box->ConfigUpdate();
+
+	orxConfig_PopSection();
     }
 
-    // Push config section of edited object
-    orxConfig_PushSection (m_context.c_str());
-
-    // Update Orx config in memory from value entered in control
-    if (widgetName == "FXSlotType")
-    {
-	const string& type = m_fxsType->GetSelectedItem ();
-	orxConfig_SetString ("Type", type.c_str());
-    }
-    else if (widgetName == "FXSlotCurve")
-    {
-	const string& curve = m_fxsCurve->GetSelectedItem ();
-	orxConfig_SetString ("Curve", curve.c_str());
-    }
-    else if (widgetName == "FXSlotStartTime")
-    {
-	orxFLOAT startTime;
-	orxString_ToFloat(m_fxsStartTime->GetText().c_str(),
-		&startTime, orxNULL);
-	orxConfig_SetFloat ("StartTime", startTime);
-    }
-    else if (widgetName == "FXSlotEndTime")
-    {
-	orxFLOAT endTime;
-	orxString_ToFloat(m_fxsEndTime->GetText().c_str(),
-		&endTime, orxNULL);
-	orxConfig_SetFloat ("EndTime", endTime);
-    }
-    else if (widgetName.find("FXSlotStartValue") != string::npos)
-    {
-	orxFLOAT XFloat;
-	orxFLOAT YFloat;
-	orxFLOAT ZFloat;
-	orxString_ToFloat(m_fxsStartValue0->GetText().c_str(),
-		&XFloat, orxNULL);
-	orxString_ToFloat(m_fxsStartValue1->GetText().c_str(),
-		&YFloat, orxNULL);
-	orxString_ToFloat(m_fxsStartValue2->GetText().c_str(),
-		&ZFloat, orxNULL);
-	orxVECTOR startValue = { {XFloat}, {YFloat}, {ZFloat} };
-	orxConfig_SetVector ("StartValue", &startValue);
-    }
-    else if (widgetName.find("FXSlotEndValue") != string::npos)
-    {
-	orxFLOAT XFloat;
-	orxFLOAT YFloat;
-	orxFLOAT ZFloat;
-	orxString_ToFloat(m_fxsEndValue0->GetText().c_str(), &XFloat, orxNULL);
-	orxString_ToFloat(m_fxsEndValue1->GetText().c_str(), &YFloat, orxNULL);
-	orxString_ToFloat(m_fxsEndValue2->GetText().c_str(), &ZFloat, orxNULL);
-	orxVECTOR endValue = { {XFloat}, {YFloat}, {ZFloat} };
-	orxConfig_SetVector ("EndValue", &endValue);
-    }
-    else if (widgetName == "FXSlotPhase")
-    {
-	orxFLOAT phase;
-	orxString_ToFloat(m_fxsPhase->GetText().c_str(), &phase, orxNULL);
-	orxConfig_SetFloat ("Phase", phase);
-    }
-    else if (widgetName == "FXSlotPeriod")
-    {
-	orxFLOAT period;
-	orxString_ToFloat(m_fxsPeriod->GetText().c_str(), &period, orxNULL);
-	orxConfig_SetFloat ("Period", period);
-    }
-    else if (widgetName == "FXSlotAbsolute")
-    {
-	orxBOOL absolute = m_fxsAbsolute->IsSelected();
-	orxConfig_SetBool ("Absolute", absolute);
-    }
-    else if (widgetName == "FXSlotAcceleration")
-    {
-	orxFLOAT accel;
-	orxString_ToFloat(m_fxsAcceleration->GetText().c_str(), &accel,
-		orxNULL);
-	orxConfig_SetFloat ("Acceleration", accel);
-    }
-    else if (widgetName == "FXSlotAmplification")
-    {
-	orxFLOAT ampli;
-	orxString_ToFloat(m_fxsAmplification->GetText().c_str(), &ampli,
-		orxNULL);
-	orxConfig_SetFloat ("Amplification", ampli);
-    }
-    else if (widgetName == "FXSlotPow")
-    {
-	orxFLOAT pow;
-	orxString_ToFloat(m_fxsPow->GetText().c_str(), &pow, orxNULL);
-	orxConfig_SetFloat ("Pow", pow);
-    }
-    else if (widgetName == "FXSlotUseRotation")
-    {
-	orxBOOL useRotation;
-	orxString_ToBool(m_fxsUseRotation->GetSelectedItem().c_str(),
-		&useRotation, orxNULL);
-	orxConfig_SetBool ("UseRotation", useRotation);
-    }
-    else if (widgetName == "FXSlotUseScale")
-    {
-	orxBOOL useScale;
-	orxString_ToBool(m_fxsUseScale->GetSelectedItem().c_str(), &useScale,
-			  orxNULL);
-	orxConfig_SetBool ("UseScale", useScale);
-    }
-
-    orxConfig_PopSection ();
-
-    OrxCraft::GetInstance ().NeedObjectUpdate ();
+    OrxCraft::GetInstance().NeedObjectUpdate();
 }
 
 void FXSlotEditorWindow::OnPopupFinish (const string& popupName,
 	const string& popupTitle)
 {
-    orxASSERT (false);
+    orxASSERT(false);
 }
 
 void FXSlotEditorWindow::OnDestroy ()

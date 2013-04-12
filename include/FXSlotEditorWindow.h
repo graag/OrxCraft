@@ -66,28 +66,7 @@ public:
 private:
     std::string m_context;
 
-    ScrollCombobox *m_fxsType;
-    ScrollCombobox *m_fxsCurve;
-    ScrollEditbox *m_fxsStartTime;
-    ScrollEditbox *m_fxsEndTime;
-    ScrollEditbox *m_fxsStartValue0;
-    ScrollEditbox *m_fxsStartValue1;
-    ScrollEditbox *m_fxsStartValue2;
-    ScrollEditbox *m_fxsEndValue0;
-    ScrollEditbox *m_fxsEndValue1;
-    ScrollEditbox *m_fxsEndValue2;
-    ScrollEditbox *m_fxsPhase;
-    ScrollEditbox *m_fxsPeriod;
-    ScrollEditbox *m_fxsAcceleration;
-    ScrollEditbox *m_fxsAmplification;
-    ScrollEditbox *m_fxsPow;
-
-    ScrollCheckbox *m_fxsAbsolute;
-    ScrollCombobox *m_fxsUseRotation;
-    ScrollCombobox *m_fxsUseScale;
-    
     ScrollCombobox *m_fxsConfigName;
-
 };
 
 #endif  // __FXSLOTEDITORWINDOW_H__

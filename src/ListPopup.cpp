@@ -68,7 +68,7 @@ void ListPopup::Init ()
     else
     	window->setText(m_name);
 
-    m_contentList = FindListbox ("ListPopup/SelectionList");
+    m_contentList = FindListbox("ListPopup/SelectionList");
 }
 
 void ListPopup::Fill (const vector<string>& dataList)

@@ -55,190 +55,134 @@ ObjectEditor::ObjectEditor (const string& name) :
     ScrollFrameWindow(name),
     m_object (NULL),
     m_objConfigName (NULL),
-    m_objAlpha (NULL),
-    m_objAngVelocity (NULL),
-    m_objPosX (NULL),
-    m_objPosY (NULL),
-    m_objPosZ (NULL),
-    m_objFXList (NULL),
-    m_objChildList (NULL),
-    m_objAnimFreq (NULL),
-    m_objAnimSet (NULL),
-    m_objAutoScroll (NULL),
-    m_objBlendMode (NULL),
-    m_objBody (NULL),
-    m_objChildJointList (NULL),
-    m_objClock (NULL),
-    m_objDepthScale (NULL),
-    m_objGraphic (NULL),
-    m_objFlip (NULL),
-    m_objLifeTime (NULL),
-    m_objParentCam (NULL),
-    m_objRepeatX (NULL),
-    m_objRepeatY (NULL),
-    m_objRepeatZ (NULL),
-    m_objRotation (NULL),
-    m_objScaleX (NULL),
-    m_objScaleY (NULL),
-    m_objScaleZ (NULL),
-    m_objSpeedX (NULL),
-    m_objSpeedY (NULL),
-    m_objSpeedZ (NULL),
-    m_objSmoothing (NULL),
-    m_objShaderList (NULL),
-    m_objSoundList (NULL),
-    m_objSpawner (NULL),
-    m_objUseParentSpace (NULL),
-    m_objUseRelativeSpeed (NULL),
-    m_objColorR (NULL),
-    m_objColorG (NULL),
-    m_objColorB (NULL),
-    m_buttonChildList(NULL)
+    m_buttonChildList(NULL),
+    m_buttonFXList(NULL)
 {
 }
 
 void ObjectEditor::Init ()
 {
-    m_objConfigName = FindCombobox ("ObjectConfigName");
-    m_objAlpha = FindEditbox ("ObjAlpha");
-    m_objAngVelocity = FindEditbox ("ObjAngularVelocity");
-    m_objPosX = FindEditbox ("ObjPos0");
-    m_objPosY = FindEditbox ("ObjPos1");
-    m_objPosZ = FindEditbox ("ObjPos2");
-    m_objFXList = FindEditbox ("ObjFXList");
-    m_objChildList = FindEditbox ("ObjChildList");
-    m_objAnimFreq = FindEditbox ("ObjAnimFreq");
-    m_objAnimSet = FindEditbox ("ObjAnimSet");
-    m_objAutoScroll = FindCombobox ("ObjAutoScroll");
-    m_objBlendMode = FindCombobox ("ObjBlendMode");
-    m_objBody = FindEditbox ("ObjBody");
-    m_objChildJointList = FindListbox ("ObjChildJointList");
-    m_objClock = FindEditbox ("ObjClock");
-    m_objDepthScale = FindCombobox ("ObjDepthScale");
-    m_objGraphic = FindCombobox ("ObjGraphic");
-    m_objFlip = FindCombobox ("ObjFlip");
-    m_objLifeTime = FindEditbox ("ObjLifeTime");
-    m_objParentCam = FindEditbox ("ObjParentCam");
-    m_objRepeatX = FindEditbox ("ObjRepeat0");
-    m_objRepeatY = FindEditbox ("ObjRepeat1");
-    m_objRepeatZ = FindEditbox ("ObjRepeat2");
-    m_objRotation = FindEditbox ("ObjRotation");
-    m_objScaleX = FindEditbox ("ObjScale0");
-    m_objScaleY = FindEditbox ("ObjScale1");
-    m_objScaleZ = FindEditbox ("ObjScale2");
-    m_objSpeedX = FindEditbox ("ObjSpeedX");
-    m_objSpeedY = FindEditbox ("ObjSpeedY");
-    m_objSpeedZ = FindEditbox ("ObjSpeedZ");
-    m_objSmoothing = FindCombobox ("ObjSmoothing");
-    m_objShaderList = FindEditbox ("ObjShaderList");
-    m_objSoundList = FindEditbox ("ObjSoundList");
-    m_objSpawner = FindEditbox ("ObjSpawner");
-    m_objUseParentSpace = FindCombobox ("ObjUseParentSpace");
-    m_objUseRelativeSpeed = FindCombobox ("ObjUseRelativeSpeed");
-    m_objColorR = FindEditbox ("ObjColor0");
-    m_objColorG = FindEditbox ("ObjColor1");
-    m_objColorB = FindEditbox ("ObjColor2");
+    FindWidget("ObjAlpha")->ConfigBind(
+	    "Alpha", orxCRAFT_WIDGET_DATA_FLOAT);
+    FindWidget("ObjAngularVelocity")->ConfigBind(
+	    "AngularVelocity", orxCRAFT_WIDGET_DATA_FLOAT);
+    FindWidget("ObjPos0")->ConfigBind(
+	    "Position", orxCRAFT_WIDGET_DATA_VECTOR0);
+    FindWidget("ObjPos1")->ConfigBind(
+	    "Position", orxCRAFT_WIDGET_DATA_VECTOR1);
+    FindWidget("ObjPos2")->ConfigBind(
+	    "Position", orxCRAFT_WIDGET_DATA_VECTOR2);
+    FindWidget("ObjFXList")->ConfigBind(
+    	    "FXList", orxCRAFT_WIDGET_DATA_LIST);
+    FindWidget("ObjChildList")->ConfigBind(
+    	    "ChildList", orxCRAFT_WIDGET_DATA_LIST);
+    FindWidget("ObjAnimFreq")->ConfigBind(
+	    "AnimationFrequency", orxCRAFT_WIDGET_DATA_FLOAT);
+    FindWidget("ObjAnimSet")->ConfigBind("AnimationSet");
+    FindWidget("ObjAutoScroll")->ConfigBind("AutoScroll");
+    FindWidget("ObjBlendMode")->ConfigBind("BlendMode");
+    FindWidget("ObjBody")->ConfigBind("Body");
+    FindWidget("ObjChildJointList")->ConfigBind(
+    	    "ChildJointList", orxCRAFT_WIDGET_DATA_LIST);
+    FindWidget("ObjClock")->ConfigBind("Clock");
+    FindWidget("ObjDepthScale")->ConfigBind(
+	    "DepthScale", orxCRAFT_WIDGET_DATA_BOOL);
+    FindWidget("ObjGraphic")->ConfigBind("Graphic");
+    FindWidget("ObjFlip")->ConfigBind("Flip");
+    FindWidget("ObjLifeTime")->ConfigBind(
+	    "LifeTime", orxCRAFT_WIDGET_DATA_FLOAT);
+    FindWidget("ObjParentCam")->ConfigBind("ParentCamera");
+    FindWidget("ObjRepeat0")->ConfigBind(
+	    "Repeat", orxCRAFT_WIDGET_DATA_VECTOR0);
+    FindWidget("ObjRepeat1")->ConfigBind(
+	    "Repeat", orxCRAFT_WIDGET_DATA_VECTOR1);
+    FindWidget("ObjRepeat2")->ConfigBind(
+	    "Repeat", orxCRAFT_WIDGET_DATA_VECTOR2);
+    FindWidget("ObjRotation")->ConfigBind(
+	    "Rotation", orxCRAFT_WIDGET_DATA_FLOAT);
+    FindWidget("ObjScale0")->ConfigBind(
+	    "Scale", orxCRAFT_WIDGET_DATA_VECTOR0);
+    FindWidget("ObjScale1")->ConfigBind(
+	    "Scale", orxCRAFT_WIDGET_DATA_VECTOR1);
+    FindWidget("ObjScale2")->ConfigBind(
+	    "Scale", orxCRAFT_WIDGET_DATA_VECTOR2);
+    FindWidget("ObjSpeedX")->ConfigBind(
+	    "Speed", orxCRAFT_WIDGET_DATA_VECTOR0);
+    FindWidget("ObjSpeedY")->ConfigBind(
+	    "Speed", orxCRAFT_WIDGET_DATA_VECTOR1);
+    FindWidget("ObjSpeedZ")->ConfigBind(
+	    "Speed", orxCRAFT_WIDGET_DATA_VECTOR2);
+    FindWidget("ObjSmoothing")->ConfigBind(
+	    "Smoothing", orxCRAFT_WIDGET_DATA_BOOL);
+    FindWidget("ObjShaderList")->ConfigBind(
+    	    "ShaderList", orxCRAFT_WIDGET_DATA_LIST);
+    FindWidget("ObjSoundList")->ConfigBind(
+    	    "SoundList", orxCRAFT_WIDGET_DATA_LIST);
+    FindWidget("ObjSpawner")->ConfigBind("Spawner");
+    FindWidget("ObjUseParentSpace")->ConfigBind(
+	    "UseParentSpace", orxCRAFT_WIDGET_DATA_BOOL);
+    FindWidget("ObjUseRelativeSpeed")->ConfigBind(
+	    "UseRelativeSpeed", orxCRAFT_WIDGET_DATA_BOOL);
+    FindWidget("ObjColor0")->ConfigBind(
+	    "Color", orxCRAFT_WIDGET_DATA_VECTOR0);
+    FindWidget("ObjColor1")->ConfigBind(
+	    "Color", orxCRAFT_WIDGET_DATA_VECTOR1);
+    FindWidget("ObjColor2")->ConfigBind(
+	    "Color", orxCRAFT_WIDGET_DATA_VECTOR2);
+
+    // Push buttons
     m_buttonChildList = (ScrollPushButton*)FindWidget("ButtonChildList");
     m_buttonFXList = (ScrollPushButton*)FindWidget("ButtonFXList");
 
+    m_objConfigName = FindCombobox ("ObjectConfigName");
     orxASSERT(m_objConfigName != NULL);
-    orxASSERT(m_objAlpha != NULL);
-    orxASSERT(m_objAngVelocity != NULL);
-    orxASSERT(m_objPosX != NULL);
-    orxASSERT(m_objPosY != NULL);
-    orxASSERT(m_objPosZ != NULL);
-    orxASSERT(m_objFXList != NULL);
-    orxASSERT(m_objChildList != NULL);
-    orxASSERT(m_objAnimFreq != NULL);
-    orxASSERT(m_objAnimSet != NULL);
-    orxASSERT(m_objAutoScroll != NULL);
-    orxASSERT(m_objBlendMode != NULL);
-    orxASSERT(m_objBody != NULL);
-    orxASSERT(m_objChildJointList != NULL);
-    orxASSERT(m_objClock != NULL);
-    orxASSERT(m_objDepthScale != NULL);
-    orxASSERT(m_objGraphic != NULL);
-    orxASSERT(m_objFlip != NULL);
-    orxASSERT(m_objLifeTime != NULL);
-    orxASSERT(m_objParentCam != NULL);
-    orxASSERT(m_objRepeatX != NULL);
-    orxASSERT(m_objRepeatY != NULL);
-    orxASSERT(m_objRepeatZ != NULL);
-    orxASSERT(m_objRotation != NULL);
-    orxASSERT(m_objScaleX != NULL);
-    orxASSERT(m_objScaleY != NULL);
-    orxASSERT(m_objScaleZ != NULL);
-    orxASSERT(m_objSpeedX != NULL);
-    orxASSERT(m_objSpeedY != NULL);
-    orxASSERT(m_objSpeedZ != NULL);
-    orxASSERT(m_objSmoothing != NULL);
-    orxASSERT(m_objShaderList != NULL);
-    orxASSERT(m_objSoundList != NULL);
-    orxASSERT(m_objSpawner != NULL);
-    orxASSERT(m_objUseParentSpace != NULL);
-    orxASSERT(m_objUseRelativeSpeed != NULL);
-    orxASSERT(m_objColorR != NULL);
-    orxASSERT(m_objColorG != NULL);
-    orxASSERT(m_objColorB != NULL);
-    orxASSERT(m_buttonChildList != NULL);
 
     SetupFields ();
 }
 
-void ObjectEditor::SetupFields ()
+void ObjectEditor::SetupFields()
 {
     vector<string> propList =
-	OrxCraft::GetInstance ().GetObjectList ();
+	OrxCraft::GetInstance().GetObjectList();
 
-    m_objConfigName->Fill (propList);
-
-    propList = OrxCraft::GetInstance ().GetGraphicList ();
-
-    m_objGraphic->Fill (propList);
-
-    orxConfig_PushSection ("ObjectEditor");
+    m_objConfigName->Fill(propList);
 
     // Fill combo boxes
-    propList.clear ();
-    orx_config_util::GetListIntoVector ("AutoScroll", propList);
-    m_objAutoScroll->Fill (propList);
+    orxConfig_PushSection("ObjectEditor");
+    ScrollCombobox* box;
 
-    propList.clear ();
-    orx_config_util::GetListIntoVector ("BlendMode", propList);
-    m_objBlendMode->Fill (propList);
+    propList.clear();
+    box = FindCombobox("ObjGraphic");
+    propList = OrxCraft::GetInstance().GetGraphicList();
+    box->Fill(propList);
 
-    propList.clear ();
-    orx_config_util::GetListIntoVector ("DepthScale", propList);
-    m_objDepthScale->Fill (propList);
+    propList.clear();
+    box = FindCombobox("ObjAutoScroll");
+    orxConf::GetListAsVector("AutoScroll", propList);
+    box->Fill(propList);
 
-    propList.clear ();
-    orx_config_util::GetListIntoVector ("Flip", propList);
-    m_objFlip->Fill (propList);
+    propList.clear();
+    box = FindCombobox("ObjBlendMode");
+    orxConf::GetListAsVector("BlendMode", propList);
+    box->Fill(propList);
 
-    propList.clear ();
-    orx_config_util::GetListIntoVector ("Smoothing", propList);
-    m_objSmoothing->Fill (propList);
+    propList.clear();
+    box = FindCombobox("ObjFlip");
+    orxConf::GetListAsVector("Flip", propList);
+    box->Fill(propList);
 
-    propList.clear ();
-    orx_config_util::GetListIntoVector ("UseParentSpace", propList);
-    m_objUseParentSpace->Fill (propList);
-
-    propList.clear ();
-    orx_config_util::GetListIntoVector ("UseRelativeSpeed", propList);
-    m_objUseRelativeSpeed->Fill (propList);
-
-    orxConfig_PopSection ();
+    orxConfig_PopSection();
 
     ScrollObject *object =
-	OrxCraft::GetInstance ().GetObjectByName ("O-Soldier");
+	OrxCraft::GetInstance().GetObjectByName("O-Soldier");
 
-    SetObject (object);
+    SetObject(object);
 }
 
-void ObjectEditor::SetObject (ScrollObject *object)
+void ObjectEditor::SetObject(ScrollObject *object)
 {
     m_object = object;
-    UpdateFields ();
+    UpdateFields();
 }
 
 ScrollObject* ObjectEditor::GetObject()
@@ -246,113 +190,29 @@ ScrollObject* ObjectEditor::GetObject()
     return m_object;
 }
 
-void ObjectEditor::UpdateFields () const
+void ObjectEditor::UpdateFields() const
 {
     if (m_object != orxNULL)
     {
-	char buffer[255];
-
-	const orxSTRING name = m_object->GetModelName ();
+	string obj_name = m_object->GetModelName();
 
 	// Config name
-	m_objConfigName->SelectItem (name);
+	m_objConfigName->SetSelection(obj_name);
 
-	orxConfig_PushSection (name);
+	orxConfig_PushSection(obj_name.c_str());
 
-	// Alpha
-	orx_config_util::FloatToString (orxConfig_GetFloat ("Alpha"), buffer);
-	m_objAlpha->SetText (buffer);
-	// AngularVelocity
-	orx_config_util::FloatToString (orxConfig_GetFloat ("AngularVelocity"), buffer);
-	m_objAngVelocity->SetText (buffer);
-	// AnimationFrequency
-	orx_config_util::FloatToString (orxConfig_GetFloat ("AnimationFrequency"), buffer);
-	m_objAnimFreq->SetText (buffer);
-	// AnimationSet
-	m_objAnimSet->SetText (orxConfig_GetString("AnimationSet"));
-	// AutoScroll
-	m_objAutoScroll->SelectItem(orxConfig_GetString("AutoScroll"));
-	// BlendMode
-	m_objBlendMode->SelectItem(orxConfig_GetString("BlendMode"));
-	// Body
-	m_objBody->SetText (orxConfig_GetString("Body"));
-	// ChildList
-	const string& children = orx_config_util::ListToString("ChildList");
-	m_objChildList->SetText(children);
-	// ChildJointList
-	/** @todo ChildJointList */
-	// Clock
-	m_objClock->SetText (orxConfig_GetString("Clock"));
-	// Color
-	orx_config_util::VectorToString ("Color", 0, buffer);
-	m_objColorR->SetText (buffer);
-	orx_config_util::VectorToString ("Color", 1, buffer);
-	m_objColorG->SetText (buffer);
-	orx_config_util::VectorToString ("Color", 2, buffer);
-	m_objColorB->SetText (buffer);
-	// DepthScale
-	orx_config_util::BoolToString (orxConfig_GetBool ("DepthScale"), buffer);
-	m_objDepthScale->SelectItem (buffer);
-	// Graphic
-	m_objGraphic->SelectItem (orxConfig_GetString("Graphic"));
-	// Flip
-	m_objFlip->SelectItem (orxConfig_GetString("Flip"));
-	// FXList
-	const string& fxList = orx_config_util::ListToString ("FXList");
-	m_objFXList->SetText (fxList);
-	// LifeTime
-	orx_config_util::FloatToString (orxConfig_GetFloat ("LifeTime"), buffer);
-	m_objLifeTime->SetText (buffer);
-	// ParentCamera
-	m_objParentCam->SetText (orxConfig_GetString("ParentCamera"));
-	// Position
-	orx_config_util::VectorToString ("Position", 0, buffer);
-	m_objPosX->SetText (buffer);
-	orx_config_util::VectorToString ("Position", 1, buffer);
-	m_objPosY->SetText (buffer);
-	orx_config_util::VectorToString ("Position", 2, buffer);
-	m_objPosZ->SetText (buffer);
-	// Repeat
-	orx_config_util::VectorToString ("Repeat", 0, buffer);
-	m_objRepeatX->SetText (buffer);
-	orx_config_util::VectorToString ("Repeat", 1, buffer);
-	m_objRepeatY->SetText (buffer);
-	orx_config_util::VectorToString ("Repeat", 2, buffer);
-	m_objRepeatZ->SetText (buffer);
-	// Rotation
-	orx_config_util::FloatToString (orxConfig_GetFloat ("Rotation"), buffer);
-	m_objRotation->SetText (buffer);
-	// Speed
-	orx_config_util::VectorToString ("Speed", 0, buffer);
-	m_objSpeedX->SetText (buffer);
-	orx_config_util::VectorToString ("Speed", 1, buffer);
-	m_objSpeedY->SetText (buffer);
-	orx_config_util::VectorToString ("Speed", 2, buffer);
-	m_objSpeedZ->SetText (buffer);
-	// Scale
-	orx_config_util::VectorToString ("Scale", 0, buffer);
-	m_objScaleX->SetText (buffer);
-	orx_config_util::VectorToString ("Scale", 1, buffer);
-	m_objScaleY->SetText (buffer);
-	orx_config_util::VectorToString ("Scale", 2, buffer);
-	m_objScaleZ->SetText (buffer);
-	// ShaderList
-	//! @todo ShaderList
-	// SoundList
-	//! @todo SoundList
-	// Spawner
-	m_objSpawner->SetText (orxConfig_GetString("Spawner"));
-	// Smoothing
-	orx_config_util::BoolToString (orxConfig_GetBool ("Smoothing"), buffer);
-	m_objSmoothing->SelectItem (buffer);
-	// UseParentSpace
-	orx_config_util::BoolToString (orxConfig_GetBool ("UseParentSpace"),
-				       buffer);
-	m_objUseParentSpace->SelectItem (buffer);
-	// UseRelativeSpeed
-	orx_config_util::BoolToString (orxConfig_GetBool ("UseRelativeSpeed"),
-				       buffer);
-	m_objUseRelativeSpeed->SelectItem (buffer);
+	vector<ScrollWidget *>::const_iterator it;
+	string widget_name;
+	for(it = m_widgetList.begin(); it != m_widgetList.end(); it++) {
+	    widget_name = (*it)->GetName();
+	    if(widget_name == "ObjectConfigName")
+		continue;
+	    if(widget_name == "ButtonChildList")
+		continue;
+	    if(widget_name == "ButtonFXList")
+		continue;
+	    (*it)->ConfigRead();
+	}
 
 	orxConfig_PopSection ();
     }
@@ -371,11 +231,14 @@ void ObjectEditor::OnMouseClick (const string& widgetName)
 
 	// Potential children are all objects
 	//! @todo Are those only objects (ones with graphic defined) or also other entities??
-	vector<std::string>& objects = OrxCraft::GetInstance().GetObjectList();
+	vector<std::string> objects =
+	    OrxCraft::GetInstance().GetObjectListSafe(
+		    m_object->GetModelName()
+		    );
 	vector<std::string> selection;
 
 	m_object->PushConfigSection();
-	orx_config_util::GetListIntoVector("ChildList", selection);
+	orxConf::GetListAsVector("ChildList", selection);
 	m_object->PopConfigSection();
 
 	popup->Fill(objects);
@@ -398,7 +261,7 @@ void ObjectEditor::OnMouseClick (const string& widgetName)
 	vector<std::string> selection;
 
 	m_object->PushConfigSection();
-	orx_config_util::GetListIntoVector("FXList", selection);
+	orxConf::GetListAsVector("FXList", selection);
 	m_object->PopConfigSection();
 
 	popup->Fill(objects);
@@ -411,186 +274,32 @@ void ObjectEditor::OnMouseClick (const string& widgetName)
     }
 }
 
-void ObjectEditor::OnTextAccepted (const string& widgetName)
+void ObjectEditor::OnTextAccepted(const string& widgetName)
 {
-    orxASSERT (m_object != orxNULL);
+    orxASSERT(m_object != orxNULL);
 
     if (widgetName == "ObjectConfigName")
     {
-	const string& name = m_objConfigName->GetSelectedItem ();
+	const string& name = m_objConfigName->GetSelection();
 	//! @todo Better not to have this in the Scroll singleton
 	ScrollObject *object =
-	    OrxCraft::GetInstance ().GetObjectByName (name.c_str());
-	SetObject (object);
-    }
+	    OrxCraft::GetInstance().GetObjectByName(name);
+	SetObject(object);
+    } else {
 
-    // Push config section of edited object
-    orxConfig_PushSection (m_object->GetModelName ());
+	// Push config section of edited object
+	orxConfig_PushSection(m_object->GetModelName());
 
-    // Update config
-    if (widgetName == "ObjAlpha")
-    {
-	const string& alpha = m_objAlpha->GetText ();
-	orxConfig_SetString ("Alpha", alpha.c_str());
-    }
-    else if (widgetName == "ObjAngularVelocity")
-    {
-	const string& angularVelocity = m_objAngVelocity->GetText ();
-	orxConfig_SetString ("AngularVelocity", angularVelocity.c_str());
-    }
-    else if (widgetName == "ObjAnimFreq")
-    {
-	orxFLOAT animFreq;
-	orxString_ToFloat(m_objAnimFreq->GetText().c_str(),
-		&animFreq, orxNULL);
-	orxConfig_SetFloat ("AnimationFrequency", animFreq);
-    }
-    else if (widgetName == "ObjAnimSet")
-    {
-	orxASSERT (false);
-    }
-    else if (widgetName == "ObjAutoScroll")
-    {
-	orxASSERT (false);
-	const string& autoScroll = m_objAutoScroll->GetSelectedItem ();
-	orxConfig_SetString ("AutoScroll", autoScroll.c_str());
-    }
-    else if (widgetName == "ObjBlendMode")
-    {
-	const string& blendMode = m_objBlendMode->GetSelectedItem ();
-	orxConfig_SetString ("BlendMode", blendMode.c_str());
-    }
-    else if (widgetName == "ObjBody")
-    {
-	orxASSERT (false);
-    }
-    else if (widgetName == "ObjClock")
-    {
-	orxASSERT (false);
-    }
-    else if (widgetName.find("ObjColor") != string::npos)
-    {
-	orxFLOAT newRFloat;
-	orxFLOAT newGFloat;
-	orxFLOAT newBFloat;
-	orxString_ToFloat(m_objColorR->GetText().c_str(), &newRFloat, orxNULL);
-	orxString_ToFloat(m_objColorG->GetText().c_str(), &newGFloat, orxNULL);
-	orxString_ToFloat(m_objColorB->GetText().c_str(), &newBFloat, orxNULL);
-	orxVECTOR newColor = { {newRFloat}, {newGFloat}, {newBFloat} };
-	orxConfig_SetVector ("Color", &newColor);
-    }
-    else if (widgetName == "ObjDepthScale")
-    {
-	orxASSERT (false);
-	const string& depthScale = m_objDepthScale->GetSelectedItem ();
-	orxBOOL depthScaleBool;
-	orxString_ToBool(depthScale.c_str(), &depthScaleBool, orxNULL);
-	orxConfig_SetBool("DepthScale", depthScaleBool);
-    }
-    else if (widgetName == "ObjGraphic")
-    {
-	const string& graphic = m_objGraphic->GetSelectedItem ();
-	orxConfig_SetString ("Graphic", graphic.c_str());
-    }
-    else if (widgetName == "ObjFlip")
-    {
-	const string& flip = m_objFlip->GetSelectedItem();
-	orxConfig_SetString("Flip", flip.c_str());
-    }
-    else if (widgetName == "ObjChildList")
-    {
-	const string& children = m_objChildList->GetText();
-	if(children.empty())
-	    orxConfig_ClearValue("ChildList");
-	else
-	    orx_config_util::SetList("ChildList", children.c_str());
-    }
-    else if (widgetName == "ObjFXList")
-    {
-	const string& fxs = m_objFXList->GetText();
-	if(fxs.empty())
-	    orxConfig_ClearValue("FXList");
-	else
-	    orx_config_util::SetList("FXList", fxs.c_str());
-    }
-    else if (widgetName == "ObjLifeTime")
-    {
-	orxFLOAT lifeTime;
-	orxString_ToFloat(m_objLifeTime->GetText().c_str(), &lifeTime, orxNULL);
-	orxConfig_SetFloat ("LifeTime", lifeTime);
-    }
-    else if (widgetName == "ObjParentCam")
-    {
-	orxASSERT (false);
-    }
-    //! @todo check string::find syntax
-    else if (widgetName.find("ObjPos") != string::npos)
-    {
-	orxFLOAT newXFloat;
-	orxFLOAT newYFloat;
-	orxFLOAT newZFloat;
-	//! @todo use some std::string method??
-	orxString_ToFloat(m_objPosX->GetText().c_str(), &newXFloat, orxNULL);
-	orxString_ToFloat(m_objPosY->GetText().c_str(), &newYFloat, orxNULL);
-	orxString_ToFloat(m_objPosZ->GetText().c_str(), &newZFloat, orxNULL);
-	orxVECTOR newPosition = { {newXFloat}, {newYFloat}, {newZFloat} };
-	orxConfig_SetVector ("Position", &newPosition);
-    }
-    else if (widgetName.find("ObjRepeat") != string::npos)
-    {
-	orxFLOAT XFloat;
-	orxFLOAT YFloat;
-	orxFLOAT ZFloat;
-	orxString_ToFloat(m_objRepeatX->GetText().c_str(), &XFloat, orxNULL);
-	orxString_ToFloat(m_objRepeatY->GetText().c_str(), &YFloat, orxNULL);
-	orxString_ToFloat(m_objRepeatZ->GetText().c_str(), &ZFloat, orxNULL);
-	orxVECTOR repeat = { {XFloat}, {YFloat}, {ZFloat} };
-	orxConfig_SetVector ("Repeat", &repeat);
-    }
-    else if (widgetName == "ObjRotation")
-    {
-	const string& rotation = m_objRotation->GetText();
-	orxConfig_SetString("Rotation", rotation.c_str());
-    }
-    else if (widgetName.find("ObjSpeed") != string::npos)
-    {
-	orxFLOAT newXFloat;
-	orxFLOAT newYFloat;
-	orxFLOAT newZFloat;
-	orxString_ToFloat(m_objSpeedX->GetText().c_str(), &newXFloat, orxNULL);
-	orxString_ToFloat(m_objSpeedY->GetText().c_str(), &newYFloat, orxNULL);
-	orxString_ToFloat(m_objSpeedZ->GetText().c_str(), &newZFloat, orxNULL);
-	orxVECTOR newSpeed = { {newXFloat}, {newYFloat}, {newZFloat} };
-	orxConfig_SetVector ("Speed", &newSpeed);
-    }
-    else if (widgetName == "ObjScale")
-    {
-	orxFLOAT XFloat;
-	orxFLOAT YFloat;
-	orxFLOAT ZFloat;
-	orxString_ToFloat(m_objScaleX->GetText().c_str(), &XFloat, orxNULL);
-	orxString_ToFloat(m_objScaleY->GetText().c_str(), &YFloat, orxNULL);
-	orxString_ToFloat(m_objScaleZ->GetText().c_str(), &ZFloat, orxNULL);
-	orxVECTOR scale = { {XFloat}, {YFloat}, {ZFloat} };
-	orxConfig_SetVector ("Scale", &scale);
-    }
-    else if (widgetName == "ObjShaderList")
-    {
-	orxASSERT (false);
-    }
-    else if (widgetName == "ObjSoundList")
-    {
-	orxASSERT (false);
-    }
-    else if (widgetName == "ObjSpawner")
-    {
-	orxASSERT (false);
-    }
+	// Update Orx config in memory from value entered in control
+	ScrollWidget* box = FindWidget(widgetName);
+	orxASSERT(box != orxNULL);
+	box->ConfigUpdate();
 
-    orxConfig_PopSection ();
+	orxConfig_PopSection ();
+    }
 
     // Update object in editor
-    OrxCraft::GetInstance ().NeedObjectUpdate ();
+    OrxCraft::GetInstance().NeedObjectUpdate();
 }
 
 void ObjectEditor::OnPopupFinish(const string& popupName,
@@ -606,13 +315,13 @@ void ObjectEditor::OnPopupFinish(const string& popupName,
 	orxConfig_ClearValue(data->property.c_str());
     else
     	//! @todo prepare SetList(string, vector<string>
-	orx_config_util::SetList(data->property.c_str(),
-		orxcraft_util::ListToString(selection).c_str());
+	orxConf::SetList(data->property.c_str(),
+		orxUtil::ListToString(selection).c_str());
     data->object->PopConfigSection();
 
     UpdateFields();
     // Update object in editor
-    OrxCraft::GetInstance ().NeedObjectUpdate ();
+    OrxCraft::GetInstance().NeedObjectUpdate();
 }
 
 void ObjectEditor::OnDestroy ()
@@ -626,11 +335,11 @@ void ObjectEditor::OnDestroy ()
 
 void ObjectEditor::OnReset ()
 {
-    const string& name = m_objConfigName->GetSelectedItem ();
+    const string& name = m_objConfigName->GetSelection();
     //! @todo Better not to have this in the Scroll singleton
     ScrollObject *object =
-	OrxCraft::GetInstance ().GetObjectByName (name.c_str());
-    SetObject (object);
+	OrxCraft::GetInstance().GetObjectByName(name);
+    SetObject(object);
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

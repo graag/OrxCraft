@@ -147,9 +147,7 @@
                 <Property Name="TextParsingEnabled" Value="False" />
             </Window>
             <Window Type="TaharezLook/Checkbox" Name="FXSlotAbsolute" >
-		<Property Name="ReadOnly" Value="True" />
-                <Property Name="UnifiedAreaRect" Value="{{0.20369,0},{0,345},{0.313469,0},{0,370}}" />
-                <Property Name="MaxEditTextLength" Value="1073741823" />
+                <Property Name="UnifiedAreaRect" Value="{{0,115},{0,345},{0,145},{0,370}}" />
             </Window>
             <Window Type="TaharezLook/Editbox" Name="FXSlotAcceleration" >
                 <Property Name="Text" Value="999.99" />
@@ -169,15 +167,11 @@
                 <Property Name="UnifiedAreaRect" Value="{{0,235},{0,225},{0,290},{0,250}}" />
                 <Property Name="TextParsingEnabled" Value="False" />
             </Window>
-            <Window Type="TaharezLook/Combobox" Name="FXSlotUseRotation" >
-		<Property Name="ReadOnly" Value="True" />
-                <Property Name="UnifiedAreaRect" Value="{{0.20369,0},{0.441464,0},{0.313468,0},{0.441464,65}}" />
-                <Property Name="MaxEditTextLength" Value="1073741823" />
+            <Window Type="TaharezLook/Checkbox" Name="FXSlotUseRotation" >
+                <Property Name="UnifiedAreaRect" Value="{{0,115},{0,285},{0,145},{0,310}}" />
             </Window>
-            <Window Type="TaharezLook/Combobox" Name="FXSlotUseScale" >
-		<Property Name="ReadOnly" Value="True" />
-                <Property Name="UnifiedAreaRect" Value="{{0.20369,0},{0.485366,0},{0.313468,0},{0.485366,65}}" />
-                <Property Name="MaxEditTextLength" Value="1073741823" />
+            <Window Type="TaharezLook/Checkbox" Name="FXSlotUseScale" >
+                <Property Name="UnifiedAreaRect" Value="{{0,115},{0,315},{0,145},{0,340}}" />
             </Window>
         </Window>
     </Window>
