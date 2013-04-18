@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="DefaultWindow" Name="TreePopupRoot" >
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Window Type="TaharezLook/FrameWindow" Name="TreePopup" >
+            <Property Name="Text" Value="Popup Window :)" />
+            <Property Name="Alpha" Value="0.7" />
+            <Property Name="TitlebarFont" Value="DejaVuSans-8" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="RollUpEnabled" Value="True" />
+            <Property Name="CloseButtonEnabled" Value="True" />
+            <Property Name="UnifiedAreaRect" Value="{{0.0309058,0},{0.0275,0},{0.230906,0},{0.5,0}}" />
+            <Window Type="TaharezLook/Tree" Name="TreePopup/SelectionTree" >
+                <Property Name="Text" Value="Tree Box" />
+                <Property Name="UnifiedAreaRect" Value="{{0.0571739,0},{0.0347221,0},{0.957174,0},{0.45,0}}" />
+                <Property Name="MultiSelect" Value="True" />
+            </Window>
+            <Window Type="TaharezLook/Button" Name="TreePopup/DoneButton" >
+                <Property Name="Text" Value="Done" />
+                <Property Name="UnifiedAreaRect" Value="{{0.06,0},{0.893299,0},{0.46,0},{0.98,0}}" />
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>

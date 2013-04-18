@@ -36,6 +36,8 @@
 #include "FXSlotEditorWindow.h"
 #include "InfoWindow.h"
 
+#include "CEGUIExtendedTree.h"
+
 #include "constants.h"
 
 #include "utf8.h"
@@ -69,7 +71,7 @@ void ScrollGUICEGUI::CEGUIScrollObject::OnCreate ()
 
     // Initialise the required dirs for the DefaultResourceProvider
     // All CEGUI data files are stored in data/cegui subdirectory relative to OrxCraft executable
-    DefaultResourceProvider* rp = 
+    DefaultResourceProvider* rp =
 	static_cast<DefaultResourceProvider*>(System::getSingleton().getResourceProvider());
     rp->setResourceGroupDirectory("schemes", "./cegui/schemes/");
     rp->setResourceGroupDirectory("imagesets", "./cegui/imagesets/");
@@ -91,6 +93,13 @@ void ScrollGUICEGUI::CEGUIScrollObject::OnCreate ()
 	parser->setProperty("SchemaDefaultResourceGroup", "schemas");
 
     SchemeManager::getSingleton().create("TaharezLook.scheme");
+
+    // Register custom widgets
+    CEGUI::WindowFactoryManager::getSingleton().addFactory
+	<CEGUI::TplWindowFactory<CEGUIExtendedTree> >();
+    // Make sure custom widget are used when met in a layout
+    CEGUI::WindowFactoryManager::getSingleton().addWindowTypeAlias(
+	    "CEGUI/Tree", "CEGUIExtendedTree");
 
     WindowManager &winManager = WindowManager::getSingleton ();
     Window* myRoot = winManager.loadWindowLayout ("Main.layout");

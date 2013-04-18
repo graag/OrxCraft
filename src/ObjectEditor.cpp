@@ -35,6 +35,7 @@
 #include "orxCraft.h"
 #include "orx_config_util.h"
 #include "orxcraft_util.h"
+#include "constants.h"
 
 #include "DialogManager.h"
 #include "ScrollCombobox.h"
@@ -42,6 +43,7 @@
 #include "ScrollPushButton.h"
 #include "CEDialogManager.h"
 #include "ListPopup.h"
+#include "TreePopup.h"
 
 using std::string;
 using std::vector;
@@ -224,6 +226,7 @@ void ObjectEditor::OnMouseClick (const string& widgetName)
 
     if (widgetName == "ButtonChildList")
     {
+/*
 	ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
 		CEDialogManager::GetInstance().MakeDialog(
 		"ListPopup", string(m_object->GetModelName()) + ": Child List"));
@@ -248,12 +251,56 @@ void ObjectEditor::OnMouseClick (const string& widgetName)
 	data->property = "ChildList";
 	popup->SetUserData(data);
 	popup->SetParent(this);
+*/
+	TreePopup* popup = orxCRAFT_CAST<TreePopup *>(
+		CEDialogManager::GetInstance().MakeDialog(
+		"TreePopup", string(m_object->GetModelName()) + ": Child List"));
+	orxASSERT(popup != orxNULL);
+
+	// Potential children are all objects
+	//! @todo Are those only objects (ones with graphic defined) or also other entities??
+	vector<std::string> objects =
+	    OrxCraft::GetInstance().GetObjectListSafe(
+		    m_object->GetModelName()
+		    );
+	vector<std::string> selection;
+	vector<ScrollTreePair> objects_group;
+
+	vector<string>::iterator it;
+	for(it = objects.begin(); it != objects.end(); it++) {
+	    string setName = "";
+	    ScrollTreePair item;
+
+	    orxConfig_PushSection(it->c_str());
+	    // Has ScrollEd type and a graphic?
+	    if(orxConfig_HasValue(scrollEdSectionName)) {
+	    	setName = orxConfig_GetString(scrollEdSectionName);
+	    }
+	    orxConfig_PopSection();
+
+	    item.first = setName;
+	    item.second = *it;
+	    objects_group.push_back(item);
+	}
+
+	m_object->PushConfigSection();
+	orxConf::GetListAsVector("ChildList", selection);
+	m_object->PopConfigSection();
+
+	popup->Fill(objects_group);
+	popup->SetSelection(selection);
+	PopupData* data = new PopupData;
+	data->object = m_object;
+	data->property = "ChildList";
+	popup->SetUserData(data);
+	popup->SetParent(this);
     }
     if (widgetName == "ButtonFXList")
     {
 	ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
 		CEDialogManager::GetInstance().MakeDialog(
 		"ListPopup", string(m_object->GetModelName()) + ": FX List"));
+	orxASSERT(popup != orxNULL);
 
 	// Potential children are all objects
 	//! @todo Are those only objects (ones with graphic defined) or also other entities??
@@ -305,19 +352,37 @@ void ObjectEditor::OnTextAccepted(const string& widgetName)
 void ObjectEditor::OnPopupFinish(const string& popupName,
 	const string& popupTitle)
 {
-    ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
-	    CEDialogManager::GetInstance().GetDialog(popupName, popupTitle));
-    const vector<string>& selection = popup->GetSelection();
-    PopupData* data = static_cast<PopupData *>( popup->GetUserData() );
+    if(popupName == "ListPopup") {
+	ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
+		CEDialogManager::GetInstance().GetDialog(popupName, popupTitle));
+	orxASSERT(popup != orxNULL);
+	const vector<string>& selection = popup->GetSelection();
+	PopupData* data = static_cast<PopupData *>( popup->GetUserData() );
 
-    data->object->PushConfigSection();
-    if(selection.empty())
-	orxConfig_ClearValue(data->property.c_str());
-    else
-    	//! @todo prepare SetList(string, vector<string>
-	orxConf::SetList(data->property.c_str(),
-		orxUtil::ListToString(selection).c_str());
-    data->object->PopConfigSection();
+	data->object->PushConfigSection();
+	if(selection.empty())
+	    orxConfig_ClearValue(data->property.c_str());
+	else
+	    //! @todo prepare SetList(string, vector<string>
+	    orxConf::SetList(data->property.c_str(),
+		    orxUtil::ListToString(selection).c_str());
+	data->object->PopConfigSection();
+    } else if (popupName == "TreePopup") {
+	TreePopup* popup = orxCRAFT_CAST<TreePopup *>(
+		CEDialogManager::GetInstance().GetDialog(popupName, popupTitle));
+	orxASSERT(popup != orxNULL);
+	const vector<string>& selection = popup->GetSelection();
+	PopupData* data = static_cast<PopupData *>( popup->GetUserData() );
+
+	data->object->PushConfigSection();
+	if(selection.empty())
+	    orxConfig_ClearValue(data->property.c_str());
+	else
+	    //! @todo prepare SetList(string, vector<string>
+	    orxConf::SetList(data->property.c_str(),
+		    orxUtil::ListToString(selection).c_str());
+	data->object->PopConfigSection();
+    }
 
     UpdateFields();
     // Update object in editor

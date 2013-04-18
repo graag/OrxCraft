@@ -38,6 +38,7 @@
 class ScrollEditbox;
 class ScrollCombobox;
 class ScrollListbox;
+class ScrollTreebox;
 class ScrollCheckbox;
 
 /**
@@ -81,6 +82,11 @@ public:
      * @return ScrollListbox pointer if found, NULL otherwise.
      */
     ScrollListbox *FindListbox (const std::string& widgetName) const;
+    /** Find a treebox by its name.
+     * @param[in] widgetName - name of the widget.
+     * @return ScrollTreebox pointer if found, NULL otherwise.
+     */
+    ScrollTreebox *FindTreebox (const std::string& widgetName) const;
 
     //! Initialize the window.
     virtual void Init () = 0;

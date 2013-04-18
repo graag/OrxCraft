@@ -35,6 +35,7 @@ static const orxSTRING projectParamLongDesc = "Opens specified Project ini file.
 const orxCHAR userSettingsFile[]    = "~/.orxcraft.rc";
 const orxCHAR userSettingsSection[] = "UserSettings";
 const orxCHAR orxCraftSectionName[] = "OrxCraftSection";
+const orxCHAR scrollEdSectionName[] = "ScrollEdSet";
 
 // Scroll Object
 const orxCHAR scrollGUIName[]    = "ScrollGUI";

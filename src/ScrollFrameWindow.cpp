@@ -36,6 +36,7 @@
 #include "ScrollCombobox.h"
 #include "ScrollEditbox.h"
 #include "ScrollListbox.h"
+#include "ScrollTreebox.h"
 #include "ScrollCheckbox.h"
 
 using namespace std;
@@ -119,6 +120,23 @@ ScrollListbox * ScrollFrameWindow::FindListbox (const string& widgetName) const
     if(widget != NULL)
     {
 	theWidget = orxCRAFT_CAST<ScrollListbox *> (widget);
+	orxASSERT( theWidget != NULL );
+    }
+
+    return theWidget;
+}
+
+ScrollTreebox * ScrollFrameWindow::FindTreebox (const string& widgetName) const
+{
+    ScrollTreebox *theWidget = NULL;
+    ScrollWidget *widget = NULL;
+
+    // Find the widget
+    widget = FindWidget(widgetName);
+
+    if(widget != NULL)
+    {
+	theWidget = orxCRAFT_CAST<ScrollTreebox *> (widget);
 	orxASSERT( theWidget != NULL );
     }
 

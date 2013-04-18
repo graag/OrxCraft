@@ -44,10 +44,12 @@
 #include "ObjectEditor.h"
 #include "FXSlotEditorWindow.h"
 #include "ListPopup.h"
+#include "TreePopup.h"
 
 #include "CEGUICombobox.h"
 #include "CEGUIEditbox.h"
 #include "CEGUIListbox.h"
+#include "CEGUITreebox.h"
 #include "CEGUICheckbox.h"
 #include "CEGUIPushButton.h"
 
@@ -140,6 +142,15 @@ ScrollFrameWindow* CEDialogManager::MakeDialog (const string& dialogName,
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "ListPopup.layout", num_buf);
     }
+    else if (dialogName == "TreePopup")
+    {
+	dialog = new TreePopup (dialogName, dialogOptions);
+	// Generate a unique prefix
+	int result = snprintf(num_buf, num_size, "%d_", dialog->GetId());
+	orxASSERT(result < num_size); // Make sure snprintf succeeded
+	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
+	    "TreePopup.layout", num_buf);
+    }
     else
     {
 	orxASSERT (false);
@@ -222,6 +233,12 @@ void CEDialogManager::LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWindo
 	CEGUIListbox *listbox = new CEGUIListbox (dialog);
 	listbox->Init(name);
 	dialog->AddWidget (listbox);
+    }
+    else if (orxString_Compare (type, "TaharezLook/Tree") == 0)
+    {
+	CEGUITreebox *treebox = new CEGUITreebox (dialog);
+	treebox->Init(name);
+	dialog->AddWidget (treebox);
     }
     else if (orxString_Compare (type, "TaharezLook/Button") == 0)
     {
