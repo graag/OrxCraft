@@ -27,7 +27,8 @@
  * @author graag@o2.pl
  *
  */
-#include "CEGUITreePopup.h"
+
+#include "cegui/CEGUITreePopup.h"
 
 #include <string>
 

@@ -22,30 +22,32 @@
  */
 
 /**
- * @file CEGUIPushButton.cpp
- * @date 2012-05-20
+ * @file CEGUIEditbox.cpp
+ * @date 2012-05-08
  * @author fritz@fritzmahnke.com
  *
  */
 
-#include "CEGUIPushButton.h"
+#include "cegui/CEGUIEditbox.h"
 
 #include <string>
 
+#include "orx_config_util.h"
+
 #include "ScrollFrameWindow.h"
 
-using CEGUI::PushButton;
+using CEGUI::Editbox;
 using CEGUI::Event;
 using CEGUI::Window;
 using std::string;
 
-CEGUIPushButton::CEGUIPushButton (ScrollFrameWindow *dialog) :
-    ScrollPushButton (dialog),
-    m_cePushButton   (NULL)
+CEGUIEditbox::CEGUIEditbox (ScrollFrameWindow *dialog) :
+    ScrollEditbox (dialog),
+    m_ceEditbox   (NULL)
 {
 }
 
-void CEGUIPushButton::Init (const string& widgetName)
+void CEGUIEditbox::Init (const string& widgetName)
 {
     ScrollWidget::Init(widgetName);
 
@@ -59,46 +61,26 @@ void CEGUIPushButton::Init (const string& widgetName)
     orxASSERT(widget != NULL);
 
     /*
-     * Static cast is now safe as it is guarded by assert. This will be active
-     * only in debug build so -fno-rtti can be used for release build
+     * Static cast is now safe as it is guarded by assert. Assert will be
+     * active only in debug build so -fno-rtti can be used for release build.
      */
-    orxASSERT( typeid(*widget) == typeid(PushButton) );
-    PushButton *pushbutton = static_cast<PushButton *> (widget);
+    orxASSERT( typeid(*widget) == typeid(Editbox) );
+    Editbox *editbox = static_cast<Editbox *> (widget);
 
-    // Subscribe to clicked event
-    pushbutton->subscribeEvent (PushButton::EventClicked,
-	Event::Subscriber (&CEGUIPushButton::OnClicked, this));
+    editbox->subscribeEvent (Editbox::EventTextAccepted,
+	Event::Subscriber (&CEGUIEditbox::OnTextAccepted, this));
 
-    //! @todo Handle right click??
+    //! @todo Handle mouse events.
 
-    m_cePushButton = pushbutton;
+    m_ceEditbox = editbox;
 }
 
-void CEGUIPushButton::SetText (const string& text)
-{
-    m_cePushButton->setText (text);
-}
-
-void CEGUIPushButton::ConfigRead()
-{
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
-	    "CEGUIPushButton::ConfigRead is not implemented.");
-    orxASSERT(false);
-}
-
-void CEGUIPushButton::ConfigUpdate() const
-{
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
-	    "CEGUIPushButton::ConfigUpdate is not implemented.");
-    orxASSERT(false);
-}
-
-bool CEGUIPushButton::OnClicked (const CEGUI::EventArgs &e)
+bool CEGUIEditbox::OnTextAccepted (const CEGUI::EventArgs &e)
 {
 #ifdef __orxDEBUG__
     /*
      * Static cast will be safe as this handler is connected only to
-     * Editbox::EventClicked signal which passes WindowEventArgs struct.
+     * Editbox::EventTextAccepted signal which passes WindowEventArgs struct.
      */
     const CEGUI::WindowEventArgs *args =
     	static_cast<const CEGUI::WindowEventArgs *>( &e );
@@ -108,10 +90,21 @@ bool CEGUIPushButton::OnClicked (const CEGUI::EventArgs &e)
 #endif // __orxDEBUG__
 
     // Pass the event to the ScrollFrameWindow
-    m_manager->OnMouseClick (m_widgetName);
+    m_manager->OnTextAccepted (m_widgetName);
 
     // Notify that the event was handled
     return true;
+}
+
+const string CEGUIEditbox::GetText ()
+{
+    // Return Editbox contents. The returned string is owned by CEGUI widget.
+    return m_ceEditbox->getText ().c_str ();
+}
+
+void CEGUIEditbox::SetText (const string& text)
+{
+    m_ceEditbox->setText (text);
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

@@ -31,7 +31,7 @@
  * @todo Make sure dialogs get destroyed on program quit
  */
 
-#include "CEGUIDialogManager.h"
+#include "cegui/CEGUIDialogManager.h"
 
 #include "limits.h"
 #include <string>
@@ -44,14 +44,14 @@
 #include "ObjectEditor.h"
 #include "FXSlotEditorWindow.h"
 
-#include "CEGUIListPopup.h"
-#include "CEGUITreePopup.h"
-#include "CEGUICombobox.h"
-#include "CEGUIEditbox.h"
-#include "CEGUIListbox.h"
-#include "CEGUITreebox.h"
-#include "CEGUICheckbox.h"
-#include "CEGUIPushButton.h"
+#include "cegui/CEGUIListPopup.h"
+#include "cegui/CEGUITreePopup.h"
+#include "cegui/CEGUICombobox.h"
+#include "cegui/CEGUIEditbox.h"
+#include "cegui/CEGUIListbox.h"
+#include "cegui/CEGUITreebox.h"
+#include "cegui/CEGUICheckbox.h"
+#include "cegui/CEGUIPushButton.h"
 
 using std::string;
 using std::make_pair;

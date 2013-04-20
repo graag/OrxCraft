@@ -28,7 +28,7 @@
  *
  */
 
-#include "CEGUICombobox.h"
+#include "cegui/CEGUICombobox.h"
 
 #include <vector>
 #include <string>

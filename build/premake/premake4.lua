@@ -42,7 +42,8 @@ solution "orxCraft"
 
     includedirs {"../include", orx_path .. "/include", scroll_path,
                  cegui_path .. "/include/CEGUI", "../external/utf8-cpp"}
-    files {"../src/**.cpp", "../include/**.h"}
+    files {"../src/**.cpp", "../src/cegui/**.cpp", "../include/**.h",
+	   "../include/cegui/**.h"}
 
     libdirs {orxlib_path, ceguilib_path}
 

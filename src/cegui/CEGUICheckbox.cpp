@@ -13,45 +13,43 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *
+ *  
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *
+ *  
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
 
 /**
- * @file CEGUIEditbox.cpp
- * @date 2012-05-08
+ * @file CEGUICheckbox.cpp
+ * @date 2012-05-07
  * @author fritz@fritzmahnke.com
  *
  */
 
-#include "CEGUIEditbox.h"
+#include "cegui/CEGUICheckbox.h"
 
 #include <string>
 
-#include "orx_config_util.h"
-
 #include "ScrollFrameWindow.h"
 
-using CEGUI::Editbox;
+using CEGUI::Checkbox;
 using CEGUI::Event;
 using CEGUI::Window;
 using std::string;
 
-CEGUIEditbox::CEGUIEditbox (ScrollFrameWindow *dialog) :
-    ScrollEditbox (dialog),
-    m_ceEditbox   (NULL)
+CEGUICheckbox::CEGUICheckbox (ScrollFrameWindow *dialog) :
+    ScrollCheckbox (dialog),
+    m_ceCheckbox   (NULL)
 {
 }
 
-void CEGUIEditbox::Init (const string& widgetName)
+void CEGUICheckbox::Init (const string& widgetName)
 {
     ScrollWidget::Init(widgetName);
 
-    const string windowName = m_manager->GetWindowName();
+    const string& windowName = m_manager->GetWindowName ();
     // Get the root window
     Window *rootWindow = CEGUI::System::getSingleton().getGUISheet();
     // Get the parent window. No point in searching all windows.
@@ -61,26 +59,37 @@ void CEGUIEditbox::Init (const string& widgetName)
     orxASSERT(widget != NULL);
 
     /*
-     * Static cast is now safe as it is guarded by assert. Assert will be
-     * active only in debug build so -fno-rtti can be used for release build.
+     * Static cast is now safe as it is guarded by assert. This will be active
+     * only in debug build so -fno-rtti can be used for release build
      */
-    orxASSERT( typeid(*widget) == typeid(Editbox) );
-    Editbox *editbox = static_cast<Editbox *> (widget);
+    orxASSERT( typeid(*widget) == typeid(CEGUI::Checkbox) );
+    Checkbox *checkbox = static_cast<Checkbox *> (widget);
 
-    editbox->subscribeEvent (Editbox::EventTextAccepted,
-	Event::Subscriber (&CEGUIEditbox::OnTextAccepted, this));
+    // Subscribe to check state change event
+    checkbox->subscribeEvent (Checkbox::EventCheckStateChanged,
+	Event::Subscriber (&CEGUICheckbox::OnCheckStateChanged, this));
 
-    //! @todo Handle mouse events.
+    //! @todo Handle mouse events
 
-    m_ceEditbox = editbox;
+    m_ceCheckbox = checkbox;
 }
 
-bool CEGUIEditbox::OnTextAccepted (const CEGUI::EventArgs &e)
+void CEGUICheckbox::SetSelection(const orxBOOL select)
+{
+    m_ceCheckbox->setSelected(select);
+}
+
+const orxBOOL CEGUICheckbox::GetSelection() const
+{
+    return m_ceCheckbox->isSelected();
+}
+
+bool CEGUICheckbox::OnCheckStateChanged(const CEGUI::EventArgs &e)
 {
 #ifdef __orxDEBUG__
     /*
      * Static cast will be safe as this handler is connected only to
-     * Editbox::EventTextAccepted signal which passes WindowEventArgs struct.
+     * Window::EventMouseClick signal which passes MouseEventArgs struct.
      */
     const CEGUI::WindowEventArgs *args =
     	static_cast<const CEGUI::WindowEventArgs *>( &e );
@@ -89,22 +98,9 @@ bool CEGUIEditbox::OnTextAccepted (const CEGUI::EventArgs &e)
     orxASSERT(widgetName == m_widgetUniqueName);
 #endif // __orxDEBUG__
 
-    // Pass the event to the ScrollFrameWindow
     m_manager->OnTextAccepted (m_widgetName);
 
-    // Notify that the event was handled
     return true;
-}
-
-const string CEGUIEditbox::GetText ()
-{
-    // Return Editbox contents. The returned string is owned by CEGUI widget.
-    return m_ceEditbox->getText ().c_str ();
-}
-
-void CEGUIEditbox::SetText (const string& text)
-{
-    m_ceEditbox->setText (text);
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

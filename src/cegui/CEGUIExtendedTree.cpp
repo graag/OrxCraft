@@ -28,9 +28,9 @@
  *
  */
 
-#include "orx.h"
+#include "cegui/CEGUIExtendedTree.h"
 
-#include "CEGUIExtendedTree.h"
+#include "orx.h"
 
 using CEGUI::Tree;
 using CEGUI::TreeItem;

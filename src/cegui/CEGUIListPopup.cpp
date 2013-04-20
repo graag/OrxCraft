@@ -27,7 +27,7 @@
  * @author graag@o2.pl
  *
  */
-#include "CEGUIListPopup.h"
+#include "cegui/CEGUIListPopup.h"
 
 #include <string>
 

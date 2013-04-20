@@ -13,43 +13,43 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *  
+ *
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *  
+ *
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
 
 /**
- * @file CEGUICheckbox.cpp
- * @date 2012-05-07
+ * @file CEGUIPushButton.cpp
+ * @date 2012-05-20
  * @author fritz@fritzmahnke.com
  *
  */
 
-#include "CEGUICheckbox.h"
+#include "cegui/CEGUIPushButton.h"
 
 #include <string>
 
 #include "ScrollFrameWindow.h"
 
-using CEGUI::Checkbox;
+using CEGUI::PushButton;
 using CEGUI::Event;
 using CEGUI::Window;
 using std::string;
 
-CEGUICheckbox::CEGUICheckbox (ScrollFrameWindow *dialog) :
-    ScrollCheckbox (dialog),
-    m_ceCheckbox   (NULL)
+CEGUIPushButton::CEGUIPushButton (ScrollFrameWindow *dialog) :
+    ScrollPushButton (dialog),
+    m_cePushButton   (NULL)
 {
 }
 
-void CEGUICheckbox::Init (const string& widgetName)
+void CEGUIPushButton::Init (const string& widgetName)
 {
     ScrollWidget::Init(widgetName);
 
-    const string& windowName = m_manager->GetWindowName ();
+    const string windowName = m_manager->GetWindowName();
     // Get the root window
     Window *rootWindow = CEGUI::System::getSingleton().getGUISheet();
     // Get the parent window. No point in searching all windows.
@@ -62,34 +62,43 @@ void CEGUICheckbox::Init (const string& widgetName)
      * Static cast is now safe as it is guarded by assert. This will be active
      * only in debug build so -fno-rtti can be used for release build
      */
-    orxASSERT( typeid(*widget) == typeid(CEGUI::Checkbox) );
-    Checkbox *checkbox = static_cast<Checkbox *> (widget);
+    orxASSERT( typeid(*widget) == typeid(PushButton) );
+    PushButton *pushbutton = static_cast<PushButton *> (widget);
 
-    // Subscribe to check state change event
-    checkbox->subscribeEvent (Checkbox::EventCheckStateChanged,
-	Event::Subscriber (&CEGUICheckbox::OnCheckStateChanged, this));
+    // Subscribe to clicked event
+    pushbutton->subscribeEvent (PushButton::EventClicked,
+	Event::Subscriber (&CEGUIPushButton::OnClicked, this));
 
-    //! @todo Handle mouse events
+    //! @todo Handle right click??
 
-    m_ceCheckbox = checkbox;
+    m_cePushButton = pushbutton;
 }
 
-void CEGUICheckbox::SetSelection(const orxBOOL select)
+void CEGUIPushButton::SetText (const string& text)
 {
-    m_ceCheckbox->setSelected(select);
+    m_cePushButton->setText (text);
 }
 
-const orxBOOL CEGUICheckbox::GetSelection() const
+void CEGUIPushButton::ConfigRead()
 {
-    return m_ceCheckbox->isSelected();
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+	    "CEGUIPushButton::ConfigRead is not implemented.");
+    orxASSERT(false);
 }
 
-bool CEGUICheckbox::OnCheckStateChanged(const CEGUI::EventArgs &e)
+void CEGUIPushButton::ConfigUpdate() const
+{
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+	    "CEGUIPushButton::ConfigUpdate is not implemented.");
+    orxASSERT(false);
+}
+
+bool CEGUIPushButton::OnClicked (const CEGUI::EventArgs &e)
 {
 #ifdef __orxDEBUG__
     /*
      * Static cast will be safe as this handler is connected only to
-     * Window::EventMouseClick signal which passes MouseEventArgs struct.
+     * Editbox::EventClicked signal which passes WindowEventArgs struct.
      */
     const CEGUI::WindowEventArgs *args =
     	static_cast<const CEGUI::WindowEventArgs *>( &e );
@@ -98,8 +107,10 @@ bool CEGUICheckbox::OnCheckStateChanged(const CEGUI::EventArgs &e)
     orxASSERT(widgetName == m_widgetUniqueName);
 #endif // __orxDEBUG__
 
-    m_manager->OnTextAccepted (m_widgetName);
+    // Pass the event to the ScrollFrameWindow
+    m_manager->OnMouseClick (m_widgetName);
 
+    // Notify that the event was handled
     return true;
 }
 

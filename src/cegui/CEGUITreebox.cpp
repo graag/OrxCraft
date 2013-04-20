@@ -28,10 +28,10 @@
  *
  */
 
+#include "cegui/CEGUITreebox.h"
+
 #include <string>
 #include <vector>
-
-#include "CEGUITreebox.h"
 
 #include "ScrollFrameWindow.h"
 

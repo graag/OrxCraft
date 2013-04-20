@@ -28,7 +28,7 @@
  *
  */
 
-#include "CEGUIExtendedTreeItem.h"
+#include "cegui/CEGUIExtendedTreeItem.h"
 
 using CEGUI::Tree;
 using CEGUI::TreeItem;

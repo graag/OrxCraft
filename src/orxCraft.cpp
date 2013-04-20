@@ -34,8 +34,9 @@
 #include "InfoWindow.h"
 #include "ObjectEditor.h"
 #include "FXSlotEditorWindow.h"
-#include "CEGUIGui.h"
-#include "CEGUIDialogManager.h"
+
+#include "cegui/CEGUIGui.h"
+#include "cegui/CEGUIDialogManager.h"
 
 #include "constants.h"
 #include "orxcraft_util.h"

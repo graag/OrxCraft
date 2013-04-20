@@ -27,7 +27,7 @@
  * @author fritz@fritzmahnke.com
  *
  */
-#include "CEGUIGui.h"
+#include "cegui/CEGUIGui.h"
 
 #include <string>
 
@@ -36,7 +36,7 @@
 #include "FXSlotEditorWindow.h"
 #include "InfoWindow.h"
 
-#include "CEGUIExtendedTree.h"
+#include "cegui/CEGUIExtendedTree.h"
 
 #include "constants.h"
 

@@ -28,10 +28,10 @@
  *
  */
 
+#include "cegui/CEGUIListbox.h"
+
 #include <string>
 #include <vector>
-
-#include "CEGUIListbox.h"
 
 #include "ScrollFrameWindow.h"
 
