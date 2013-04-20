@@ -41,7 +41,12 @@ using CEGUI::Event;
 using CEGUI::Window;
 using std::string;
 using std::vector;
+using std::pair;
+using std::map;
 using std::multimap;
+
+typedef map<string, CEGUIExtendedTreeItem*>::iterator mapIter;
+typedef multimap<string, CEGUIExtendedTreeItem*>::iterator multimapIter;
 
 CEGUITreebox::CEGUITreebox (ScrollFrameWindow *dialog) :
     ScrollTreebox (dialog),
@@ -85,6 +90,10 @@ void CEGUITreebox::Init (const string& widgetName)
 void CEGUITreebox::Fill (const vector<ScrollTreePair> &treeItems)
 {
     CEGUITreePair item;
+    CEGUITreePair group;
+
+    // Remove current tree items
+    m_ceTree->resetList();
 
     for (unsigned int i = 0; i < treeItems.size (); i++)
     {
@@ -95,29 +104,60 @@ void CEGUITreebox::Fill (const vector<ScrollTreePair> &treeItems)
 	 * Add item to CEGUI::Tree.
 	 * Note that item ownership is passed to CEGUI.
 	 */
-	if(item.first.empty()) {
-	    m_ceTree->addItem(item.second);
-	} else {
-	    multimap<string, CEGUIExtendedTreeItem*>::iterator it =
-		m_items.find(item.first);
+	if(!item.first.empty()) {
+	    multimapIter it = m_items.find(item.first);
 	    if(it == m_items.end()) {
-		CEGUIExtendedTreeItem* group =
-		    new CEGUIExtendedTreeItem(item.first);
-		m_ceTree->addItem(group);
-		group->setSelectionBrushImage(
+		group.first = item.first;
+		group.second = new CEGUIExtendedTreeItem(item.first);
+		group.second->setSelectionBrushImage(
 			"TaharezLook", "ListboxSelectionBrush");
-		group->setSelectionColours(0x99ff0000);
-		group->addItem(item.second);
-	    } else {
-		TreeItem* group = m_ceTree->findFirstItemWithText(item.first);
-		group->addItem(item.second);
+		group.second->setSelectionColours(0x9997c4f0);
+		m_groups.insert(group);
 	    }
 	}
 
-	m_items.insert(item);
 	item.second->setSelectionBrushImage(
 		"TaharezLook", "ListboxSelectionBrush");
 	item.second->setSelectionColours(0x99ff0000);
+	m_items.insert(item);
+    }
+
+    multimapIter it;
+    mapIter it_group;
+    mapIter it_item;
+    pair<multimapIter, multimapIter> it_range;
+    CEGUIItemMap children;
+
+    for(it_group = m_groups.begin(); it_group != m_groups.end(); it_group++) {
+	m_ceTree->addItem(it_group->second);
+
+	children.clear();
+	it_range = m_items.equal_range(it_group->first);
+	for(it = it_range.first; it != it_range.second; it++) {
+	    children.insert(
+		    CEGUITreePair(
+			string(it->second->getText().c_str()),
+			it->second
+			)
+		    );
+	}
+	for(it_item = children.begin(); it_item != children.end(); it_item++) {
+	    it_group->second->addItem(it_item->second);
+	}
+    }
+
+    children.clear();
+    it_range = m_items.equal_range("");
+    for(it = it_range.first; it != it_range.second; it++) {
+	children.insert(
+		CEGUITreePair(
+		    string(it->second->getText().c_str()),
+		    it->second
+		    )
+		);
+    }
+    for(it_item = children.begin(); it_item != children.end(); it_item++) {
+	m_ceTree->addItem(it_item->second);
     }
 }
 

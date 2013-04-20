@@ -41,7 +41,6 @@
 
 class ScrollFrameWindow;
 
-typedef std::pair<std::string, CEGUIExtendedTreeItem *> CEGUITreePair;
 
 /** CEGUI Implementation of a Tree */
 class CEGUITreebox : public ScrollTreebox
@@ -66,6 +65,9 @@ public:
     virtual const std::vector<std::string> GetSelection() const;
 
      //bool OnSelectionChanged (const CEGUI::EventArgs &e);
+    typedef std::pair<std::string, CEGUIExtendedTreeItem *> CEGUITreePair;
+    typedef std::map<std::string, CEGUIExtendedTreeItem *> CEGUIItemMap;
+    typedef std::multimap<std::string, CEGUIExtendedTreeItem *> CEGUIItemMultimap;
 private:
     /** Handler for CEGUI::Window::EventMouseClick event.
      *
@@ -76,7 +78,8 @@ private:
     //! Pointer to CEGUI widget
     CEGUIExtendedTree *m_ceTree;
     //! List of tree items
-    std::multimap<std::string, CEGUIExtendedTreeItem*> m_items;
+    CEGUIItemMultimap m_items;
+    CEGUIItemMap m_groups;
 };
 #endif  // __CEGUITREEBOX_H__
 
