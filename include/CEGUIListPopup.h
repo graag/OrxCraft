@@ -13,66 +13,44 @@
  *     claim that you wrote the original software. If you use this software
  *     in a product, an acknowledgment in the product documentation would be
  *     appreciated but is not required.
- *
+ *  
  *     2. Altered source versions must be plainly marked as such, and must not be
  *     misrepresented as being the original software.
- *
+ *  
  *     3. This notice may not be removed or altered from any source
  *     distribution.
  */
 
-#ifndef SCROLLGUICEGUI_H_
-#define SCROLLGUICEGUI_H_
 /**
- * @file ScrollGUICEGUI.h
- * @date 2012-06-08
- * @author fritz@fritzmahnke.com
+ * @file CEGUIListPopup.h
+ * @date 2013-04-20
+ * @author graag@o2.pl
  *
- * The CEGUI implementation of a Scroll GUI
  */
-
-#include "Scroll.h"
-
-#include "CEGUI.h"
-#include "RendererModules/OpenGL/CEGUIOpenGLRenderer.h"
+#ifndef __CEGUILISTPOPUP_H__
+#define __CEGUILISTPOPUP_H__
 
 #include <string>
 
-class ScrollFrameWindow;
+#include "CEGUI.h"
 
-/**
- *  Renders GUI items and sends input from Scroll to them.
- */
-class ScrollGUICEGUI
+#include "ListPopup.h"
+
+class CEGUIListPopup : public ListPopup
 {
 public:
-    /** C-tor */
-    ScrollGUICEGUI ();
-    /** D-tor */
-    ~ScrollGUICEGUI ();
+    CEGUIListPopup(const std::string& name, const std::string& title = "");
 
-    void Init ();
-    void InputMouseMove  ();
-    void InputMouseDown  ();
-    void InputMouseUp    ();
-    void InputKeyPress   (const orxSTRING orxKey);
-    void InputKeyRelease (const orxSTRING orxKey);
-    void InputString     (const std::string& inputString);
-
-    class CEGUIScrollObject : public ScrollObject
-    {
-	virtual void    OnCreate ();
-	virtual void    OnDelete ();
-	virtual orxBOOL OnRender ();
-	/** Calculate and render the editor grid */
-	void DrawGrid ();
-    };
+    virtual void Init ();
 
 private:
-
-    CEGUI::OpenGLRenderer *m_glRenderer;
+    /** Handler for CEGUI::Window::EventCloseClicked event.
+     *
+     * @param[in] e - WindowEventArgs event arguments passed from CEGUI.
+     */
+    bool OnCloseClicked (const CEGUI::EventArgs &e);
 };
 
-#endif  // SCROLLGUICEGUI_H_
+#endif	// __CEGUILISTPOPUP_H__
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

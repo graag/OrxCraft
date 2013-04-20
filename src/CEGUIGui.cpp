@@ -22,12 +22,12 @@
  */
 
 /**
- * @file ScrollGUICEGUI.cpp
+ * @file CEGUIGui.cpp
  * @date 2012-06-08
  * @author fritz@fritzmahnke.com
  *
  */
-#include "ScrollGUICEGUI.h"
+#include "CEGUIGui.h"
 
 #include <string>
 
@@ -45,18 +45,18 @@
 using CEGUI::System;
 using std::string;
 
-ScrollGUICEGUI::ScrollGUICEGUI () :
+CEGUIGui::CEGUIGui () :
     m_glRenderer (orxNULL)
 {
 }
 
-ScrollGUICEGUI::~ScrollGUICEGUI ()
+CEGUIGui::~CEGUIGui ()
 {
     //m_glRenderer->destroySystem ();
     m_glRenderer = orxNULL;
 }
 
-void ScrollGUICEGUI::Init ()
+void CEGUIGui::Init ()
 {
     // CEGUI renderer has to be initialized first
     m_glRenderer = & CEGUI::OpenGLRenderer::bootstrapSystem();
@@ -65,7 +65,7 @@ void ScrollGUICEGUI::Init ()
     OrxCraft::GetInstance ().CreateObject (scrollGUIName);
 }
 
-void ScrollGUICEGUI::CEGUIScrollObject::OnCreate ()
+void CEGUIGui::CEGUIScrollObject::OnCreate ()
 {
     using namespace CEGUI;
 
@@ -93,6 +93,8 @@ void ScrollGUICEGUI::CEGUIScrollObject::OnCreate ()
 	parser->setProperty("SchemaDefaultResourceGroup", "schemas");
 
     SchemeManager::getSingleton().create("TaharezLook.scheme");
+    // Here we can load additional fonts
+    //FontManager::getSingleton().create("DejaVuSans-10.font");
 
     // Register custom widgets
     CEGUI::WindowFactoryManager::getSingleton().addFactory
@@ -106,11 +108,11 @@ void ScrollGUICEGUI::CEGUIScrollObject::OnCreate ()
     System::getSingleton().setGUISheet( myRoot );
 }
 
-void ScrollGUICEGUI::CEGUIScrollObject::OnDelete ()
+void CEGUIGui::CEGUIScrollObject::OnDelete ()
 {
 }
 
-void ScrollGUICEGUI::InputMouseMove ()
+void CEGUIGui::InputMouseMove ()
 {
     orxVECTOR mousePos;
     orxMouse_GetPosition (&mousePos);
@@ -118,7 +120,7 @@ void ScrollGUICEGUI::InputMouseMove ()
     System::getSingleton ().injectMousePosition (mousePos.fX, mousePos.fY);
 }
 
-void ScrollGUICEGUI::InputMouseDown ()
+void CEGUIGui::InputMouseDown ()
 {
     orxVECTOR mousePos;
     orxMouse_GetPosition (&mousePos);
@@ -127,7 +129,7 @@ void ScrollGUICEGUI::InputMouseDown ()
     System::getSingleton ().injectMouseButtonDown (CEGUI::LeftButton);
 }
 
-void ScrollGUICEGUI::InputMouseUp ()
+void CEGUIGui::InputMouseUp ()
 {
     orxVECTOR mousePos;
     orxMouse_GetPosition (&mousePos);
@@ -136,7 +138,7 @@ void ScrollGUICEGUI::InputMouseUp ()
     System::getSingleton ().injectMouseButtonUp (CEGUI::LeftButton);
 }
 
-void ScrollGUICEGUI::InputKeyPress (const orxSTRING orxKey)
+void CEGUIGui::InputKeyPress (const orxSTRING orxKey)
 {
     using CEGUI::Key;
     int key = 0;
@@ -189,7 +191,7 @@ void ScrollGUICEGUI::InputKeyPress (const orxSTRING orxKey)
     System::getSingleton ().injectKeyDown (key);
 }
 
-void ScrollGUICEGUI::InputKeyRelease (const orxSTRING orxKey)
+void CEGUIGui::InputKeyRelease (const orxSTRING orxKey)
 {
     using CEGUI::Key;
     int key = 0;
@@ -206,7 +208,7 @@ void ScrollGUICEGUI::InputKeyRelease (const orxSTRING orxKey)
     System::getSingleton ().injectKeyUp (key);
 }
 
-void ScrollGUICEGUI::InputString (const string& inputString)
+void CEGUIGui::InputString (const string& inputString)
 {
     using utf8::utf8to32;
 
@@ -223,14 +225,36 @@ void ScrollGUICEGUI::InputString (const string& inputString)
     }
 }
 
-orxBOOL ScrollGUICEGUI::CEGUIScrollObject::OnRender ()
+void CEGUIGui::Update (const orxCLOCK_INFO &_rstInfo)
+{
+    orxVECTOR mousePos;
+    orxMouse_GetPosition (&mousePos);
+
+    orxVECTOR worldPos;
+    orxRender_GetWorldPosition (&mousePos, &worldPos);
+
+    // GUI windows are on top of Orx objects. Check if mouse is inside of a window.
+    CEGUI::System::getSingleton ().injectMousePosition (mousePos.fX,
+							mousePos.fY);
+    CEGUI::Window *window =
+	CEGUI::System::getSingleton ().getWindowContainingMouse ();
+    // Root window covers whole viewport but it is invisible.
+    if (window != NULL &&
+	orxString_Compare (window->getName().c_str(), "root") != 0)
+    {
+	// Pass input to GUI
+	InputMouseMove();
+    }
+}
+
+orxBOOL CEGUIGui::CEGUIScrollObject::OnRender ()
 {
     DrawGrid ();
     System::getSingleton().renderGUI();
     return false; 
 }
 
-void ScrollGUICEGUI::CEGUIScrollObject::DrawGrid ()
+void CEGUIGui::CEGUIScrollObject::DrawGrid ()
 {
     orxConfig_PushSection ("MainCamera");
     float frustumWidth = orxConfig_GetFloat ("FrustumWidth");

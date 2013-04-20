@@ -33,14 +33,10 @@
 
 #include "orxCraft.h"
 #include "orx_config_util.h"
-#include "CEDialogManager.h"
+#include "DialogManager.h"
 #include "ScrollListbox.h"
-#include "ObjectEditor.h"
 
 using std::string;
-using CEGUI::Event;
-using CEGUI::Window;
-using CEGUI::FrameWindow;
 
 ListPopup::ListPopup(const string& name, const string& title):
     ScrollFrameWindow(name, title),
@@ -48,27 +44,6 @@ ListPopup::ListPopup(const string& name, const string& title):
     m_parent(NULL),
     m_userData(NULL)
 {
-}
-
-void ListPopup::Init ()
-{
-    orxASSERT(
-	    CEGUI::WindowManager::getSingleton().isWindowPresent(
-		m_windowName)
-	    );
-    Window* window = CEGUI::WindowManager::getSingleton().getWindow(
-	    m_windowName);
-
-    // Subscribe to close window event
-    window->subscribeEvent (FrameWindow::EventCloseClicked,
-	    Event::Subscriber (&ListPopup::OnCloseClicked, this));
-
-    if(! m_title.empty())
-    	window->setText(m_title);
-    else
-    	window->setText(m_name);
-
-    m_contentList = FindListbox("ListPopup/SelectionList");
 }
 
 void ListPopup::Fill (const vector<string>& dataList)
@@ -114,19 +89,11 @@ void ListPopup::OnPopupFinish (const string& popupName,
 
 void ListPopup::OnDestroy ()
 {
-    CEDialogManager::GetInstance().DestroyDialog(m_id);
+    OrxCraft::GetInstance().GetDialogManager()->DestroyDialog(m_id);
     /*
      * Beyond this point the dialog was destroyed (delete was issued).
      * Make sure in is not accessed anymore.
      */
-}
-
-bool ListPopup::OnCloseClicked (const CEGUI::EventArgs &e)
-{
-    OnDestroy();
-
-    // Notify that the event was handled
-    return true;
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

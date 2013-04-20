@@ -34,8 +34,8 @@
 #include "InfoWindow.h"
 #include "ObjectEditor.h"
 #include "FXSlotEditorWindow.h"
-#include "ScrollGUICEGUI.h"
-#include "CEDialogManager.h"
+#include "CEGUIGui.h"
+#include "CEGUIDialogManager.h"
 
 #include "constants.h"
 #include "orxcraft_util.h"
@@ -122,11 +122,11 @@ orxSTATUS OrxCraft::Init ()
     LoadUserSettings ();
 
     // Create instance of dialog manager
-    m_dialogManager = &CEDialogManager::GetInstance();
+    m_dialogManager = OrxCraftFactory::CreateDialogManager();
 
     // Init GUI system
-    m_gui = new ScrollGUICEGUI ();
-    m_gui->Init ();
+    m_gui = OrxCraftFactory::CreateGui();
+    m_gui->Init();
 
     CreateObject (infoWindow);
 
@@ -165,7 +165,20 @@ void OrxCraft::Exit ()
 
 void OrxCraft::BindObjects ()
 {
-    ScrollBindObject<ScrollGUICEGUI::CEGUIScrollObject> (scrollGUIName);
+/*
+    orxConfig_PushSection("Display");
+    string toolkit = orxConfig_GetString("Toolkit");
+    orxConfig_PopSection();
+    if(toolkit == "CEGUI") {
+	ScrollBindObject<CEGUIGui::CEGUIScrollObject> (scrollGUIName);
+    } else {
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+		"Unknown widget toolkit selected: %s", toolkit.c_str());
+	orxASSERT(false);
+    }
+*/
+
+    OrxCraftFactory::BindObjects();
 }
 
 void OrxCraft::Update (const orxCLOCK_INFO &_rstInfo)
@@ -226,24 +239,7 @@ void OrxCraft::Update (const orxCLOCK_INFO &_rstInfo)
 	}
     }
 
-    orxVECTOR mousePos;
-    orxMouse_GetPosition (&mousePos);
-
-    orxVECTOR worldPos;
-    orxRender_GetWorldPosition (&mousePos, &worldPos);
-
-    // GUI windows are on top of Orx objects. Check if mouse is inside of a window.
-    CEGUI::System::getSingleton ().injectMousePosition (mousePos.fX,
-							mousePos.fY);
-    CEGUI::Window *window =
-	CEGUI::System::getSingleton ().getWindowContainingMouse ();
-    // Root window covers whole viewport but it is invisible.
-    if (window != NULL &&
-	orxString_Compare (window->getName().c_str(), "root") != 0)
-    {
-	// Pass input to GUI
-	m_gui->InputMouseMove ();
-    }
+    m_gui->Update(_rstInfo);
 
     const orxSTRING kbdInput= orxKeyboard_ReadString();
     if(orxString_GetLength(kbdInput) != 0)
@@ -633,6 +629,52 @@ orxSTATUS OrxCraft::AddActionDisplay (const orxSTRING action) const
 
     // Done!
     return eResult;
+}
+
+void OrxCraft::OrxCraftFactory::BindObjects()
+{
+    orxConfig_PushSection("Display");
+    string toolkit = orxConfig_GetString("Toolkit");
+    orxConfig_PopSection();
+    if(toolkit == "CEGUI") {
+	ScrollBindObject<CEGUIGui::CEGUIScrollObject> (scrollGUIName);
+    } else {
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+		"Unknown widget toolkit selected: %s", toolkit.c_str());
+	orxASSERT(false);
+    }
+}
+
+ScrollGui* OrxCraft::OrxCraftFactory::CreateGui()
+{
+    orxConfig_PushSection("Display");
+    string toolkit = orxConfig_GetString("Toolkit");
+    orxConfig_PopSection();
+    if(toolkit == "CEGUI") {
+	return new CEGUIGui();
+    } else {
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+		"Unknown widget toolkit selected: %s", toolkit.c_str());
+	orxASSERT(false);
+    }
+
+    return orxNULL;
+}
+
+DialogManager* OrxCraft::OrxCraftFactory::CreateDialogManager()
+{
+    orxConfig_PushSection("Display");
+    string toolkit = orxConfig_GetString("Toolkit");
+    orxConfig_PopSection();
+    if(toolkit == "CEGUI") {
+	return new CEGUIDialogManager();
+    } else {
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
+		"Unknown widget toolkit selected: %s", toolkit.c_str());
+	orxASSERT(false);
+    }
+
+    return orxNULL;
 }
 
 int main (int argc, char **argv)

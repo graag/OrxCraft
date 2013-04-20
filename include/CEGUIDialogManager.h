@@ -22,14 +22,14 @@
  */
 
 /**
- * @file CEDialogManager.h
+ * @file CEGUIDialogManager.h
  * @date 2012-07-01
  * @author fritz@fritzmahnke.com
  *
  */
 
-#ifndef CEDIALOGMANAGER_H_
-#define CEDIALOGMANAGER_H_
+#ifndef CEGUIDIALOGMANAGER_H_
+#define CEGUIDIALOGMANAGER_H_
 
 #include <string>
 
@@ -38,11 +38,9 @@
 
 #include "CEGUI.h"
 
-class CEDialogManager : public DialogManager
+class CEGUIDialogManager : public DialogManager
 {
 public:
-    //! Return an instance of the DialogManager singleton.
-    static DialogManager& GetInstance();
     /** Create new dialog window.
      * @param[in] dialogName - name of the new dialog specifies predefined
      *                         dialog type:
@@ -67,7 +65,7 @@ public:
     virtual void DestroyDialog(const std::string& dialogName,
 	    const std::string& dialogOptions = "");
 
-    virtual ~CEDialogManager ();
+    virtual ~CEGUIDialogManager ();
 
 private:
     /** Assign a widget to a dialog.
@@ -78,6 +76,6 @@ private:
     void LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWindow* dialog);
 };
 
-#endif    // CEDIALOGMANAGER_H_
+#endif    // CEGUIDIALOGMANAGER_H_
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

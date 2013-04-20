@@ -38,7 +38,7 @@
 #include "ScrollCombobox.h"
 #include "ScrollEditbox.h"
 #include "ScrollCheckbox.h"
-#include "CEDialogManager.h"
+#include "DialogManager.h"
 
 using std::string;
 
@@ -185,7 +185,7 @@ void FXSlotEditorWindow::OnPopupFinish (const string& popupName,
 
 void FXSlotEditorWindow::OnDestroy ()
 {
-    CEDialogManager::GetInstance().DestroyDialog(m_id);
+    OrxCraft::GetInstance().GetDialogManager()->DestroyDialog(m_id);
     /*
      * Beyond this point the dialog was destroyed (delete was issued).
      * Make sure in is not accessed anymore.

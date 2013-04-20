@@ -22,7 +22,7 @@
  */
 
 /**
- * @file CEDialogManager.cpp
+ * @file CEGUIDialogManager.cpp
  * @date 2012-07-01
  * @author fritz@fritzmahnke.com
  *
@@ -31,7 +31,7 @@
  * @todo Make sure dialogs get destroyed on program quit
  */
 
-#include "CEDialogManager.h"
+#include "CEGUIDialogManager.h"
 
 #include "limits.h"
 #include <string>
@@ -43,9 +43,9 @@
 // Dialogs
 #include "ObjectEditor.h"
 #include "FXSlotEditorWindow.h"
-#include "ListPopup.h"
-#include "TreePopup.h"
 
+#include "CEGUIListPopup.h"
+#include "CEGUITreePopup.h"
 #include "CEGUICombobox.h"
 #include "CEGUIEditbox.h"
 #include "CEGUIListbox.h"
@@ -56,7 +56,7 @@
 using std::string;
 using std::make_pair;
 
-CEDialogManager::~CEDialogManager ()
+CEGUIDialogManager::~CEGUIDialogManager ()
 {
     DialogMapIterator iter;
 
@@ -70,17 +70,7 @@ CEDialogManager::~CEDialogManager ()
     m_dialogList.clear();
 };
 
-DialogManager& CEDialogManager::GetInstance()
-{
-    if (!DialogManager::m_instance)
-    {
-	DialogManager::m_instance = new CEDialogManager();
-    }
-
-    return *(DialogManager::m_instance);
-}
-
-ScrollFrameWindow* CEDialogManager::MakeDialog (const string& dialogName,
+ScrollFrameWindow* CEGUIDialogManager::MakeDialog (const string& dialogName,
 	const string& dialogOptions)
 {
     // Number of characters that represent maximum value of unsigned int.
@@ -135,7 +125,7 @@ ScrollFrameWindow* CEDialogManager::MakeDialog (const string& dialogName,
     }
     else if (dialogName == "ListPopup")
     {
-	dialog = new ListPopup (dialogName, dialogOptions);
+	dialog = new CEGUIListPopup (dialogName, dialogOptions);
 	// Generate a unique prefix
 	int result = snprintf(num_buf, num_size, "%d_", dialog->GetId());
 	orxASSERT(result < num_size); // Make sure snprintf succeeded
@@ -144,7 +134,7 @@ ScrollFrameWindow* CEDialogManager::MakeDialog (const string& dialogName,
     }
     else if (dialogName == "TreePopup")
     {
-	dialog = new TreePopup (dialogName, dialogOptions);
+	dialog = new CEGUITreePopup (dialogName, dialogOptions);
 	// Generate a unique prefix
 	int result = snprintf(num_buf, num_size, "%d_", dialog->GetId());
 	orxASSERT(result < num_size); // Make sure snprintf succeeded
@@ -205,7 +195,7 @@ ScrollFrameWindow* CEDialogManager::MakeDialog (const string& dialogName,
     return dialog;
 }
 
-void CEDialogManager::LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWindow* dialog)
+void CEGUIDialogManager::LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWindow* dialog)
 {
     const orxSTRING type = widget->getType ().c_str ();
     const string name = widget->getName().c_str();
@@ -248,7 +238,7 @@ void CEDialogManager::LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWindo
     }
 }
 
-void CEDialogManager::DestroyDialog(const string& dialogName,
+void CEGUIDialogManager::DestroyDialog(const string& dialogName,
 	const string& dialogOptions)
 {
     // Search for the dialog in the list of dialogs controlled by the manager.
@@ -264,7 +254,7 @@ void CEDialogManager::DestroyDialog(const string& dialogName,
     delete dialog;
 }
 
-void CEDialogManager::DestroyDialog(unsigned int id)
+void CEGUIDialogManager::DestroyDialog(unsigned int id)
 {
     // Search for the dialog in the list of dialogs controlled by the manager.
     ScrollFrameWindow* dialog = GetDialog(id);

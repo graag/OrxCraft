@@ -41,7 +41,6 @@
 #include "ScrollCombobox.h"
 #include "ScrollEditbox.h"
 #include "ScrollPushButton.h"
-#include "CEDialogManager.h"
 #include "ListPopup.h"
 #include "TreePopup.h"
 
@@ -253,7 +252,7 @@ void ObjectEditor::OnMouseClick (const string& widgetName)
 	popup->SetParent(this);
 */
 	TreePopup* popup = orxCRAFT_CAST<TreePopup *>(
-		CEDialogManager::GetInstance().MakeDialog(
+		OrxCraft::GetInstance().GetDialogManager()->MakeDialog(
 		"TreePopup", string(m_object->GetModelName()) + ": Child List"));
 	orxASSERT(popup != orxNULL);
 
@@ -298,7 +297,7 @@ void ObjectEditor::OnMouseClick (const string& widgetName)
     if (widgetName == "ButtonFXList")
     {
 	ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
-		CEDialogManager::GetInstance().MakeDialog(
+		OrxCraft::GetInstance().GetDialogManager()->MakeDialog(
 		"ListPopup", string(m_object->GetModelName()) + ": FX List"));
 	orxASSERT(popup != orxNULL);
 
@@ -354,7 +353,8 @@ void ObjectEditor::OnPopupFinish(const string& popupName,
 {
     if(popupName == "ListPopup") {
 	ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
-		CEDialogManager::GetInstance().GetDialog(popupName, popupTitle));
+		OrxCraft::GetInstance().GetDialogManager()->GetDialog(
+		    popupName, popupTitle));
 	orxASSERT(popup != orxNULL);
 	const vector<string>& selection = popup->GetSelection();
 	PopupData* data = static_cast<PopupData *>( popup->GetUserData() );
@@ -369,7 +369,8 @@ void ObjectEditor::OnPopupFinish(const string& popupName,
 	data->object->PopConfigSection();
     } else if (popupName == "TreePopup") {
 	TreePopup* popup = orxCRAFT_CAST<TreePopup *>(
-		CEDialogManager::GetInstance().GetDialog(popupName, popupTitle));
+		OrxCraft::GetInstance().GetDialogManager()->GetDialog(
+		    popupName, popupTitle));
 	orxASSERT(popup != orxNULL);
 	const vector<string>& selection = popup->GetSelection();
 	PopupData* data = static_cast<PopupData *>( popup->GetUserData() );
@@ -391,7 +392,7 @@ void ObjectEditor::OnPopupFinish(const string& popupName,
 
 void ObjectEditor::OnDestroy ()
 {
-    CEDialogManager::GetInstance().DestroyDialog(m_id);
+    OrxCraft::GetInstance().GetDialogManager()->DestroyDialog(m_id);
     /*
      * Beyond this point the dialog was destroyed (delete was issued).
      * Make sure in is not accessed anymore.

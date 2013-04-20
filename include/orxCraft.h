@@ -42,8 +42,7 @@
 #include "Scroll.h"
 
 class DialogManager;
-
-class ScrollGUICEGUI;
+class ScrollGui;
 
 using std::vector;
 using std::string;
@@ -83,6 +82,14 @@ public:
     //! Indicate properties have been changed and objects need to be updated
     //! to reflect that change.
     void NeedObjectUpdate ();
+
+    class OrxCraftFactory
+    {
+	public:
+	    static void BindObjects();
+	    static ScrollGui* CreateGui();
+	    static DialogManager* CreateDialogManager();
+    };
 
 private:
     //! Initialize the editor: parse command line parameters, load user
@@ -136,7 +143,7 @@ private:
 					       const orxSTRING params[]);
 
     //! Windowed part of the GUI.
-    ScrollGUICEGUI	    *m_gui;
+    ScrollGui	    *m_gui;
     //! Dialog factory object.
     DialogManager	    *m_dialogManager;
 

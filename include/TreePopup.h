@@ -32,8 +32,6 @@
 
 #include <string>
 
-#include "CEGUI.h"
-
 #include "ScrollFrameWindow.h"
 #include "ScrollTreebox.h"
 
@@ -42,7 +40,6 @@ class TreePopup : public ScrollFrameWindow
 public:
     TreePopup(const std::string& name, const std::string& title = "");
 
-    virtual void Init ();
     virtual void OnMouseClick   (const std::string& widgetName);
     virtual void OnTextAccepted (const std::string& widgetName);
     virtual void OnPopupFinish  (const std::string& popupName,
@@ -61,13 +58,7 @@ public:
     virtual void* GetParent()
     { return m_parent; }
 
-private:
-    /** Handler for CEGUI::Window::EventCloseClicked event.
-     *
-     * @param[in] e - WindowEventArgs event arguments passed from CEGUI.
-     */
-    bool OnCloseClicked (const CEGUI::EventArgs &e);
-
+protected:
     ScrollTreebox*     m_contentTree;
     ScrollFrameWindow* m_parent;
     void*              m_userData;
