@@ -40,9 +40,7 @@ using std::string;
 
 TreePopup::TreePopup(const string& name, const string& title):
     ScrollFrameWindow(name, title),
-    m_contentTree(NULL),
-    m_parent(NULL),
-    m_userData(NULL)
+    m_contentTree(NULL)
 {
 }
 
@@ -64,32 +62,38 @@ vector<string> TreePopup::GetSelection()
     return m_contentTree->GetSelection();
 }
 
-void TreePopup::OnMouseClick (const string& widgetName)
+void TreePopup::OnAction(const string& widgetName, const string& action)
 {
     orxASSERT (m_contentTree != orxNULL);
-    orxASSERT (m_parent != orxNULL);
 
     if (widgetName == "TreePopup/DoneButton")
     {
-	m_parent->OnPopupFinish(m_name, m_title);
-	OnDestroy();
+	SignalFinish(m_name, m_id);
+	OnClose();
     }
 }
 
-void TreePopup::OnTextAccepted (const string& widgetName)
+void TreePopup::OnInput(const string& widgetName)
 {
     orxASSERT (false);
 }
 
-void TreePopup::OnPopupFinish (const string& popupName,
-	const string& popupTitle)
+void TreePopup::HandlePopup (const string& popupName,
+	orxU32 popupID)
 {
     orxASSERT (false);
 }
 
-void TreePopup::OnDestroy ()
+void TreePopup::HandleClose (const string& popupName,
+	orxU32 popupID)
 {
-    OrxCraft::GetInstance().GetDialogManager()->DestroyDialog(m_id);
+    orxASSERT (false);
+}
+
+void TreePopup::OnClose ()
+{
+    SignalClose(m_name, m_id);
+    OrxCraft::GetInstance().GetDialogManager()->CloseDialog(m_id);
     /*
      * Beyond this point the dialog was destroyed (delete was issued).
      * Make sure in is not accessed anymore.

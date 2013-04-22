@@ -70,7 +70,7 @@ void CEGUIListPopup::Init ()
 
 bool CEGUIListPopup::OnCloseClicked (const CEGUI::EventArgs &e)
 {
-    OnDestroy();
+    OnClose();
 
     // Notify that the event was handled
     return true;

@@ -32,6 +32,8 @@
 #include <string>
 #include <vector>
 
+// #include "utils/Signal.h" 
+
 #include "orxCraft.h"
 #include "orx_config_util.h"
 #include "orxcraft_util.h"
@@ -219,59 +221,40 @@ void ObjectEditor::UpdateFields() const
     }
 }
 
-void ObjectEditor::OnMouseClick (const string& widgetName)
+void ObjectEditor::OnAction(const string& widgetName, const string& action)
 {
     orxASSERT (m_object != orxNULL);
 
     if (widgetName == "ButtonChildList")
     {
-/*
-	ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
-		CEDialogManager::GetInstance().MakeDialog(
-		"ListPopup", string(m_object->GetModelName()) + ": Child List"));
-	orxASSERT(popup != orxNULL);
-
-	// Potential children are all objects
-	//! @todo Are those only objects (ones with graphic defined) or also other entities??
-	vector<std::string> objects =
-	    OrxCraft::GetInstance().GetObjectListSafe(
-		    m_object->GetModelName()
-		    );
-	vector<std::string> selection;
-
-	m_object->PushConfigSection();
-	orxConf::GetListAsVector("ChildList", selection);
-	m_object->PopConfigSection();
-
-	popup->Fill(objects);
-	popup->SetSelection(selection);
-	PopupData* data = new PopupData;
-	data->object = m_object;
-	data->property = "ChildList";
-	popup->SetUserData(data);
-	popup->SetParent(this);
-*/
+	// Open popup
 	TreePopup* popup = orxCRAFT_CAST<TreePopup *>(
-		OrxCraft::GetInstance().GetDialogManager()->MakeDialog(
+		OrxCraft::GetInstance().GetDialogManager()->OpenDialog(
 		"TreePopup", string(m_object->GetModelName()) + ": Child List"));
 	orxASSERT(popup != orxNULL);
 
 	// Potential children are all objects
 	//! @todo Are those only objects (ones with graphic defined) or also other entities??
+	// Select only objects that are not ancestors to current object. This
+	// will prevent cycles in child - parent relationship
 	vector<std::string> objects =
 	    OrxCraft::GetInstance().GetObjectListSafe(
 		    m_object->GetModelName()
 		    );
-	vector<std::string> selection;
+	vector<std::string> selection; // Current children
+	// List of potential children with info about set they are assigned to
 	vector<ScrollTreePair> objects_group;
 
+	// @TODO Known objects should be stored together with their group
+	// association?
+	// Iterate through known objects and obtain their set
 	vector<string>::iterator it;
 	for(it = objects.begin(); it != objects.end(); it++) {
 	    string setName = "";
 	    ScrollTreePair item;
 
 	    orxConfig_PushSection(it->c_str());
-	    // Has ScrollEd type and a graphic?
+	    // Belongs to a ScrollEd set?
 	    if(orxConfig_HasValue(scrollEdSectionName)) {
 	    	setName = orxConfig_GetString(scrollEdSectionName);
 	    }
@@ -282,45 +265,56 @@ void ObjectEditor::OnMouseClick (const string& widgetName)
 	    objects_group.push_back(item);
 	}
 
+	// Get current children
 	m_object->PushConfigSection();
 	orxConf::GetListAsVector("ChildList", selection);
 	m_object->PopConfigSection();
 
+	// Initialize popup
 	popup->Fill(objects_group);
 	popup->SetSelection(selection);
+	// Use user data to store in popup object and property. This way when
+	// we change something in object editor it will not invalidate the
+	// popup.
 	PopupData* data = new PopupData;
 	data->object = m_object;
 	data->property = "ChildList";
 	popup->SetUserData(data);
-	popup->SetParent(this);
+	popup->SignalFinish.Connect(this, &ObjectEditor::HandlePopup);
+	popup->SignalClose.Connect(this, &ObjectEditor::HandleClose);
     }
     if (widgetName == "ButtonFXList")
     {
 	ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
-		OrxCraft::GetInstance().GetDialogManager()->MakeDialog(
+		OrxCraft::GetInstance().GetDialogManager()->OpenDialog(
 		"ListPopup", string(m_object->GetModelName()) + ": FX List"));
 	orxASSERT(popup != orxNULL);
 
-	// Potential children are all objects
-	//! @todo Are those only objects (ones with graphic defined) or also other entities??
+	// Obtain available FXs
 	vector<std::string>& objects = OrxCraft::GetInstance().GetFXList();
 	vector<std::string> selection;
 
+	// Get current FX association
 	m_object->PushConfigSection();
 	orxConf::GetListAsVector("FXList", selection);
 	m_object->PopConfigSection();
 
+	// Initialize popup
 	popup->Fill(objects);
 	popup->SetSelection(selection);
+	// Use user data to store in popup object and property. This way when
+	// we change something in object editor it will not invalidate the
+	// popup.
 	PopupData* data = new PopupData;
 	data->object = m_object;
 	data->property = "FXList";
 	popup->SetUserData(data);
-	popup->SetParent(this);
+	popup->SignalFinish.Connect(this, &ObjectEditor::HandlePopup);
+	popup->SignalClose.Connect(this, &ObjectEditor::HandleClose);
     }
 }
 
-void ObjectEditor::OnTextAccepted(const string& widgetName)
+void ObjectEditor::OnInput(const string& widgetName)
 {
     orxASSERT(m_object != orxNULL);
 
@@ -348,13 +342,12 @@ void ObjectEditor::OnTextAccepted(const string& widgetName)
     OrxCraft::GetInstance().NeedObjectUpdate();
 }
 
-void ObjectEditor::OnPopupFinish(const string& popupName,
-	const string& popupTitle)
+void ObjectEditor::HandlePopup(const string& popupName, orxU32 popupID)
 {
     if(popupName == "ListPopup") {
 	ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
 		OrxCraft::GetInstance().GetDialogManager()->GetDialog(
-		    popupName, popupTitle));
+		    popupID));
 	orxASSERT(popup != orxNULL);
 	const vector<string>& selection = popup->GetSelection();
 	PopupData* data = static_cast<PopupData *>( popup->GetUserData() );
@@ -370,7 +363,7 @@ void ObjectEditor::OnPopupFinish(const string& popupName,
     } else if (popupName == "TreePopup") {
 	TreePopup* popup = orxCRAFT_CAST<TreePopup *>(
 		OrxCraft::GetInstance().GetDialogManager()->GetDialog(
-		    popupName, popupTitle));
+		    popupID));
 	orxASSERT(popup != orxNULL);
 	const vector<string>& selection = popup->GetSelection();
 	PopupData* data = static_cast<PopupData *>( popup->GetUserData() );
@@ -385,21 +378,49 @@ void ObjectEditor::OnPopupFinish(const string& popupName,
 	data->object->PopConfigSection();
     }
 
-    UpdateFields();
     // Update object in editor
     OrxCraft::GetInstance().NeedObjectUpdate();
 }
 
-void ObjectEditor::OnDestroy ()
+void ObjectEditor::HandleClose(const string& popupName, orxU32 popupID)
 {
-    OrxCraft::GetInstance().GetDialogManager()->DestroyDialog(m_id);
+    if(popupName == "TreePopup") {
+	TreePopup* popup = orxCRAFT_CAST<TreePopup *>(
+		OrxCraft::GetInstance().GetDialogManager()->GetDialog(
+		    popupID));
+	orxASSERT(popup != orxNULL);
+	PopupData* data = static_cast<PopupData *>( popup->GetUserData() );
+	delete data;
+	popup->SetUserData(NULL);
+	popup->SignalFinish.Disconnect(this, &ObjectEditor::HandlePopup);
+	popup->SignalClose.Disconnect(this, &ObjectEditor::HandleClose);
+    }
+    if(popupName == "ListPopup") {
+	ListPopup* popup = orxCRAFT_CAST<ListPopup *>(
+		OrxCraft::GetInstance().GetDialogManager()->GetDialog(
+		    popupID));
+	orxASSERT(popup != orxNULL);
+	PopupData* data = static_cast<PopupData *>( popup->GetUserData() );
+	delete data;
+	popup->SetUserData(NULL);
+	popup->SignalFinish.Disconnect(this, &ObjectEditor::HandlePopup);
+	popup->SignalClose.Disconnect(this, &ObjectEditor::HandleClose);
+    }
+}
+
+void ObjectEditor::OnClose()
+{
+    //@TODO Dialogs should hide when closed. Do we need destroy? Would be run
+    //only on app close.
+    SignalClose(m_name, m_id);
+    OrxCraft::GetInstance().GetDialogManager()->CloseDialog(m_id);
     /*
      * Beyond this point the dialog was destroyed (delete was issued).
      * Make sure in is not accessed anymore.
      */
 }
 
-void ObjectEditor::OnReset ()
+void ObjectEditor::OnReset()
 {
     const string& name = m_objConfigName->GetSelection();
     //! @todo Better not to have this in the Scroll singleton

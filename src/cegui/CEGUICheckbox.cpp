@@ -98,7 +98,7 @@ bool CEGUICheckbox::OnCheckStateChanged(const CEGUI::EventArgs &e)
     orxASSERT(widgetName == m_widgetUniqueName);
 #endif // __orxDEBUG__
 
-    m_manager->OnTextAccepted (m_widgetName);
+    m_manager->OnInput(m_widgetName);
 
     return true;
 }

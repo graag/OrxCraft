@@ -108,7 +108,7 @@ bool CEGUIPushButton::OnClicked (const CEGUI::EventArgs &e)
 #endif // __orxDEBUG__
 
     // Pass the event to the ScrollFrameWindow
-    m_manager->OnMouseClick (m_widgetName);
+    m_manager->OnAction(m_widgetName);
 
     // Notify that the event was handled
     return true;

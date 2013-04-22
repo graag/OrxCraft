@@ -39,7 +39,10 @@
 class CEGUIListPopup : public ListPopup
 {
 public:
+    /** C-tor */
     CEGUIListPopup(const std::string& name, const std::string& title = "");
+
+    /* ScrollFrameWindow interface */
 
     virtual void Init ();
 

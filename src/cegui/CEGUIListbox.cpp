@@ -83,6 +83,9 @@ void CEGUIListbox::Init (const string& widgetName)
 
 void CEGUIListbox::Fill (const vector<string> &listItems)
 {
+    m_ceListbox->resetList();
+    m_items.clear();
+
     for (unsigned int i = 0; i < listItems.size (); i++)
     {
 	m_items.push_back (new CEGUI::ListboxTextItem (listItems.at (i)));
@@ -156,7 +159,7 @@ bool CEGUIListbox::OnMouseClick (const CEGUI::EventArgs &e)
 #endif // __orxDEBUG__
 
     // Pass the event to the ScrollFrameWindow
-    m_manager->OnMouseClick(m_widgetName);
+    m_manager->OnAction(m_widgetName);
 
     //! @todo Handle left vs right clicks
 

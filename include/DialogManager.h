@@ -49,37 +49,50 @@ typedef std::map<unsigned int,
 class DialogManager
 {
 public:
-    /** Create new dialog window.
+    /** Open a dialog window. Create it if does not exist.
      * @param[in] dialogName - name of the new dialog specifies predefined
      *                         dialog type
+     *                         * ObjectEditor
+     *                         * FXSlotEditor
+     *                         * ListPopup
+     *                         * TreePopup
      * @param[in] dialogTitle - title of the dialog (optional)
      */
-    virtual ScrollFrameWindow* MakeDialog (const std::string& dialogName,
+    virtual ScrollFrameWindow* OpenDialog (const std::string& dialogName,
 	    const std::string& dialogTitle = "") = 0;
     /** Destroy a dialog window managed by the DialogManager
      * @param[in] id - unique ID of the dialog window
      */
     virtual void DestroyDialog(unsigned int id) = 0;
     /** Destroy a dialog window managed by the DialogManager,
-     * identified by its name and options.
+     * identified by its name.
      * @param[in] dialogName - name of the dialog
-     * @param[in] dialogOptions - options of the dialog
      */
-    virtual void DestroyDialog(const std::string& dialogName,
-	    const std::string& dialogOptions = "") = 0;
+    virtual void DestroyDialog(const std::string& dialogName) = 0;
+    /** Close a dialog window managed by the DialogManager
+     *
+     * Window is only hidden not destroyed if toolkit allows.
+     * @param[in] id - unique ID of the dialog window
+     */
+    virtual void CloseDialog(unsigned int id) = 0;
+    /** Close a dialog window managed by the DialogManager,
+     * identified by its name.
+     *
+     * Window is only hidden not destroyed if toolkit allows.
+     * @param[in] dialogName - name of the dialog
+     */
+    virtual void CloseDialog(const std::string& dialogName) = 0;
     /** Get a dialog window managed by the DialogManager
      * @param[in] id - unique ID of the dialog window
      * @return a pointer to the dialog if found, NULL otherwise
      */
     virtual ScrollFrameWindow* GetDialog(unsigned int id);
     /** Get a dialog window managed by the DialogManager,
-     * identified by its name and options.
+     * identified by its name.
      * @param[in] dialogName - name of the dialog
-     * @param[in] dialogOptions - options of the dialog
      * @return a pointer to the dialog if found, NULL otherwise
      */
-    virtual ScrollFrameWindow* GetDialog(const std::string& dialogName,
-	    const std::string& dialogOptions = "");
+    virtual ScrollFrameWindow* GetDialog(const std::string& dialogName);
 
     void OnReset();
 
@@ -97,9 +110,6 @@ public:
     };
 
 protected:
-    // Pointer to an instance of the DialogManager singleton
-    static DialogManager* m_instance;
-
     // Dialogs managed by the manager
     DialogMap m_dialogList;
 };

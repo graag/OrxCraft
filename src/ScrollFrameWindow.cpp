@@ -47,7 +47,8 @@ ScrollFrameWindow::ScrollFrameWindow (const string& name,
 	const string& title):
     m_id(0),
     m_name(name),
-    m_title(title)
+    m_title(title),
+    m_userData(NULL)
 {
     // Assign an unique ID
     m_id = m_idPool;

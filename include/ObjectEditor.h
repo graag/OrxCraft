@@ -42,28 +42,29 @@ class ScrollWindowWidget;
 class ObjectEditor : public ScrollFrameWindow
 {
 public:
-    //! C-tor
+    /** C-tor */
     ObjectEditor (const std::string& name);
 
-    /** Initialize the window. */
-    virtual void Init ();
-
-    //! Initialize control items
+    /** Initialize control items */
     void SetupFields  ();
-    //! Update all widgets to show current ScrollObject config values
+    /** Update all widgets to show current ScrollObject config values */
     void UpdateFields () const;
 
-    const std::string GetText (const std::string& widgetName) const;
-    //! Set the ScrollObject being edited
+    /** Set the ScrollObject being edited */
     void SetObject (ScrollObject *object);
+    /** Get the ScrollObject being edited */
     ScrollObject* GetObject();
 
-    virtual void OnMouseClick   (const std::string& widgetName);
-    virtual void OnTextAccepted (const std::string& widgetName);
-    virtual void OnPopupFinish  (const std::string& popupName,
-	    const std::string& popupTitle = "");
-    virtual void OnDestroy ();
-    virtual void OnReset   ();
+    /** ScrollFrameWindow interface */
+
+    virtual void Init();
+    virtual void OnAction(const std::string& widgetName,
+	    const std::string& action = "");
+    virtual void OnInput(const std::string& widgetName);
+    virtual void OnClose();
+    virtual void OnReset();
+    virtual void HandlePopup(const std::string& popupName, orxU32 popupID);
+    virtual void HandleClose(const std::string& popupName, orxU32 popupID);
 
 private:
     ScrollObject *m_object;

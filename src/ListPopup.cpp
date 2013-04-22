@@ -40,9 +40,7 @@ using std::string;
 
 ListPopup::ListPopup(const string& name, const string& title):
     ScrollFrameWindow(name, title),
-    m_contentList(NULL),
-    m_parent(NULL),
-    m_userData(NULL)
+    m_contentList(NULL)
 {
 }
 
@@ -64,32 +62,38 @@ vector<string> ListPopup::GetSelection()
     return m_contentList->GetSelection();
 }
 
-void ListPopup::OnMouseClick (const string& widgetName)
+void ListPopup::OnAction(const string& widgetName, const string& action)
 {
     orxASSERT (m_contentList != orxNULL);
-    orxASSERT (m_parent != orxNULL);
 
     if (widgetName == "ListPopup/DoneButton")
     {
-	m_parent->OnPopupFinish(m_name, m_title);
-	OnDestroy();
+	SignalFinish(m_name, m_id);
+	OnClose();
     }
 }
 
-void ListPopup::OnTextAccepted (const string& widgetName)
+void ListPopup::OnInput(const string& widgetName)
 {
     orxASSERT (false);
 }
 
-void ListPopup::OnPopupFinish (const string& popupName,
-	const string& popupTitle)
+void ListPopup::HandlePopup(const string& popupName,
+	orxU32 popupTitle)
 {
     orxASSERT (false);
 }
 
-void ListPopup::OnDestroy ()
+void ListPopup::HandleClose(const string& popupName,
+	orxU32 popupTitle)
 {
-    OrxCraft::GetInstance().GetDialogManager()->DestroyDialog(m_id);
+    orxASSERT (false);
+}
+
+void ListPopup::OnClose()
+{
+    SignalClose(m_name, m_id);
+    OrxCraft::GetInstance().GetDialogManager()->CloseDialog(m_id);
     /*
      * Beyond this point the dialog was destroyed (delete was issued).
      * Make sure in is not accessed anymore.

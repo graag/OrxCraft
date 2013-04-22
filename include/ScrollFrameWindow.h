@@ -32,6 +32,8 @@
 #include <vector>
 #include <string>
 
+#include <utils/Signal.h>
+
 #include "Scroll.h"
 #include "ScrollWidget.h"
 
@@ -88,37 +90,74 @@ public:
      */
     ScrollTreebox *FindTreebox (const std::string& widgetName) const;
 
-    //! Initialize the window.
+    /** Initialize the window. */
     virtual void Init () = 0;
     /** Get the unique dialog identifier. */
-    virtual unsigned int GetId() const { return m_id; }
+    virtual orxU32 GetId() const { return m_id; }
     /** Get the dialog name */
     virtual const std::string& GetName() { return m_name; }
+    /** Set the name of underlying toolkit window. */
     virtual const void SetWindowName(const std::string& windowName)
     { m_windowName = windowName; }
     /** Get the name of underlying toolkit window. */
     virtual const std::string& GetWindowName () { return m_windowName; }
     /** Get the window title. */
     virtual const std::string& GetWindowTitle() { return m_title; }
-    /** Left mouse click event handler.
-     * @param widgetName - name of the widget that originated the event.
+    /** Store user information within window instance.
+     *
+     * Used to store context of popup creation, e.g. object and property for
+     * which value will be derived from popup selection.
+     * @param[in] data - pointer to user specified data structure
      */
-    virtual void OnMouseClick   (const std::string& widgetName) = 0;
-    /** Text accepted (pressed Enter key) event handler.
-     * @param widgetName - name of the widget that originated the event.
+    virtual void SetUserData(void* data)
+    { m_userData = data; }
+    /** Get user information stored in the window instance.
+     *
+     * @return pointer to user specified data structure
      */
-    virtual void OnTextAccepted (const std::string& widgetName) = 0;
-    virtual void OnPopupFinish  (const std::string& popupName,
-	    const std::string& popupTitle = "") = 0;
-    virtual void OnDestroy      () = 0;
-    virtual void OnReset        () = 0;
-
+    virtual void* GetUserData()
+    { return m_userData; }
     /** Add new widget to the window.
      * @param widget - a pointer to ScrollWidget
      */
     virtual void AddWidget (ScrollWidget *widget);
 
-    //! D-tor
+    /** Callbacks */
+
+    /** Callback for new action from child widget.
+     *
+     * Used by child widgets to notify about new actions. Button clicks,
+     * context menu selections etc.
+     * @param widgetName - name of the widget that originated the event.
+     * @param action - action executed by the widget.
+     */
+    virtual void OnAction(const std::string& widgetName,
+	    const std::string& action = "") = 0;
+    /** Callback for new input from child widget.
+     *
+     * Used by child widgets to notify about new input: text, numbers,
+     * selection etc.
+     * @param widgetName - name of the widget that originated the event.
+     */
+    virtual void OnInput(const std::string& widgetName) = 0;
+    /** Window close event handler. */
+    virtual void OnClose() = 0;
+    /** Project data changed event handler. */
+    virtual void OnReset() = 0;
+
+    /** Slots */
+
+    /** Popup finish handler. */
+    virtual void HandlePopup(const std::string& popupName, orxU32 popupID) = 0;
+    /** Popup closed handler. */
+    virtual void HandleClose(const std::string& popupName, orxU32 popupID) = 0;
+
+    /* Signals */
+
+    /** Notify caller on popup close. */
+    Gallant::Signal2<const std::string&, orxU32> SignalClose;
+
+    /** D-tor */
     virtual ~ScrollFrameWindow ()
     {
 	std::vector<ScrollWidget *>::iterator iter;
@@ -135,7 +174,7 @@ protected:
     // Pool of ids. It is incremented whenever new dialog is created.
     static unsigned int         m_idPool;
     // Unique id of this dialog
-    unsigned int                m_id;
+    orxU32                      m_id;
     // Widgets contained in the window
     std::vector<ScrollWidget *> m_widgetList;
     // Name of the underlying toolkit window
@@ -144,6 +183,8 @@ protected:
     std::string                 m_name;
     // Options used for creation of the dialog
     std::string                 m_title;
+    // User data structure
+    void*              m_userData;
 };
 
 #endif  // __SCROLLFRAMEWINDOW_H__

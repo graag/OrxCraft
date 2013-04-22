@@ -132,9 +132,9 @@ orxSTATUS OrxCraft::Init ()
     CreateObject (infoWindow);
 
     // Init object editor
-    m_dialogManager->MakeDialog ("ObjectEditor");
+    m_dialogManager->OpenDialog ("ObjectEditor");
     // Init FX slot editor
-    m_dialogManager->MakeDialog ("FXSlotEditor");
+    m_dialogManager->OpenDialog ("FXSlotEditor");
 
     orxEvent_AddHandler (orxEVENT_TYPE_INPUT, EventHandler);
 

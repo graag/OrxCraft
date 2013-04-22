@@ -152,7 +152,7 @@ bool CEGUICombobox::OnSelectionAccepted(const CEGUI::EventArgs &e)
 #endif // __orxDEBUG__
 
     // Pass the event to the ScrollFrameWindow
-    m_manager->OnTextAccepted (m_widgetName);
+    m_manager->OnInput(m_widgetName);
 
     // Notify that the event was handled
     return true;

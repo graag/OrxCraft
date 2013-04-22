@@ -39,6 +39,7 @@
 class CEGUITreePopup : public TreePopup
 {
 public:
+    /** C-tor */
     CEGUITreePopup(const std::string& name, const std::string& title = "");
 
     virtual void Init ();

@@ -70,8 +70,8 @@ CEGUIDialogManager::~CEGUIDialogManager ()
     m_dialogList.clear();
 };
 
-ScrollFrameWindow* CEGUIDialogManager::MakeDialog (const string& dialogName,
-	const string& dialogOptions)
+ScrollFrameWindow* CEGUIDialogManager::OpenDialog (const string& dialogName,
+	const string& dialogTitle)
 {
     // Number of characters that represent maximum value of unsigned int.
     static int num_size = log10(UINT_MAX)+2;
@@ -84,7 +84,7 @@ ScrollFrameWindow* CEGUIDialogManager::MakeDialog (const string& dialogName,
      * Check if dialog identified by name and options does not already exist.
      * If so activate it's window.
      */
-    dialog = GetDialog(dialogName, dialogOptions);
+    dialog = GetDialog(dialogName);
     if(dialog != NULL) {
 	orxASSERT(
 		CEGUI::WindowManager::getSingleton().isWindowPresent(
@@ -92,7 +92,12 @@ ScrollFrameWindow* CEGUIDialogManager::MakeDialog (const string& dialogName,
 		);
 	window = CEGUI::WindowManager::getSingleton().getWindow(
 		dialog->GetWindowName());
+	window->show();
 	window->activate();
+	// @TODO dialog should know that it is modal. No hardcoded lists!!
+	if (dialogName == "ListPopup" || dialogName == "TreePopup") {
+	    window->setModalState(true);
+	}
 	return dialog;
     }
 
@@ -109,7 +114,7 @@ ScrollFrameWindow* CEGUIDialogManager::MakeDialog (const string& dialogName,
     {
 	dialog = new ObjectEditor (dialogName);
 	// Generate a unique prefix
-	int result = snprintf(num_buf, num_size, "%d_", dialog->GetId());
+	int result = snprintf(num_buf, num_size, "%lu_", dialog->GetId());
 	orxASSERT(result < num_size); // Make sure snprintf succeeded
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "ObjectEditor.layout", num_buf);
@@ -118,25 +123,25 @@ ScrollFrameWindow* CEGUIDialogManager::MakeDialog (const string& dialogName,
     {
 	dialog = new FXSlotEditorWindow (dialogName);
 	// Generate a unique prefix
-	int result = snprintf(num_buf, num_size, "%d_", dialog->GetId());
+	int result = snprintf(num_buf, num_size, "%lu_", dialog->GetId());
 	orxASSERT(result < num_size); // Make sure snprintf succeeded
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "FXSlotEditor.layout", num_buf);
     }
     else if (dialogName == "ListPopup")
     {
-	dialog = new CEGUIListPopup (dialogName, dialogOptions);
+	dialog = new CEGUIListPopup (dialogName, dialogTitle);
 	// Generate a unique prefix
-	int result = snprintf(num_buf, num_size, "%d_", dialog->GetId());
+	int result = snprintf(num_buf, num_size, "%lu_", dialog->GetId());
 	orxASSERT(result < num_size); // Make sure snprintf succeeded
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "ListPopup.layout", num_buf);
     }
     else if (dialogName == "TreePopup")
     {
-	dialog = new CEGUITreePopup (dialogName, dialogOptions);
+	dialog = new CEGUITreePopup (dialogName, dialogTitle);
 	// Generate a unique prefix
-	int result = snprintf(num_buf, num_size, "%d_", dialog->GetId());
+	int result = snprintf(num_buf, num_size, "%lu_", dialog->GetId());
 	orxASSERT(result < num_size); // Make sure snprintf succeeded
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "TreePopup.layout", num_buf);
@@ -192,6 +197,10 @@ ScrollFrameWindow* CEGUIDialogManager::MakeDialog (const string& dialogName,
     window->activate();
     m_dialogList[dialog->GetId()] = dialog;
 
+    if (dialogName == "ListPopup" || dialogName == "TreePopup") {
+	window->setModalState(true);
+    }
+
     return dialog;
 }
 
@@ -238,11 +247,10 @@ void CEGUIDialogManager::LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWi
     }
 }
 
-void CEGUIDialogManager::DestroyDialog(const string& dialogName,
-	const string& dialogOptions)
+void CEGUIDialogManager::DestroyDialog(const string& dialogName)
 {
     // Search for the dialog in the list of dialogs controlled by the manager.
-    ScrollFrameWindow* dialog = GetDialog(dialogName, dialogOptions);
+    ScrollFrameWindow* dialog = GetDialog(dialogName);
 
     orxASSERT(dialog != NULL);
 
@@ -267,6 +275,34 @@ void CEGUIDialogManager::DestroyDialog(unsigned int id)
     // Remove the dialog from the list and destroy it
     m_dialogList.erase(dialog->GetId());
     delete dialog;
+}
+
+void CEGUIDialogManager::CloseDialog(const string& dialogName)
+{
+    // Search for the dialog in the list of dialogs controlled by the manager.
+    ScrollFrameWindow* dialog = GetDialog(dialogName);
+
+    orxASSERT(dialog != NULL);
+
+    // Hide the CEGUI window
+    CEGUI::Window* window = CEGUI::WindowManager::getSingleton().getWindow(
+	    dialog->GetWindowName());
+    window->hide();
+    window->setModalState(false);
+}
+
+void CEGUIDialogManager::CloseDialog(unsigned int id)
+{
+    // Search for the dialog in the list of dialogs controlled by the manager.
+    ScrollFrameWindow* dialog = GetDialog(id);
+
+    orxASSERT(dialog != NULL);
+
+    // Hide the CEGUI window
+    CEGUI::Window* window = CEGUI::WindowManager::getSingleton().getWindow(
+	    dialog->GetWindowName());
+    window->hide();
+    window->setModalState(false);
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

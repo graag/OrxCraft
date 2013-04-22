@@ -137,24 +137,24 @@ void FXSlotEditorWindow::UpdateFields () const
     orxConfig_PopSection();
 }
 
-const string FXSlotEditorWindow::GetText (const string& widgetName) const
-{
-    orxASSERT (false);
-    return orxNULL;
-}
-
 void FXSlotEditorWindow::SetContext (const string& sectionName)
 {
     m_context = sectionName;
     UpdateFields ();
 }
 
-void FXSlotEditorWindow::OnMouseClick (const string& widgetName)
+const string& FXSlotEditorWindow::GetContext ()
+{
+    return m_context;
+}
+
+void FXSlotEditorWindow::OnAction(const string& widgetName,
+	const string& action)
 {
     orxASSERT (false);
 }
 
-void FXSlotEditorWindow::OnTextAccepted (const string& widgetName)
+void FXSlotEditorWindow::OnInput(const string& widgetName)
 {
     if (widgetName == "FXSlotConfigName")
     {
@@ -177,19 +177,33 @@ void FXSlotEditorWindow::OnTextAccepted (const string& widgetName)
     OrxCraft::GetInstance().NeedObjectUpdate();
 }
 
-void FXSlotEditorWindow::OnPopupFinish (const string& popupName,
-	const string& popupTitle)
+void FXSlotEditorWindow::HandlePopup (const string& popupName,
+	orxU32 popupID)
 {
     orxASSERT(false);
 }
 
-void FXSlotEditorWindow::OnDestroy ()
+void FXSlotEditorWindow::HandleClose (const string& popupName,
+	orxU32 popupID)
 {
-    OrxCraft::GetInstance().GetDialogManager()->DestroyDialog(m_id);
+    orxASSERT(false);
+}
+
+void FXSlotEditorWindow::OnClose()
+{
+    SignalClose(m_name, m_id);
+    OrxCraft::GetInstance().GetDialogManager()->CloseDialog(m_id);
     /*
      * Beyond this point the dialog was destroyed (delete was issued).
      * Make sure in is not accessed anymore.
      */
+}
+
+void FXSlotEditorWindow::OnReset()
+{
+    const string& name = m_fxsConfigName->GetSelection();
+    //! @todo Better not to have this in the Scroll singleton
+    SetContext (name);
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

@@ -65,7 +65,7 @@ void CEGUITreePopup::Init ()
 
 bool CEGUITreePopup::OnCloseClicked (const CEGUI::EventArgs &e)
 {
-    OnDestroy();
+    OnClose();
 
     // Notify that the event was handled
     return true;

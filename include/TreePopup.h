@@ -38,30 +38,44 @@
 class TreePopup : public ScrollFrameWindow
 {
 public:
+    /** C-tor */
     TreePopup(const std::string& name, const std::string& title = "");
 
-    virtual void OnMouseClick   (const std::string& widgetName);
-    virtual void OnTextAccepted (const std::string& widgetName);
-    virtual void OnPopupFinish  (const std::string& popupName,
-	    const std::string& popupTitle = "");
-    virtual void OnDestroy ();
-    virtual void OnReset () {};
+    /** Fill tree widget contents.
+     *
+     * @param[in] dataList - Vector of ScrollTreePair elements containing set
+     * and element names
+     */
     virtual void Fill (const std::vector<ScrollTreePair>& dataList);
+    /** Set selected list elements.
+     *
+     * @param[in] selectionlist - vector of list element names to select
+     */
     virtual void SetSelection (const std::vector<std::string>& selectionList);
+    /** Get selected list elements.
+     *
+     * @return Vector of selected list element names
+     */
     virtual std::vector<std::string> GetSelection();
-    virtual void SetUserData(void* data)
-    { m_userData = data; }
-    virtual void* GetUserData()
-    { return m_userData; }
-    virtual void SetParent(ScrollFrameWindow* parent)
-    { m_parent = parent; }
-    virtual void* GetParent()
-    { return m_parent; }
+
+    /* ScrollFrameWindow interface */
+
+    virtual void OnAction(const std::string& widgetName,
+	    const std::string& action = "");
+    virtual void OnInput(const std::string& widgetName);
+    virtual void OnClose();
+    virtual void OnReset() { OnClose(); }
+    virtual void HandlePopup(const std::string& popupName, orxU32 popupID);
+    virtual void HandleClose(const std::string& popupName, orxU32 popupID);
+
+    /* Signals */
+
+    /** Notify caller on popup finish. */
+    Gallant::Signal2<const std::string&, orxU32> SignalFinish;
 
 protected:
+    // Treebox widget
     ScrollTreebox*     m_contentTree;
-    ScrollFrameWindow* m_parent;
-    void*              m_userData;
 };
 
 #endif	// __TREEPOPUP_H__

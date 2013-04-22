@@ -41,29 +41,12 @@
 class CEGUIDialogManager : public DialogManager
 {
 public:
-    /** Create new dialog window.
-     * @param[in] dialogName - name of the new dialog specifies predefined
-     *                         dialog type:
-     *                         * ObjectEditor
-     *                         * FXSlotEditor
-     *                         * ListPopup
-     * @param[in] dialogOptions - options passed to the new dialog (optional)
-     */
-    virtual ScrollFrameWindow* MakeDialog (const std::string& dialogName,
+    virtual ScrollFrameWindow* OpenDialog (const std::string& dialogName,
 	    const std::string& dialogOptions = "");
-    /** Destroy a dialog window managed by the DialogManager.
-     * Will destroy the corresponding CEGUI::Window.
-     * @param[in] id - unique ID of the dialog window
-     */
     virtual void DestroyDialog(unsigned int id);
-    /** Destroy a dialog window managed by the DialogManager,
-     * identified by its name and options.
-     * Will destroy the corresponding CEGUI::Window.
-     * @param[in] dialogName - name of the dialog
-     * @param[in] dialogOptions - options of the dialog
-     */
-    virtual void DestroyDialog(const std::string& dialogName,
-	    const std::string& dialogOptions = "");
+    virtual void DestroyDialog(const std::string& dialogName);
+    virtual void CloseDialog(unsigned int id);
+    virtual void CloseDialog(const std::string& dialogName);
 
     virtual ~CEGUIDialogManager ();
 

@@ -94,6 +94,8 @@ void CEGUITreebox::Fill (const vector<ScrollTreePair> &treeItems)
 
     // Remove current tree items
     m_ceTree->resetList();
+    m_items.clear();
+    m_groups.clear();
 
     for (unsigned int i = 0; i < treeItems.size (); i++)
     {
@@ -225,7 +227,7 @@ bool CEGUITreebox::OnMouseClick (const CEGUI::EventArgs &e)
 #endif // __orxDEBUG__
 
     // Pass the event to the ScrollFrameWindow
-    m_manager->OnMouseClick(m_widgetName);
+    m_manager->OnAction(m_widgetName);
 
     //! @todo Handle left vs right clicks
 

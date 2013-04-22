@@ -42,26 +42,29 @@ class ScrollCheckbox;
 class FXSlotEditorWindow : public ScrollFrameWindow
 {
 public:
+    /** C-tor */
     FXSlotEditorWindow (const std::string& name);
 
-    virtual void Init ();
-
-    //! Initialize control items 
+    /** Initialize control items */
     void SetupFields  ();
-    //! Update all fields on the window using current values from config 
+    /** Update all fields on the window using current values from config */
     void UpdateFields () const;
 
-    //! Get the text of a widget
-    const std::string GetText (const std::string& widgetName) const;
-    //! Set the FXSlot being edited
+    /** Set the FXSlot being edited */
     void SetContext (const std::string& sectionName);
+    /** Get the FXSlot being edited */
+    const std::string& GetContext();
 
-    virtual void OnMouseClick   (const std::string& widgetName);
-    virtual void OnTextAccepted (const std::string& widgetName);
-    virtual void OnPopupFinish  (const std::string& popupName,
-	    const std::string& popupTitle = "");
-    virtual void OnDestroy ();
-    virtual void OnReset() {};
+    /** ScrollFrameWindow interface */
+
+    virtual void Init();
+    virtual void OnAction(const std::string& widgetName,
+	    const std::string& action = "");
+    virtual void OnInput(const std::string& widgetName);
+    virtual void OnClose();
+    virtual void OnReset();
+    virtual void HandlePopup(const std::string& popupName, orxU32 popupID);
+    virtual void HandleClose(const std::string& popupName, orxU32 popupID);
 
 private:
     std::string m_context;
