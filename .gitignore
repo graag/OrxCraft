@@ -1,4 +1,7 @@
 *.swp
+*.pyc
+/.syntastic_cpp_config
+/.ycm_extra_conf.py
 bin/
 build/msvs2010/Debug/
 build/msvs2010/ipch/

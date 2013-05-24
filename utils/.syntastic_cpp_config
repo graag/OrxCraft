@@ -1,0 +1,4 @@
+-I ../Scroll/include/Scroll
+-I ../orx/code/include
+-I ../CEGUI-v0-7/include/CEGUI
+-I external/utf8-cpp
