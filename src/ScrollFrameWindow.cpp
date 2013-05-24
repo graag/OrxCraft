@@ -38,16 +38,19 @@
 #include "ScrollListbox.h"
 #include "ScrollTreebox.h"
 #include "ScrollCheckbox.h"
+#include "ScrollPushButton.h"
+#include "ScrollTextbox.h"
 
 using namespace std;
 
-unsigned int ScrollFrameWindow::m_idPool = 0;
+orxU32 ScrollFrameWindow::m_idPool = 0;
 
 ScrollFrameWindow::ScrollFrameWindow (const string& name,
 	const string& title):
     m_id(0),
     m_name(name),
     m_title(title),
+    m_isModal(false),
     m_userData(NULL)
 {
     // Assign an unique ID
@@ -156,6 +159,42 @@ ScrollCheckbox * ScrollFrameWindow::FindCheckbox (
     if(widget != NULL)
     {
 	theWidget = orxCRAFT_CAST<ScrollCheckbox *> (widget);
+	orxASSERT( theWidget != NULL );
+    }
+
+    return theWidget;
+}
+
+ScrollPushButton * ScrollFrameWindow::FindPushButton (
+	const string& widgetName) const
+{
+    ScrollPushButton *theWidget = NULL;
+    ScrollWidget *widget = NULL;
+
+    // Find the widget
+    widget = FindWidget(widgetName);
+
+    if(widget != NULL)
+    {
+	theWidget = orxCRAFT_CAST<ScrollPushButton *> (widget);
+	orxASSERT( theWidget != NULL );
+    }
+
+    return theWidget;
+}
+
+ScrollTextbox * ScrollFrameWindow::FindTextbox (
+	const string& widgetName) const
+{
+    ScrollTextbox *theWidget = NULL;
+    ScrollWidget *widget = NULL;
+
+    // Find the widget
+    widget = FindWidget(widgetName);
+
+    if(widget != NULL)
+    {
+	theWidget = orxCRAFT_CAST<ScrollTextbox *> (widget);
 	orxASSERT( theWidget != NULL );
     }
 
