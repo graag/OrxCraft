@@ -98,7 +98,7 @@ bool CEGUIEditbox::OnTextAccepted (const CEGUI::EventArgs &e)
 
 const string CEGUIEditbox::GetText ()
 {
-    // Return Editbox contents. The returned string is owned by CEGUI widget.
+    // Return Editbox contents.
     return m_ceEditbox->getText ().c_str ();
 }
 

@@ -109,6 +109,8 @@ public:
      */
     virtual void ConfigUpdate() = 0;
 
+    virtual ~ScrollWidget() {};
+
 protected:
     std::string        m_widgetUniqueName;
     std::string        m_widgetName;

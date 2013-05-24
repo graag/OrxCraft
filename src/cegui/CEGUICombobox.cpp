@@ -81,6 +81,8 @@ void CEGUICombobox::Init (const string& widgetName)
 
 void CEGUICombobox::Fill (const vector<string> &listItems)
 {
+    // Remove previous contents
+    m_ceCombobox->resetList();
     // Iterate through list of items
     for (unsigned int i = 0; i < listItems.size (); i++)
     {
@@ -125,16 +127,16 @@ void CEGUICombobox::SetSelection(const string& text)
     }
 }
 
-const string CEGUICombobox::GetSelection() const
+string CEGUICombobox::GetSelection() const
 {
-    string text;
+    string result;
     CEGUI::ListboxItem *item = m_ceCombobox->getSelectedItem();
 
     // Found a selected item?
     if(item != NULL)
-	text = item->getText().c_str();
+	result = item->getText().c_str();
 
-    return text;
+    return result;
 }
 
 bool CEGUICombobox::OnSelectionAccepted(const CEGUI::EventArgs &e)

@@ -86,7 +86,7 @@ void CEGUIPushButton::ConfigRead()
     orxASSERT(false);
 }
 
-void CEGUIPushButton::ConfigUpdate() const
+void CEGUIPushButton::ConfigUpdate()
 {
     orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
 	    "CEGUIPushButton::ConfigUpdate is not implemented.");

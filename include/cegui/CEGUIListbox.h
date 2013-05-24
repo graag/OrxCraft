@@ -58,6 +58,7 @@ public:
     virtual void Fill(const std::vector<std::string> &listItems);
     virtual void SetSelection(const std::vector<std::string> &listItems);
     virtual const std::vector<std::string> GetSelection() const;
+    virtual bool HasItem(const std::string& itemName) const;
 
      //bool OnSelectionChanged (const CEGUI::EventArgs &e);
 private:
@@ -66,6 +67,7 @@ private:
      * @param[in] e - WindowEventArgs event arguments passed from CEGUI.
      */
     bool OnMouseClick(const CEGUI::EventArgs &e);
+    bool OnMouseDoubleClick(const CEGUI::EventArgs &e);
 
     //! Pointer to CEGUI widget
     CEGUI::Listbox *m_ceListbox;

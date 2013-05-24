@@ -56,7 +56,7 @@ public:
     /** CEGUIPushButton does not implement this method. */
     virtual void ConfigRead();
     /** CEGUIPushButton does not implement this method. */
-    virtual void ConfigUpdate() const;
+    virtual void ConfigUpdate();
 
 private:
     /** Handler for CEGUI::Window::EventMouseClick event.

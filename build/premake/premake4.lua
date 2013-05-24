@@ -50,6 +50,10 @@ solution "orxCraft"
     links {"CEGUIBase", "CEGUIOpenGLRenderer"}
 
     configuration "Linux*"
+      -- Support for C++11 if we would need it. c++0x is deprecated in newer
+      -- GCC but still works. Use thid one instead of new c++11 until old GCCs
+      -- are still in use
+      -- buildoptions { "-Wno-unused-function", "-std=c++0x" }
       buildoptions { "-Wno-unused-function" }
       linkoptions {"-Wl,-rpath=./", "-Wl,-rpath=" .. orxlib_path,
 		   "-Wl,-rpath=" .. ceguilib_path}

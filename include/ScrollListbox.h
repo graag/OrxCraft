@@ -54,6 +54,7 @@ public:
     virtual void Fill(const std::vector<std::string> &listItems) = 0;
     virtual void SetSelection(const std::vector<std::string> &listItems) = 0;
     virtual const std::vector<std::string> GetSelection() const = 0;
+    virtual bool HasItem(const std::string& itemName) const = 0;
     /** Set wiget data from orx config for currently selected section.  */
     virtual void ConfigRead();
     /** Set orx config attribute value for currently selected section based on

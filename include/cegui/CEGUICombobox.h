@@ -62,7 +62,7 @@ public:
      */
     virtual void SetSelection(const std::string& text);
     /** Get the text of the selected item */
-    virtual const std::string GetSelection() const;
+    virtual std::string GetSelection() const;
 
 private:
     /** Handler for CEGUI::Combobox::EventListSelectionAccepted event.

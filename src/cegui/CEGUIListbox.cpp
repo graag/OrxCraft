@@ -37,6 +37,7 @@
 
 using CEGUI::Listbox;
 using CEGUI::ListboxItem;
+using CEGUI::ListboxTextItem;
 using CEGUI::Event;
 using CEGUI::Window;
 using std::string;
@@ -71,6 +72,8 @@ void CEGUIListbox::Init (const string& widgetName)
     // Subscribe CEGUIListbox to mouse click event
     listbox->subscribeEvent (Window::EventMouseClick,
 	Event::Subscriber (&CEGUIListbox::OnMouseClick, this));
+    listbox->subscribeEvent (Window::EventMouseDoubleClick,
+	Event::Subscriber (&CEGUIListbox::OnMouseDoubleClick, this));
 
     /*
      * Shouldn't we handle other events like EventSelectionChanged? What if a
@@ -144,6 +147,17 @@ const vector<string> CEGUIListbox::GetSelection() const
     return selection;
 }
 
+bool CEGUIListbox::HasItem(const string& itemName) const
+{
+    vector<ListboxTextItem*>::const_iterator it;
+    for(it = m_items.begin(); it != m_items.end(); it++) {
+    	if(itemName == (*it)->getText().c_str())
+    	    return true;
+    }
+
+    return false;
+}
+
 bool CEGUIListbox::OnMouseClick (const CEGUI::EventArgs &e)
 {
 #ifdef __orxDEBUG__
@@ -159,7 +173,30 @@ bool CEGUIListbox::OnMouseClick (const CEGUI::EventArgs &e)
 #endif // __orxDEBUG__
 
     // Pass the event to the ScrollFrameWindow
-    m_manager->OnAction(m_widgetName);
+    m_manager->OnAction(m_widgetName, "MouseClick");
+
+    //! @todo Handle left vs right clicks
+
+    // Notify that the event was handled
+    return true;
+}
+
+bool CEGUIListbox::OnMouseDoubleClick (const CEGUI::EventArgs &e)
+{
+#ifdef __orxDEBUG__
+    /*
+     * Static cast will be safe as this handler is connected only to
+     * Window::EventMouseClick signal which passes MouseEventArgs struct.
+     */
+    const CEGUI::WindowEventArgs *args =
+    	static_cast<const CEGUI::WindowEventArgs *>( &e );
+
+    string widgetName = args->window->getName().c_str();
+    orxASSERT(widgetName == m_widgetUniqueName);
+#endif // __orxDEBUG__
+
+    // Pass the event to the ScrollFrameWindow
+    m_manager->OnAction(m_widgetName, "MouseDoubleClick");
 
     //! @todo Handle left vs right clicks
 

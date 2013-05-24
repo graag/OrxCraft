@@ -15,6 +15,9 @@
                 <Property Name="Text" Value="Tree Box" />
                 <Property Name="UnifiedAreaRect" Value="{{0.0571739,0},{0.0347221,0},{0.957174,0},{0.45,0}}" />
                 <Property Name="MultiSelect" Value="True" />
+                <Property Name="Sort" Value="False" />
+                <!-- This is how we can change a font -->
+                <!-- <Property Name="Font" Value="DejaVuSans-10" /> -->
             </Window>
             <Window Type="TaharezLook/Button" Name="TreePopup/DoneButton" >
                 <Property Name="Text" Value="Done" />
