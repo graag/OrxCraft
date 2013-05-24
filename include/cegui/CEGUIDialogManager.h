@@ -32,6 +32,7 @@
 #define CEGUIDIALOGMANAGER_H_
 
 #include <string>
+#include <stack>
 
 #include "DialogManager.h"
 #include "ScrollFrameWindow.h"
@@ -57,6 +58,9 @@ private:
      *                     assigned to
      */
     void LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWindow* dialog);
+    void SetModalState(bool state, CEGUI::Window* window);
+
+    std::stack<CEGUI::Window*> m_modalStack;
 };
 
 #endif    // CEGUIDIALOGMANAGER_H_

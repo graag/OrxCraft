@@ -46,15 +46,22 @@
 
 #include "cegui/CEGUIListPopup.h"
 #include "cegui/CEGUITreePopup.h"
+#include "cegui/CEGUIFileDialog.h"
+#include "cegui/CEGUIAlertPopup.h"
+#include "cegui/CEGUIConfirmPopup.h"
+
 #include "cegui/CEGUICombobox.h"
 #include "cegui/CEGUIEditbox.h"
 #include "cegui/CEGUIListbox.h"
 #include "cegui/CEGUITreebox.h"
 #include "cegui/CEGUICheckbox.h"
 #include "cegui/CEGUIPushButton.h"
+#include "cegui/CEGUITextbox.h"
 
 using std::string;
 using std::make_pair;
+
+using CEGUI::Window;
 
 CEGUIDialogManager::~CEGUIDialogManager ()
 {
@@ -73,6 +80,7 @@ CEGUIDialogManager::~CEGUIDialogManager ()
 ScrollFrameWindow* CEGUIDialogManager::OpenDialog (const string& dialogName,
 	const string& dialogTitle)
 {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_USER, "OpenDialog: %s", dialogName.c_str());
     // Number of characters that represent maximum value of unsigned int.
     static int num_size = log10(UINT_MAX)+2;
 
@@ -94,9 +102,8 @@ ScrollFrameWindow* CEGUIDialogManager::OpenDialog (const string& dialogName,
 		dialog->GetWindowName());
 	window->show();
 	window->activate();
-	// @TODO dialog should know that it is modal. No hardcoded lists!!
-	if (dialogName == "ListPopup" || dialogName == "TreePopup") {
-	    window->setModalState(true);
+	if(dialog->IsModal()) {
+	    SetModalState(true, window);
 	}
 	return dialog;
     }
@@ -145,6 +152,34 @@ ScrollFrameWindow* CEGUIDialogManager::OpenDialog (const string& dialogName,
 	orxASSERT(result < num_size); // Make sure snprintf succeeded
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "TreePopup.layout", num_buf);
+    }
+    else if (dialogName == "FileDialog")
+    {
+	dialog = new CEGUIFileDialog (dialogName, dialogTitle);
+	// Generate a unique prefix
+	int result = snprintf(num_buf, num_size, "%lu_", dialog->GetId());
+	orxASSERT(result < num_size); // Make sure snprintf succeeded
+	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
+	    "FileDialog.layout", num_buf);
+    }
+    else if (dialogName == "AlertPopup")
+    {
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER, "Create AlertPopup");
+	dialog = new CEGUIAlertPopup (dialogName, dialogTitle);
+	// Generate a unique prefix
+	int result = snprintf(num_buf, num_size, "%lu_", dialog->GetId());
+	orxASSERT(result < num_size); // Make sure snprintf succeeded
+	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
+	    "AlertPopup.layout", num_buf);
+    }
+    else if (dialogName == "ConfirmPopup")
+    {
+	dialog = new CEGUIConfirmPopup (dialogName, dialogTitle);
+	// Generate a unique prefix
+	int result = snprintf(num_buf, num_size, "%lu_", dialog->GetId());
+	orxASSERT(result < num_size); // Make sure snprintf succeeded
+	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
+	    "ConfirmPopup.layout", num_buf);
     }
     else
     {
@@ -197,8 +232,13 @@ ScrollFrameWindow* CEGUIDialogManager::OpenDialog (const string& dialogName,
     window->activate();
     m_dialogList[dialog->GetId()] = dialog;
 
-    if (dialogName == "ListPopup" || dialogName == "TreePopup") {
-	window->setModalState(true);
+    if(dialog->IsModal()) {
+	SetModalState(true, window);
+    }
+
+    DialogMapConstIterator dialogIter = m_dialogList.begin();
+    for(;dialogIter != m_dialogList.end(); dialogIter++) {
+    	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER, "AfterDialog: %s", dialogIter->second->GetName().c_str());
     }
 
     return dialog;
@@ -245,6 +285,19 @@ void CEGUIDialogManager::LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWi
 	pushbutton->Init(name);
 	dialog->AddWidget (pushbutton);
     }
+    else if (orxString_Compare (type, "TaharezLook/StaticText") == 0)
+    {
+	/* We only consider text widgets for dynamic content. Such widgets
+	 * should be named as "Dynamic<WidgetName>" as CEGUI does not
+	 * distinguish between static or dynamic text widgets.
+	 */
+	if(name.find("Dynamic") != string::npos)
+	{
+		CEGUITextbox *textbox = new CEGUITextbox (dialog);
+		textbox->Init(name);
+		dialog->AddWidget (textbox);
+	}
+    }
 }
 
 void CEGUIDialogManager::DestroyDialog(const string& dialogName)
@@ -279,6 +332,7 @@ void CEGUIDialogManager::DestroyDialog(unsigned int id)
 
 void CEGUIDialogManager::CloseDialog(const string& dialogName)
 {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_USER, "CloseDialog: %s", dialogName.c_str());
     // Search for the dialog in the list of dialogs controlled by the manager.
     ScrollFrameWindow* dialog = GetDialog(dialogName);
 
@@ -288,7 +342,8 @@ void CEGUIDialogManager::CloseDialog(const string& dialogName)
     CEGUI::Window* window = CEGUI::WindowManager::getSingleton().getWindow(
 	    dialog->GetWindowName());
     window->hide();
-    window->setModalState(false);
+    if(dialog->IsModal())
+	SetModalState(false, window);
 }
 
 void CEGUIDialogManager::CloseDialog(unsigned int id)
@@ -302,7 +357,35 @@ void CEGUIDialogManager::CloseDialog(unsigned int id)
     CEGUI::Window* window = CEGUI::WindowManager::getSingleton().getWindow(
 	    dialog->GetWindowName());
     window->hide();
-    window->setModalState(false);
+    if(dialog->IsModal())
+	SetModalState(false, window);
+}
+
+void CEGUIDialogManager::SetModalState(bool state, Window* window)
+{
+    orxASSERT(window != NULL);
+
+    // No change from current state
+    // We do not assert as not to mess with unlikely case where modal window
+    // created a modal popup and got killed while popup was open
+    if(state == window->getModalState())
+	return;
+
+    window->setModalState(state);
+    if(state)
+    {
+    	m_modalStack.push(window);
+    }
+    else
+    {
+	orxASSERT(!m_modalStack.empty())
+	m_modalStack.pop();
+	if(!m_modalStack.empty())
+	{
+	    Window* prev = m_modalStack.top();
+	    prev->setModalState(true);
+	}
+    }
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab
