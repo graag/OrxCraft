@@ -42,6 +42,8 @@ TreePopup::TreePopup(const string& name, const string& title):
     ScrollFrameWindow(name, title),
     m_contentTree(NULL)
 {
+    // Popups should be modal
+    m_isModal = true;
 }
 
 void TreePopup::Fill (const vector<ScrollTreePair>& dataList)

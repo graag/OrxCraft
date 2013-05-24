@@ -42,6 +42,8 @@ ListPopup::ListPopup(const string& name, const string& title):
     ScrollFrameWindow(name, title),
     m_contentList(NULL)
 {
+    // Popups should be modal
+    m_isModal = true;
 }
 
 void ListPopup::Fill (const vector<string>& dataList)

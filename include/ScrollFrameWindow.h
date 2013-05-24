@@ -42,6 +42,8 @@ class ScrollCombobox;
 class ScrollListbox;
 class ScrollTreebox;
 class ScrollCheckbox;
+class ScrollPushButton;
+class ScrollTextbox;
 
 /**
  *  Interface for a Window.
@@ -89,6 +91,16 @@ public:
      * @return ScrollTreebox pointer if found, NULL otherwise.
      */
     ScrollTreebox *FindTreebox (const std::string& widgetName) const;
+    /** Find a button by its name.
+     * @param[in] widgetName - name of the widget.
+     * @return ScrollPushButton pointer if found, NULL otherwise.
+     */
+    ScrollPushButton *FindPushButton (const std::string& widgetName) const;
+    /** Find a textbox by its name.
+     * @param[in] widgetName - name of the widget.
+     * @return ScrollTextbox pointer if found, NULL otherwise.
+     */
+    ScrollTextbox *FindTextbox (const std::string& widgetName) const;
 
     /** Initialize the window. */
     virtual void Init () = 0;
@@ -121,6 +133,8 @@ public:
      * @param widget - a pointer to ScrollWidget
      */
     virtual void AddWidget (ScrollWidget *widget);
+    /** Check if window was defined as a modal one. */
+    bool IsModal() { return m_isModal; }
 
     /** Callbacks */
 
@@ -172,7 +186,7 @@ public:
 
 protected:
     // Pool of ids. It is incremented whenever new dialog is created.
-    static unsigned int         m_idPool;
+    static orxU32               m_idPool;
     // Unique id of this dialog
     orxU32                      m_id;
     // Widgets contained in the window
@@ -183,8 +197,10 @@ protected:
     std::string                 m_name;
     // Options used for creation of the dialog
     std::string                 m_title;
+    // Modal flag
+    bool                        m_isModal;
     // User data structure
-    void*              m_userData;
+    void*                       m_userData;
 };
 
 #endif  // __SCROLLFRAMEWINDOW_H__
