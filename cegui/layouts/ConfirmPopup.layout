@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout>
+    <Window Type="DefaultWindow" Name="ConfirmPopupRoot" >
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Window Type="TaharezLook/FrameWindow" Name="ConfirmPopup">
+            <Property Name="Font" Value="DejaVuSans-8" />
+            <Property Name="Alpha" Value="0.7" />
+            <Property Name="TitlebarFont" Value="DejaVuSans-8" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="AlwaysOnTop" Value="true" />
+            <Property Name="UnifiedAreaRect" Value="{{0.35,0},{0.4,0},{0.65,0},{0.6,0}}" />
+            <Property Name="SizingEnabled" Value="false" />
+            <Property Name="CloseButtonEnabled" Value="false" />
+            <Property Name="DragMovingEnabled" Value="false" />
+            <Window Type="TaharezLook/StaticText" Name="ConfirmPopup/DynamicMessage">
+                <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.1,0},{0.9,0},{0.7,0}}" />
+                <Property Name="FrameEnabled" Value="false" />
+                <Property Name="BackgroundEnabled" Value="false" />
+            </Window>
+            <Window Type="TaharezLook/Button" Name="ConfirmPopup/OkButton">
+                <Property Name="AlwaysOnTop" Value="true" />
+                <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.8,0},{0.45,0},{0.95,0}}" />
+                <Property Name="Text" Value="OK" />
+            </Window>
+            <Window Type="TaharezLook/Button" Name="ConfirmPopup/CancelButton">
+                <Property Name="AlwaysOnTop" Value="true" />
+                <Property Name="UnifiedAreaRect" Value="{{0.55,0},{0.8,0},{0.9,0},{0.95,0}}" />
+                <Property Name="Text" Value="Cancel" />
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>
