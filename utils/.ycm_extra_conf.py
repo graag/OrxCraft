@@ -31,7 +31,7 @@ flags = [
 '-I',
 '/home/konrad/Projects/OrxCraft/include',
 '-I',
-'/home/konrad/Projects/OrxCraft/external/utf8-cpp',
+'/home/konrad/Projects/OrxCraft/external',
 '-I',
 '/usr/local/include/c++/v1',
 '-I',

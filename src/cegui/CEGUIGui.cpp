@@ -40,7 +40,7 @@
 
 #include "constants.h"
 
-#include "utf8.h"
+#include "utf8-cpp/utf8.h"
 
 using CEGUI::System;
 using std::string;

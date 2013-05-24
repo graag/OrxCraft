@@ -32,7 +32,7 @@
 #include <vector>
 #include <string>
 
-#include <utils/Signal.h>
+#include <signal/Signal.h>
 
 #include "Scroll.h"
 #include "ScrollWidget.h"
