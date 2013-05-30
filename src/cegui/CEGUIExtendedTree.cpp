@@ -36,6 +36,15 @@ using CEGUI::Tree;
 using CEGUI::TreeItem;
 using CEGUI::String;
 using CEGUI::uint;
+using CEGUI::MouseEventArgs;
+using CEGUI::InvalidRequestException;
+using CEGUI::LeftButton;
+using CEGUI::Point;
+using CEGUI::CoordConverter;
+using CEGUI::TreeEventArgs;
+using CEGUI::Rect;
+using CEGUI::Control;
+using CEGUI::Shift;
 
 CEGUI::String CEGUIExtendedTree::WidgetTypeName = "CEGUIExtendedTree";
 
@@ -242,5 +251,101 @@ TreeItem* CEGUIExtendedTree::findItemWithTextFromFlatList(
 }
 
 //@TODO override Tree::onMouseButtonDown - Range select, group select
+/*************************************************************************
+    Handler for when mouse button is pressed
+*************************************************************************/
+void CEGUIExtendedTree::onMouseButtonDown(MouseEventArgs& e)
+{
+    // base class processing
+    // populateGeometryBuffer();
+    Window::onMouseButtonDown(e);
+    
+    if (e.button == LeftButton)
+    {
+        bool modified = false;
+        
+        Point localPos(CoordConverter::screenToWindow(*this, e.position));
+        //      Point localPos(screenToWindow(e.position));
+        
+        TreeItem* item = getItemAtPoint(localPos);
+        
+        if (item != 0)
+        {
+            modified = true;
+            TreeEventArgs args(this);
+            args.treeItem = item;
+            populateGeometryBuffer();
+            Rect buttonLocation = item->getButtonLocation();
+            if ((localPos.d_x >= buttonLocation.d_left) && (localPos.d_x <= buttonLocation.d_right) &&
+                (localPos.d_y >= buttonLocation.d_top) && (localPos.d_y <= buttonLocation.d_bottom))
+            {
+                item->toggleIsOpen();
+                if (item->getIsOpen())
+                {
+                    TreeItem *lastItemInList = item->getTreeItemFromIndex(item->getItemCount() - 1);
+                    ensureItemIsVisible(lastItemInList);
+                    ensureItemIsVisible(item);
+                    onBranchOpened(args);
+                }
+                else
+                {
+                    onBranchClosed(args);
+                }
+                
+                // Update the item screen locations, needed to update the scrollbars.
+                //	populateGeometryBuffer();
+                
+                // Opened or closed a tree branch, so must update scrollbars.
+                configureScrollbars();
+            }
+            else
+            {
+                // clear old selections if no control key is pressed or if multi-select is off
+                if (!(e.sysKeys & Control) || !d_multiselect)
+                    clearAllSelections_impl();
+                
+                // select range or item, depending upon keys and last selected item
+                if (((e.sysKeys & Shift) && (d_lastSelected != 0)) && d_multiselect)
+                    selectRange(getItemIndex(item), getItemIndex(d_lastSelected));
+                else
+                    item->setSelected(item->isSelected() ^ true);
+                
+                // update last selected item
+                d_lastSelected = item->isSelected() ? item : 0;
+                onSelectionChanged(args);
+            }
+        }
+        else
+        {
+            // clear old selections if no control key is pressed or if multi-select is off
+            if (!(e.sysKeys & Control) || !d_multiselect)
+            {
+                if (clearAllSelections_impl())
+                {
+                    // Changes to the selections were actually made
+                    TreeEventArgs args(this);
+                    args.treeItem = item;
+                    onSelectionChanged(args);
+                }
+            }
+        }
+        
+        
+        ++e.handled;
+    }
+}
+
+size_t CEGUIExtendedTree::getItemIndex(TreeItem* item)
+{
+    // @TODO Search item tree recursively?? Rewrite select range to work on item pointers??
+    for(size_t i=0; i<d_listItems.size(); i++)
+    {
+	if(d_listItems[i] == item)
+	    return i;
+    }
+    CEGUI_THROW(InvalidRequestException(
+    		"CEGUIExtendedTree::getItemIndex - the specified TreeItem is "
+    		"not attached to this Tree"));
+}
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

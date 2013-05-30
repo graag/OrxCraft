@@ -87,6 +87,9 @@ class CEGUIExtendedTree : public CEGUI::Tree
 		const CEGUI::TreeItem* startItem,
 		bool foundStartItem) const;
 
+	virtual void onMouseButtonDown(CEGUI::MouseEventArgs& e);
+	size_t getItemIndex(CEGUI::TreeItem* item);
+
 	CEGUI::TreeItem::LBItemList& getItemList(void)
 	{ return d_listItems; }
 
