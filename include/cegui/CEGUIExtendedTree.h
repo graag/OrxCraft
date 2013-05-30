@@ -81,6 +81,15 @@ class CEGUIExtendedTree : public CEGUI::Tree
 		const CEGUI::TreeItem* start_item,
 		bool& foundStartItem) const;
 
+	CEGUI::TreeItem* findItemWithTextFromFlatList(
+		const CEGUI::TreeItem::LBItemList &itemList,
+		const CEGUI::String& text,
+		const CEGUI::TreeItem* startItem,
+		bool foundStartItem) const;
+
+	CEGUI::TreeItem::LBItemList& getItemList(void)
+	{ return d_listItems; }
+
 	// Unique widget name throughout CEGUI.
 	static CEGUI::String WidgetTypeName;
 };

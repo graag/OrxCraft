@@ -65,9 +65,6 @@ public:
     virtual const std::vector<std::string> GetSelection() const;
 
      //bool OnSelectionChanged (const CEGUI::EventArgs &e);
-    typedef std::pair<std::string, CEGUIExtendedTreeItem *> CEGUITreePair;
-    typedef std::map<std::string, CEGUIExtendedTreeItem *> CEGUIItemMap;
-    typedef std::multimap<std::string, CEGUIExtendedTreeItem *> CEGUIItemMultimap;
 private:
     /** Handler for CEGUI::Window::EventMouseClick event.
      *
@@ -77,9 +74,6 @@ private:
 
     //! Pointer to CEGUI widget
     CEGUIExtendedTree *m_ceTree;
-    //! List of tree items
-    CEGUIItemMultimap m_items;
-    CEGUIItemMap m_groups;
 };
 #endif  // __CEGUITREEBOX_H__
 

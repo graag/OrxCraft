@@ -214,6 +214,33 @@ TreeItem* CEGUIExtendedTree::getNextSelectedLeafFromList(
     return 0;
 }
 
+TreeItem* CEGUIExtendedTree::findItemWithTextFromFlatList(
+	const TreeItem::LBItemList &itemList,
+	const String& text,
+	const TreeItem* startItem,
+	bool foundStartItem) const
+{
+    size_t itemCount = itemList.size();
+    
+    for (size_t index = 0; index < itemCount; ++index)
+    {
+        if (foundStartItem == true)
+        {
+            // Already found the startItem, now looking for the actual text.
+            if (itemList[index]->getText() == text)
+                return itemList[index];
+        }
+        else
+        {
+            // Still looking for startItem.  Is this it?
+            if (itemList[index] == startItem)
+                foundStartItem = true;
+        }
+    }
+    
+    return 0;
+}
+
 //@TODO override Tree::onMouseButtonDown - Range select, group select
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

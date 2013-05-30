@@ -43,9 +43,27 @@ class CEGUIExtendedTreeItem : public CEGUI::TreeItem
 	void addItem(CEGUIExtendedTreeItem* item);
 	void setParent(CEGUIExtendedTreeItem* item) { d_parent = item; }
 	CEGUIExtendedTreeItem* getParent(void) { return d_parent; }
+	void setIsOpen(bool state) { d_isOpen = state; }
 
 	// Unique widget name throughout CEGUI.
 	static CEGUI::String WidgetTypeName;
+
+	/*************************************************************************
+	  Operators
+	 *************************************************************************/
+	/*!
+	  \brief
+	  Less-than operator, compares item texts. Items with children are
+	  considered to be smaller then ones without.
+	  */
+	virtual bool operator<(const TreeItem& rhs) const;
+
+	/*!
+	  \brief
+	  Greater-than operator, compares item texts. Items with children are
+	  considered to be smaller then ones without.
+	  */
+	virtual bool operator>(const TreeItem& rhs) const;
 
     private:
 	CEGUIExtendedTreeItem* d_parent;

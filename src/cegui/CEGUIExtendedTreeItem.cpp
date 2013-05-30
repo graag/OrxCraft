@@ -52,4 +52,22 @@ void CEGUIExtendedTreeItem::addItem(CEGUIExtendedTreeItem* item)
 	item->setParent(this);
 }
 
+bool CEGUIExtendedTreeItem::operator<(const TreeItem& rhs) const
+{
+    if( getItemCount() && !rhs.getItemCount())
+	return true;
+    if( !getItemCount() && rhs.getItemCount())
+	return false;
+    return getText() < rhs.getText();
+}
+
+bool CEGUIExtendedTreeItem::operator>(const TreeItem& rhs) const
+{
+    if( getItemCount() && !rhs.getItemCount())
+	return false;
+    if( !getItemCount() && rhs.getItemCount())
+	return true;
+    return getText() > rhs.getText();
+}
+
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab

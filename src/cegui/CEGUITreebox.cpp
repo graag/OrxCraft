@@ -45,9 +45,6 @@ using std::pair;
 using std::map;
 using std::multimap;
 
-typedef map<string, CEGUIExtendedTreeItem*>::iterator mapIter;
-typedef multimap<string, CEGUIExtendedTreeItem*>::iterator multimapIter;
-
 CEGUITreebox::CEGUITreebox (ScrollFrameWindow *dialog) :
     ScrollTreebox (dialog),
     m_ceTree (NULL)
@@ -89,83 +86,116 @@ void CEGUITreebox::Init (const string& widgetName)
 
 void CEGUITreebox::Fill (const vector<ScrollTreePair> &treeItems)
 {
-    CEGUITreePair item;
-    CEGUITreePair group;
-
     // Remove current tree items
     m_ceTree->resetList();
-    m_items.clear();
-    m_groups.clear();
 
+    // Disable sorting. This will speedup the insertion. We have to resort
+    // anyway due to our treatment of "group" items (items with children)
+    m_ceTree->setSortingEnabled(false);
+
+    // Iterate through item list
     for (unsigned int i = 0; i < treeItems.size (); i++)
     {
-	item.first = treeItems.at(i).first;
-	item.second = new CEGUIExtendedTreeItem(treeItems.at(i).second);
+	// Item name
+	string item_name = treeItems.at(i).second;
+	// Full group string: "group1/subgroup1/subsubgroup1"
+	string group_full = treeItems.at(i).first;
+	// Current group name
+	string group_part;
+	// Current group item
+	CEGUIExtendedTreeItem* group;
+	// Previous group item
+	CEGUIExtendedTreeItem* parent;
+	// Item to insert
+	CEGUIExtendedTreeItem* item;
+	// Group hierarchy level
+	int level = 0;
+	// Index of previous separator in full group string
+	string::size_type idxStart = 0;
+	// Index of current separator in full group string
+	string::size_type idxEnd = group_full.find("/", idxStart);
+	// Extract current group name
+	group_part.assign(group_full, idxStart, idxEnd - idxStart);
 
-	/*
-	 * Add item to CEGUI::Tree.
-	 * Note that item ownership is passed to CEGUI.
-	 */
-	if(!item.first.empty()) {
-	    multimapIter it = m_items.find(item.first);
-	    if(it == m_items.end()) {
-		group.first = item.first;
-		group.second = new CEGUIExtendedTreeItem(item.first);
-		group.second->setSelectionBrushImage(
+	while (idxEnd != string::npos || !group_part.empty())
+	{
+	    // CEGUI::TreeItem::addItem is not virtual. We have to cast to
+	    // proper Item type to auto set parents :(
+	    if(level == 0) // Root level
+		group = orxCRAFT_CAST<CEGUIExtendedTreeItem *>(
+			m_ceTree->findItemWithTextFromFlatList(
+			    m_ceTree->getItemList(), group_part, NULL, true)
+			);
+	    else
+		group = orxCRAFT_CAST<CEGUIExtendedTreeItem *>(
+			m_ceTree->findItemWithTextFromFlatList(
+			    parent->getItemList(), group_part, NULL, true)
+			);
+
+	    if(group == NULL) { // Group not found - create it
+		group = new CEGUIExtendedTreeItem(group_part);
+		// Set selection color
+		group->setSelectionBrushImage(
 			"TaharezLook", "ListboxSelectionBrush");
-		group.second->setSelectionColours(0x9997c4f0);
-		m_groups.insert(group);
+		group->setSelectionColours(0x9997c4f0);
+		// Attach the group to the tree
+		// Note that item ownership is passed to CEGUI.
+		if(level == 0)
+		    m_ceTree->addItem(group);
+		else
+		    parent->addItem(group);
+		/*
+		 TODO Something like this would be nice for adding new groups
+		 here is not needed as we add something anyway. However there
+		 is no obvious way to make an item hidden ... Maybe use emty
+		 one and remove it on first insertion??
+		// Dummy item used to mark "group" items during insertion into sorted tree
+		TreeItem* group_marker = new CEGUIExtendedTreeItem("");
+		// Make the dummy marker item hidden
+		group_marker->setDisabled(true);
+		// CEGUIExtendedTreeItem for comparison purpose priororitises
+		// items with children. As we are adding a "group" item mark it
+		// as such by adding dummy child.
+		group->addItem(group_marker);
+		*/
+	    }
+
+	    // Next level
+	    parent = group;
+	    level++;
+	    // Are we at last elemen in the path
+	    if(idxEnd != string::npos) { // Not yet search for the next one
+		idxStart = ++idxEnd;
+		idxEnd = group_full.find("/", idxStart);
+		// Extract current group name
+		group_part.assign(group_full, idxStart, idxEnd - idxStart);
+	    }
+	    else // This one was the last one
+	    {
+		group_part = "";
 	    }
 	}
 
-	item.second->setSelectionBrushImage(
+	// Create and insert the Item into the tree
+	item = new CEGUIExtendedTreeItem(item_name);
+	item->setSelectionBrushImage( // Selection colour
 		"TaharezLook", "ListboxSelectionBrush");
-	item.second->setSelectionColours(0x99ff0000);
-	m_items.insert(item);
+	item->setSelectionColours(0x99ff0000);
+	if(level == 0)
+	    m_ceTree->addItem(item);
+	else
+	    parent->addItem(item);
     }
 
-    multimapIter it;
-    mapIter it_group;
-    mapIter it_item;
-    pair<multimapIter, multimapIter> it_range;
-    CEGUIItemMap children;
-
-    for(it_group = m_groups.begin(); it_group != m_groups.end(); it_group++) {
-	m_ceTree->addItem(it_group->second);
-
-	children.clear();
-	it_range = m_items.equal_range(it_group->first);
-	for(it = it_range.first; it != it_range.second; it++) {
-	    children.insert(
-		    CEGUITreePair(
-			string(it->second->getText().c_str()),
-			it->second
-			)
-		    );
-	}
-	for(it_item = children.begin(); it_item != children.end(); it_item++) {
-	    it_group->second->addItem(it_item->second);
-	}
-    }
-
-    children.clear();
-    it_range = m_items.equal_range("");
-    for(it = it_range.first; it != it_range.second; it++) {
-	children.insert(
-		CEGUITreePair(
-		    string(it->second->getText().c_str()),
-		    it->second
-		    )
-		);
-    }
-    for(it_item = children.begin(); it_item != children.end(); it_item++) {
-	m_ceTree->addItem(it_item->second);
-    }
+    // Sort the tree after all insertions. Now we can properly treat all group
+    // items as they have their children assigned
+    m_ceTree->setSortingEnabled(true);
 }
 
 void CEGUITreebox::SetSelection(const vector<string> &listItems)
 {
     m_ceTree->clearAllSelections();
+    CEGUIExtendedTreeItem* parent = NULL;
 
     vector<string>::const_iterator iter;
     for(iter = listItems.begin(); iter != listItems.end(); iter++)
@@ -176,9 +206,11 @@ void CEGUITreebox::SetSelection(const vector<string> &listItems)
 			m_ceTree->findFirstItemWithText(*iter)
 			);
 	    item->setSelected(true);
-	    if(item->getParent() != NULL)
-		// item->getParent()->setIsOpen(true); 
-		item->getParent()->toggleIsOpen();
+	    parent = item->getParent();
+	    while(parent != NULL) {
+		parent->setIsOpen(true);
+		parent = parent->getParent();
+	    }
 	} catch(CEGUI::InvalidRequestException &e) {
 	    string title = m_manager->GetWindowTitle();
 	    if(title.empty())
