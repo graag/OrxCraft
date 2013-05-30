@@ -4769,19 +4769,39 @@
         <PropertyDefinition name="FrameColours" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" redrawOnWrite="true" />
         <NamedArea name="ItemRenderingArea">
             <Area>
-                <Dim type="LeftEdge" ><ImageDim imageset="TaharezLook" image="WindowLeftEdge" dimension="Width" /></Dim>
-                <Dim type="TopEdge" ><ImageDim imageset="TaharezLook" image="WindowTopEdge" dimension="Height" /></Dim>
+                <Dim type="LeftEdge" >
+                    <ImageDim imageset="TaharezLook" image="WindowLeftEdge" dimension="Width" >
+                        <DimOperator op="Add">
+                            <AbsoluteDim value="10" />
+                        </DimOperator>
+                    </ImageDim>
+                </Dim>
+                <Dim type="TopEdge" >
+                    <ImageDim imageset="TaharezLook" image="WindowTopEdge" dimension="Height" >
+                        <DimOperator op="Add">
+                            <AbsoluteDim value="10" />
+                        </DimOperator>
+                    </ImageDim>
+                </Dim>
                 <Dim type="RightEdge" >
                     <UnifiedDim scale="1" type="RightEdge">
                         <DimOperator op="Subtract">
-                            <ImageDim imageset="TaharezLook" image="WindowRightEdge" dimension="Width" />
+                            <ImageDim imageset="TaharezLook" image="WindowRightEdge" dimension="Width" >
+                                <DimOperator op="Add">
+                                    <AbsoluteDim value="10" />
+                                </DimOperator>
+                            </ImageDim>
                         </DimOperator>
                     </UnifiedDim>
                 </Dim>
                 <Dim type="BottomEdge" >
                     <UnifiedDim scale="1" type="BottomEdge">
                         <DimOperator op="Subtract">
-                            <ImageDim imageset="TaharezLook" image="WindowBottomEdge" dimension="Height" />
+                            <ImageDim imageset="TaharezLook" image="WindowBottomEdge" dimension="Height" >
+                                <DimOperator op="Add">
+                                    <AbsoluteDim value="10" />
+                                </DimOperator>
+                            </ImageDim>
                         </DimOperator>
                     </UnifiedDim>
                 </Dim>
@@ -4810,12 +4830,12 @@
                 <Area>
                     <Dim type="LeftEdge"><AbsoluteDim value="0" /></Dim>
                     <Dim type="TopEdge"><AbsoluteDim value="0" /></Dim>
-                    <Dim type="RightEdge"><UnifiedDim scale="1" type="RightEdge" /></Dim>
-                    <Dim type="BottomEdge"><UnifiedDim scale="1" type="BottomEdge" /></Dim>
+                    <Dim type="Width"><UnifiedDim scale="1" offset="1" type="Width" /></Dim>
+                    <Dim type="Height"><UnifiedDim scale="1" offset="1" type="Height" /></Dim>
                 </Area>
                 <Image imageset="TaharezLook" image="TreeListClosed" />
-              <!--  <VertFormat type="Stretched" />
-                <HorzFormat type="Stretched" /> -->
+                <VertFormat type="Stretched" />
+                <HorzFormat type="Stretched" />
             </ImageryComponent>
         </ImagerySection>
         <ImagerySection name="CloseTreeButton">
@@ -4823,8 +4843,8 @@
                 <Area>
                     <Dim type="LeftEdge"><AbsoluteDim value="0" /></Dim>
                     <Dim type="TopEdge"><AbsoluteDim value="0" /></Dim>
-                    <Dim type="RightEdge"><UnifiedDim scale="1" type="RightEdge" /></Dim>
-                    <Dim type="BottomEdge"><UnifiedDim scale="1" type="BottomEdge" /></Dim>
+                    <Dim type="Width"><UnifiedDim scale="1" type="Width" /></Dim>
+                    <Dim type="Height"><UnifiedDim scale="1" type="Height" /></Dim>
                 </Area>
                 <Image imageset="TaharezLook" image="TreeListOpened" />
                 <VertFormat type="Stretched" />
