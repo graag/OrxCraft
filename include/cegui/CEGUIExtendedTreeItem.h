@@ -32,17 +32,30 @@
 
 #include "CEGUI.h"
 
-/** Extension of CEGUI Tree widget */
+/** Extension of CEGUI TreeItem of Tree widget */
 class CEGUIExtendedTreeItem : public CEGUI::TreeItem
 {
     public:
+	/** C-tor */
 	CEGUIExtendedTreeItem(const CEGUI::String& text,
 		CEGUI::uint item_id = 0, void* item_data = 0,
 		bool disabled = false, bool auto_delete = true);
 
+	/** And an item as a child of current item. */
 	void addItem(CEGUIExtendedTreeItem* item);
+	/** Set an item as a parent for current item. */
 	void setParent(CEGUIExtendedTreeItem* item) { d_parent = item; }
+	/** Get items parent. */
 	CEGUIExtendedTreeItem* getParent(void) { return d_parent; }
+	/** Set level of the tree hierarchy the item is stored.
+	 * Level 0 corresponds to children of tree root.
+	 */
+	void setLevel(size_t level) { d_level = level; }
+	/** Get level of the tree hierarchy the item is stored.
+	 * Level 0 corresponds to children of tree root.
+	 */
+	size_t getLevel(void) { return d_level; }
+	/** Specify if an item is in "open" state. */
 	void setIsOpen(bool state) { d_isOpen = state; }
 
 	// Unique widget name throughout CEGUI.
@@ -67,6 +80,7 @@ class CEGUIExtendedTreeItem : public CEGUI::TreeItem
 
     private:
 	CEGUIExtendedTreeItem* d_parent;
+	size_t d_level;
 };
 #endif  // __CEGUIEXTENDEDTREEITEM_H__
 

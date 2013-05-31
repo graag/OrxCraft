@@ -41,7 +41,8 @@ CEGUIExtendedTreeItem::CEGUIExtendedTreeItem(
 	const String& text, uint item_id, void* item_data, bool disabled,
 	bool auto_delete) :
     TreeItem(text, item_id, item_data, disabled, auto_delete),
-    d_parent(NULL)
+    d_parent(NULL),
+    d_level(0)
 {
 }
 
@@ -50,6 +51,16 @@ void CEGUIExtendedTreeItem::addItem(CEGUIExtendedTreeItem* item)
     TreeItem::addItem(item);
     if(item != NULL)
 	item->setParent(this);
+
+    CEGUIExtendedTreeItem* parent = this;
+    size_t level = 0;
+    while(parent != NULL)
+    {
+	level += 1;
+	parent = parent->getParent();
+    }
+
+    item->setLevel(level);
 }
 
 bool CEGUIExtendedTreeItem::operator<(const TreeItem& rhs) const

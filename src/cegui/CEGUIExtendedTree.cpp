@@ -31,6 +31,18 @@
 #include "cegui/CEGUIExtendedTree.h"
 
 #include "orx.h"
+#include <algorithm>
+
+/*
+ * For debug build perform a dynamic_cast.
+ * Remember to check that result != NULL.
+ * For release build static_cast is used.
+ */
+#ifdef __orxDEBUG__
+#define orxCRAFT_CAST dynamic_cast
+#else
+#define orxCRAFT_CAST static_cast
+#endif
 
 using CEGUI::Tree;
 using CEGUI::TreeItem;
@@ -46,6 +58,8 @@ using CEGUI::Rect;
 using CEGUI::Control;
 using CEGUI::Shift;
 
+// Used to override binding of Tree widgets specified in layout to a Class
+// implementing it.
 CEGUI::String CEGUIExtendedTree::WidgetTypeName = "CEGUIExtendedTree";
 
 CEGUIExtendedTree::CEGUIExtendedTree(
@@ -61,39 +75,43 @@ size_t CEGUIExtendedTree::getSelectedCount(void) const
 {
     size_t itemCount = d_listItems.size();
     size_t count = 0;
-    
+
+    // Count selected items recursively (original implementation consideres
+    // only root children)
     for (size_t index = 0; index < itemCount; ++index)
     {
-        if (d_listItems[index]->isSelected())
-            count++;
+	if (d_listItems[index]->isSelected())
+	    count++;
 
-        if (d_listItems[index]->getItemCount() > 0)
-        {
+	if (d_listItems[index]->getItemCount() > 0)
+	{
 	    count += getSelectedChildrenCount(d_listItems[index]);
-        }
+	}
     }
-    
+
     return count;
 }
 
 // Recursive!
+// Implementation for recursive getSelectedCount - missing from orignal Tree
 size_t CEGUIExtendedTree::getSelectedChildrenCount(TreeItem* item) const
 {
     size_t itemCount = item->getItemCount();
     TreeItem::LBItemList & itemList = item->getItemList();
     size_t count = 0;
-    
+
     for (size_t index = 0; index < itemCount; ++index)
     {
-        if (itemList[index]->isSelected())
-            count++;
+	// Count all selected items also groups/subgroups
+	if (itemList[index]->isSelected())
+	    count++;
 
-        if (itemList[index]->getItemCount() > 0)
-        {
+	if (itemList[index]->getItemCount() > 0)
+	{
 	    count += getSelectedChildrenCount(itemList[index]);
-        }
+	}
     }
-    
+
     return count;
 }
 
@@ -104,6 +122,7 @@ size_t CEGUIExtendedTree::getSelectedLeavesCount(void) const
     
     for (size_t index = 0; index < itemCount; ++index)
     {
+        // Only count items without children
         if (d_listItems[index]->getItemCount() > 0)
         {
 	    count += getSelectedChildrenLeavesCount(d_listItems[index]);
@@ -124,6 +143,7 @@ size_t CEGUIExtendedTree::getSelectedChildrenLeavesCount(TreeItem* item) const
     
     for (size_t index = 0; index < itemCount; ++index)
     {
+        // Only count items without children
         if (itemList[index]->getItemCount() > 0)
         {
 	    count += getSelectedChildrenCount(itemList[index]);
@@ -136,6 +156,7 @@ size_t CEGUIExtendedTree::getSelectedChildrenLeavesCount(TreeItem* item) const
 }
 
 // Recursive!
+// Count also closed items not only open (contrary to the original)
 TreeItem* CEGUIExtendedTree::getNextSelectedItemFromList(
 	const TreeItem::LBItemList &itemList, const TreeItem* startItem,
 	bool& foundStartItem) const
@@ -170,7 +191,7 @@ TreeItem* CEGUIExtendedTree::getNextSelectedItemFromList(
 }
 
 /*************************************************************************
-    Return a pointer to the first selected item.
+    Return a pointer to the first selected leaf.
 *************************************************************************/
 TreeItem* CEGUIExtendedTree::getFirstSelectedLeaf(void) const
 {
@@ -179,7 +200,7 @@ TreeItem* CEGUIExtendedTree::getFirstSelectedLeaf(void) const
 }
 
 /*************************************************************************
-    Return a pointer to the next selected item after item 'start_item'
+    Return a pointer to the next selected leaf after item 'start_item'
 *************************************************************************/
 TreeItem* CEGUIExtendedTree::getNextSelectedLeaf(
 	const TreeItem* start_item) const
@@ -200,6 +221,7 @@ TreeItem* CEGUIExtendedTree::getNextSelectedLeafFromList(
 	if (foundStartItem == true)
 	{
 	    // Already found the startItem, now looking for next selected item.
+	    // Only consider items without children
 	    if (itemList[index]->isSelected() &&
 		    itemList[index]->getItemCount() == 0)
 		return itemList[index];
@@ -246,13 +268,16 @@ TreeItem* CEGUIExtendedTree::findItemWithTextFromFlatList(
                 foundStartItem = true;
         }
     }
-    
+
+    // Do not recurse into the children
+
     return 0;
 }
 
-//@TODO override Tree::onMouseButtonDown - Range select, group select
 /*************************************************************************
     Handler for when mouse button is pressed
+
+    Implement range select with Shift
 *************************************************************************/
 void CEGUIExtendedTree::onMouseButtonDown(MouseEventArgs& e)
 {
@@ -306,7 +331,15 @@ void CEGUIExtendedTree::onMouseButtonDown(MouseEventArgs& e)
                 
                 // select range or item, depending upon keys and last selected item
                 if (((e.sysKeys & Shift) && (d_lastSelected != 0)) && d_multiselect)
-                    selectRange(getItemIndex(item), getItemIndex(d_lastSelected));
+		{
+		    // To many non virtual methods in TreeItem - cast to proper
+		    // types
+		    CEGUIExtendedTreeItem* start =
+			orxCRAFT_CAST<CEGUIExtendedTreeItem *>(item);
+		    CEGUIExtendedTreeItem* stop =
+			orxCRAFT_CAST<CEGUIExtendedTreeItem *>(d_lastSelected);
+                    selectDeepRange(start, stop);
+		}
                 else
                     item->setSelected(item->isSelected() ^ true);
                 
@@ -335,17 +368,180 @@ void CEGUIExtendedTree::onMouseButtonDown(MouseEventArgs& e)
     }
 }
 
-size_t CEGUIExtendedTree::getItemIndex(TreeItem* item)
+void CEGUIExtendedTree::selectDeepRange(
+	CEGUIExtendedTreeItem* start,
+	CEGUIExtendedTreeItem* stop)
 {
-    // @TODO Search item tree recursively?? Rewrite select range to work on item pointers??
-    for(size_t i=0; i<d_listItems.size(); i++)
+    // First we have to determine if the selection is top-down or bottom-up
+
+    CEGUIExtendedTreeItem* deep; // Item at deeper level of tree hierarchy
+    CEGUIExtendedTreeItem* shallow; // Item at less deep level of tree hierarchy
+    // Parents will be searched to a level where deep an shallow have commot
+    // grand parent
+    CEGUIExtendedTreeItem* deep_parent; // Parent of the deep item
+    CEGUIExtendedTreeItem* shallow_parent; // Parent of the shallow item
+    CEGUIExtendedTreeItem* deep_proxy; // Child of deep_parent that contains deep item
+    CEGUIExtendedTreeItem* shallow_proxy; // Child of shallow_parent that contains shallow item
+    size_t deep_level; // level of tree hierarchy at which deep item is located
+    size_t shallow_level; // level of tree hierarchy at which shallow item is located
+
+    // Assign the deep and shallow labels
+    if(start->getLevel() >= stop->getLevel())
     {
-	if(d_listItems[i] == item)
-	    return i;
+	deep = start;
+	shallow = stop;
     }
-    CEGUI_THROW(InvalidRequestException(
-    		"CEGUIExtendedTree::getItemIndex - the specified TreeItem is "
-    		"not attached to this Tree"));
+    else
+    {
+	deep = stop;
+	shallow = start;
+    }
+
+    // Search for parents of deep and shallow that are at the same tree level
+    shallow_parent = shallow->getParent();
+    shallow_level = shallow->getLevel();
+    deep_proxy = deep;
+    deep_level = deep->getLevel();
+
+    while(deep_level > shallow_level)
+    {
+	deep_proxy = deep_proxy->getParent();
+	deep_level = deep_proxy->getLevel();
+    }
+    deep_parent = deep_proxy->getParent();
+
+    // Deep is a child of shallow
+    if(shallow == deep_proxy) {
+	start = shallow;
+	stop = deep;
+    }
+    else
+    {
+	// Deep and shallow are more like siblings
+	// Search for common ancestor
+	shallow_proxy = shallow;
+	while(shallow_parent != deep_parent) {
+	    shallow_proxy = shallow_parent;
+	    deep_proxy = deep_parent;
+	    // both are at the same level - go up the tree simultanously
+	    shallow_parent = shallow_parent->getParent();
+	    deep_parent = deep_parent->getParent();
+	}
+
+	size_t deep_idx; // Idx of deep parent (in grand parents children list)
+	size_t shallow_idx; // Idx of shallow parent (in grand parents children list)
+	TreeItem::LBItemList* item_list;
+
+	// Get grand parents children list. If grand parent is NULL this
+	// corresponds to root of the tree. Ask the tree directly for the item
+	// list.
+	if(deep_parent == NULL)
+	{
+	    item_list = &getItemList();
+	}
+	else
+	{
+	    item_list = &deep_parent->getItemList();
+	}
+
+	// Search for the indexes in the item list
+	for(size_t i = 0; i<item_list->size(); i++)
+	{
+	    if((*item_list)[i] == deep_proxy)
+		deep_idx = i;
+	    if((*item_list)[i] == shallow_proxy)
+		shallow_idx = i;
+	}
+
+	// Determine the order of shallow and deep
+	if(shallow_idx <= deep_idx)
+	{
+	    start = shallow;
+	    stop = deep;
+	}
+	else
+	{
+	    start = deep;
+	    stop = shallow;
+	}
+    }
+
+    // Select "start" children. If "stop" is among them stop selection
+    if(selectDeepRange_children(start, stop))
+	return;
+
+    // Select "start" siblings until "stop" is found.
+    while(start != NULL)
+    {
+	if(selectDeepRange_siblings(start, stop))
+	    return;
+
+	start = start->getParent();
+    }
+}
+
+bool CEGUIExtendedTree::selectDeepRange_children(
+	CEGUIExtendedTreeItem* start,
+	CEGUIExtendedTreeItem* stop)
+{
+    // Select the item
+    start->setSelected(true);
+    // Item is the last one in the selection
+    if(start == stop)
+	return true;
+
+    if(start->getItemCount())
+    {
+	// Iterate over children
+	TreeItem::LBItemList::iterator it = start->getItemList().begin();
+	for( ; it != start->getItemList().end(); it++)
+	{
+	    // Select the child with grandchildren
+	    CEGUIExtendedTreeItem* item =
+		orxCRAFT_CAST<CEGUIExtendedTreeItem *>(*it);
+	    if(selectDeepRange_children(item, stop))
+		return true; // Stop item was found among children
+	}
+    }
+
+    return false;
+}
+
+bool CEGUIExtendedTree::selectDeepRange_siblings(
+	CEGUIExtendedTreeItem* start,
+	CEGUIExtendedTreeItem* stop)
+{
+    // Get parent and its list of children - those are our siblings
+    CEGUIExtendedTreeItem* parent = start->getParent();
+    TreeItem::LBItemList* item_list;
+
+    // Null parent corresponds to root of the tree - get item list directly
+    // from the tree
+    if(parent == NULL)
+    {
+	item_list = &getItemList();
+    }
+    else
+    {
+	item_list = &parent->getItemList();
+    }
+
+    // Find start item in the children list - we'll start selection from next
+    // item in the list
+    TreeItem::LBItemList::iterator it =
+	std::find(item_list->begin(), item_list->end(), start);
+    it++;
+    // Iterate over siblings
+    for( ; it != item_list->end(); it++)
+    {
+	// Select the sibling and its children
+	CEGUIExtendedTreeItem* item =
+	    orxCRAFT_CAST<CEGUIExtendedTreeItem *>(*it);
+	if(selectDeepRange_children(item, stop))
+	    return true; // Stop item was found as one of the children
+    }
+
+    return false;
 }
 
 // vim: tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab
