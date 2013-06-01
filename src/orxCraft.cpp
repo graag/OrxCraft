@@ -41,14 +41,19 @@
 #include "constants.h"
 #include "orxcraft_util.h"
 
+#include "mkpath/mkpath.h"
+
 #include <string>
+#include <set>
 
 using std::string;
+using std::set;
 
 // Widgets
 static const orxSTRING infoWindow = "O-InfoWindow";
 
 string OrxCraft::m_projectFileName;
+string OrxCraft::m_projectPath;
 orxFLOAT OrxCraft::m_localTime;
 orxFLOAT OrxCraft::m_newKeyTimeStamp;
 orxU32 OrxCraft::m_keyRepeatCounter;
@@ -211,7 +216,7 @@ void OrxCraft::Update (const orxCLOCK_INFO &_rstInfo)
 	    if (m_dirtyAutosave)
 	    {
 		// Saves backup
-		eResult = SaveBackup ();
+		eResult = SaveProject(true);
 		// Successful?
 		if (eResult != orxSTATUS_FAILURE)
 		{
@@ -291,7 +296,8 @@ void OrxCraft::SetupConfig ()
 	}
     }
 
-    m_objectList.clear ();
+    m_groupList.clear();
+    m_objectList.clear();
     m_graphicList.clear();
     m_fxList.clear();
     m_fxSlotList.clear();
@@ -324,6 +330,9 @@ void OrxCraft::SetupConfig ()
 		// they are auto destroyed by orx (we would end up with double
 		// free).
 		newObj->SetFlags(ScrollObject::FlagSave);
+		const orxSTRING scrollEdSet = orxConfig_GetString(scrollEdSectionName);
+		if(orxString_GetLength(scrollEdSet))
+		    m_groupList.insert(scrollEdSet);
 		orxConfig_PopSection ();
 		continue;
 	    }
@@ -384,10 +393,50 @@ orxSTATUS OrxCraft::SaveEditorConfig () const
     return eResult;
 }
 
-orxSTATUS OrxCraft::SaveProject () const
+orxSTATUS OrxCraft::SaveProject (bool backup) const
 {
     orxSTATUS eResult;
-    eResult = orxConfig_Save (m_projectFileName.c_str(), false, &SaveProjectFilter);
+    string fileName;
+    string filePath;
+
+    // Main project file
+    fileName = m_projectFileName;
+    if(backup)
+	fileName += ".swp";
+    eResult = orxConfig_Save (fileName.c_str(), false, &SaveProjectFilter);
+    if(eResult == orxSTATUS_FAILURE)
+	return eResult;
+
+    // Section files
+    set<string>::iterator it = m_groupList.begin();
+    for( ; it != m_groupList.end(); it++)
+    {
+	// Filename: composite of project path, section name and "ini" extension
+	fileName = m_projectPath + "/" + *it + ".ini";
+	if(backup)
+	    fileName += ".swp";
+
+	// Make sure that of file we are going to write to exists.
+	// If not create it along with all parents ...
+	size_t pos = fileName.rfind("/", fileName.size());
+	filePath.assign(fileName, 0, pos);
+	orxFILE_INFO fileInfo;
+	orxFile_GetInfo(filePath.c_str(), &fileInfo);
+	if((fileInfo.u32Flags & orxFILE_KU32_FLAG_INFO_DIR) == 0)
+	{
+	    // Path does not exist or is not a directory
+	    // Lets try to create it
+	    int result = mkpath(filePath.c_str(), S_IRWXU);
+	    if(result != 0)
+		return orxSTATUS_FAILURE;
+	}
+
+	// Write data to the file
+	eResult = orxConfig_Save (fileName.c_str(), false, &SaveProjectFilter);
+	if(eResult == orxSTATUS_FAILURE)
+	    return eResult;
+    }
+
     return eResult;
 }
 
@@ -555,41 +604,49 @@ orxBOOL orxFASTCALL OrxCraft::SaveProjectFilter (const orxSTRING sectionName,
      *  All objects that do not have OrxCraftSection key are part of the project
      *  data and will be saved.
      */
-    //! @todo filterout the RT* objects whatever they are.
+    //! @TODO filterout the RT* objects (auto created children of project objects)
     orxConfig_PushSection (sectionName);
     orxBOOL isOrxCraftSection = orxConfig_GetBool (orxCraftSectionName);
+    string scrollEdSection = orxConfig_GetString(scrollEdSectionName);
     orxConfig_PopSection ();
 
     // NOT one of our editor's sections?
     if (! isOrxCraftSection)
     {
-	saveIt = orxTRUE;
+	// Filter out Scroll run time objects
+	if(orxString_GetLength(sectionName) == 6)
+	    if(sectionName[0] == 'R' && sectionName[1] == 'T' &&
+		    sectionName[2] >= '0' && sectionName[2] <= '9' &&
+		    sectionName[3] >= '0' && sectionName[3] <= '9' &&
+		    sectionName[4] >= '0' && sectionName[4] <= '9' &&
+		    sectionName[5] >= '0' && sectionName[5] <= '9'
+	      )
+		return orxFALSE;
+
+	// Objects with "ScrollEdSet" property are stored in separate files
+	if(!scrollEdSection.empty())
+	{
+	    size_t pos = string(fileName).rfind(".ini",
+		    orxString_GetLength(fileName));
+	    string fileNameStripped;
+	    fileNameStripped.assign(fileName, m_projectPath.size() + 1,
+		    pos - (m_projectPath.size() + 1));
+	    if(scrollEdSection == fileNameStripped)
+		saveIt = orxTRUE;
+	}
+	else
+	// Other objects are stored in main project file
+	{
+	    if(orxString_NCompare(
+			m_projectFileName.c_str(),
+			fileName,
+			m_projectFileName.size()) == 0
+	      )
+		saveIt = orxTRUE;
+	}
     }
 
     return saveIt;
-}
-
-orxSTATUS OrxCraft::SaveBackup () const
-{
-    orxSTATUS eResult;
-    string saveName;
-    string backupName;
-
-    // Gets current map name
-    saveName = m_projectFileName;
-    backupName = saveName + ".swp";
-
-    // Sets backup name
-    m_projectFileName = backupName;
-
-    // Saves backup
-    eResult = SaveProject ();
-
-    // Restores map name
-    m_projectFileName = saveName;
-
-    // Done!
-    return eResult;
 }
 
 orxSTATUS orxFASTCALL OrxCraft::ProcessParams (orxU32 paramCount,
@@ -604,6 +661,12 @@ orxSTATUS orxFASTCALL OrxCraft::ProcessParams (orxU32 paramCount,
     {
 	// Stores projects file name
 	m_projectFileName = params[1];
+	// Store project path
+	string::size_type pos = m_projectFileName.rfind(
+		"/", m_projectFileName.length());
+	if (pos != string::npos) {
+	    m_projectPath.assign(m_projectFileName, 0, pos);
+	}
 
 	// Updates result
 	eResult = orxSTATUS_SUCCESS;

@@ -38,6 +38,7 @@
  */
 #include <vector>
 #include <string>
+#include <set>
 
 #include "Scroll.h"
 
@@ -77,7 +78,7 @@ public:
     //! Save the orxCraft user configuration to a file.
     orxSTATUS SaveEditorConfig () const;
     //! Save the currently open project to disk.
-    orxSTATUS SaveProject () const;
+    orxSTATUS SaveProject(bool backup=false) const;
 
     //! Indicate properties have been changed and objects need to be updated
     //! to reflect that change.
@@ -119,8 +120,6 @@ private:
     void OnKeyRelease (const orxSTRING key);
     void KeyRepeat();
 
-    //! Auto save current project state to a project.ini.swp files.
-    orxSTATUS SaveBackup() const;
     //! @todo AddActionDisplay should be in a GUI class
     //! Display a visual notification of an action on screen.
     //! @param[in] action String to display
@@ -147,14 +146,16 @@ private:
     //! Dialog factory object.
     DialogManager	    *m_dialogManager;
 
-    /// Currently loaded config objects
+    //! Currently loaded config objects
     std::vector<std::string> m_objectList;
-    /// Currently loaded config graphics
+    //! Currently loaded config graphics
     std::vector<std::string> m_graphicList;
-    /// Currently loaded FXs
+    //! Currently loaded FXs
     std::vector<std::string> m_fxList;
-    /// Currently loaded FXSlots
+    //! Currently loaded FXSlots
     std::vector<std::string> m_fxSlotList;
+    //! Currently loaded ScrollEd sets - correspond to config file names
+    std::set<std::string> m_groupList;
 
     //! Modified project flag: reload object.
     bool m_dirty;
@@ -162,14 +163,20 @@ private:
     bool m_dirtySave;
     //! Modified project flag: used for auto save suppresion.
     bool m_dirtyAutosave;
-    //! Editor execution time.
-    orxFLOAT m_localTime;
     //! Last auto save time stamp.
     orxFLOAT m_autoSaveTimeStamp;
     //! Interval used for auot saves.
     orxFLOAT m_autoSaveInterval;
+    //! Editor execution time.
+    static orxFLOAT m_localTime;
+    //! Last new key press time stamp.
+    static orxFLOAT m_newKeyTimeStamp;
+    //! Count the key repeat events.
+    static orxU32 m_keyRepeatCounter;
     //! Name of currently open project file
     static std::string m_projectFileName;
+    //! Name of currently open project path
+    static std::string m_projectPath;
 };
 
 #endif // ORXCRAFT_H
