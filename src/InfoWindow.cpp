@@ -29,6 +29,7 @@
  */
 #include "InfoWindow.h"
 #include "orxCraft.h"
+#include "DialogManager.h"
 
 void InfoWindow::Init ()
 {}
@@ -46,6 +47,12 @@ void InfoWindow::OnMouseClick (const string& widgetName)
     else if (widgetName == "SaveConfig")
     {
 	OrxCraft::GetInstance ().SaveEditorConfig ();
+    }
+    else if (widgetName == "LoadConfig")
+    {
+	ScrollFrameWindow* dialog =
+	    OrxCraft::GetInstance().GetDialogManager()->OpenDialog("FileDialog");
+	orxASSERT(dialog != NULL);
     }
 }
 

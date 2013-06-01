@@ -63,7 +63,8 @@ const orxCHAR inputDownArrow[]   = "DownArrow";
 const orxCHAR inputBackspace[]   = "Backspace";
 const orxCHAR inputDelete[]      = "Delete";
 
-const orxFLOAT inputRepeatDelay  = 0.05;
+const orxFLOAT inputRepeatDelay  = 0.2;
+const orxFLOAT inputRepeatDelayFast  = 0.01;
 
 #endif	// CONSTANTS_H
 
