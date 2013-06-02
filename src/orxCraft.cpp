@@ -398,6 +398,8 @@ orxSTATUS OrxCraft::SaveProject (bool backup) const
     orxSTATUS eResult;
     string fileName;
     string filePath;
+    orxFILE_INFO fileInfo;
+    orxFILE* file;
 
     // Main project file
     fileName = m_projectFileName;
@@ -406,6 +408,12 @@ orxSTATUS OrxCraft::SaveProject (bool backup) const
     eResult = orxConfig_Save (fileName.c_str(), false, &SaveProjectFilter);
     if(eResult == orxSTATUS_FAILURE)
 	return eResult;
+
+    // Open main project file in append mode
+    orxFile_GetInfo(fileName.c_str(), &fileInfo);
+    file = orxFile_Open(fileInfo.zFullName, orxFILE_KU32_FLAG_OPEN_APPEND);
+    if(file == orxNULL)
+	return orxSTATUS_FAILURE;
 
     // Section files
     set<string>::iterator it = m_groupList.begin();
@@ -435,7 +443,13 @@ orxSTATUS OrxCraft::SaveProject (bool backup) const
 	eResult = orxConfig_Save (fileName.c_str(), false, &SaveProjectFilter);
 	if(eResult == orxSTATUS_FAILURE)
 	    return eResult;
+
+	orxFile_Print(file, "@%s/%s.ini@\n",
+		m_projectPath.c_str(),
+		it->c_str());
     }
+
+    orxFile_Close(file);
 
     return eResult;
 }
