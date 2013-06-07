@@ -78,7 +78,7 @@ public:
     //! Save the orxCraft user configuration to a file.
     orxSTATUS SaveEditorConfig () const;
     //! Save the currently open project to disk.
-    orxSTATUS SaveProject(bool backup=false) const;
+    orxSTATUS SaveProject(bool backup=false);
 
     //! Indicate properties have been changed and objects need to be updated
     //! to reflect that change.

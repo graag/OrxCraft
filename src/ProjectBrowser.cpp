@@ -46,6 +46,7 @@ using std::string;
 ProjectBrowser::ProjectBrowser (const string& name) :
     ScrollFrameWindow(name),
     m_buttonSave(NULL),
+    m_buttonSaveAs(NULL),
     m_buttonLoad(NULL),
     m_buttonNew(NULL)
 {
@@ -60,6 +61,8 @@ void ProjectBrowser::Init ()
     // Push buttons
     m_buttonSave = (ScrollPushButton*)FindWidget("PB/PT/SaveButton");
     orxASSERT(m_buttonSave != NULL);
+    m_buttonSaveAs = (ScrollPushButton*)FindWidget("PB/PT/SaveAsButton");
+    orxASSERT(m_buttonSaveAs != NULL);
     m_buttonLoad = (ScrollPushButton*)FindWidget("PB/PT/LoadButton");
     orxASSERT(m_buttonLoad != NULL);
     m_buttonNew = (ScrollPushButton*)FindWidget("PB/PT/NewButton");
@@ -90,15 +93,20 @@ void ProjectBrowser::UpdateFields () const
 void ProjectBrowser::OnAction(const string& widgetName,
 	const string& action)
 {
-    if (widgetName == "PB/PT/ButtonSave")
+    if (widgetName == "PB/PT/SaveButton")
     {
-	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER, "Save button pushed.");
+	// Save project
+	OrxCraft::GetInstance().SaveProject();
     }
-    else if (widgetName == "PB/PT/ButtonLoad")
+    else if (widgetName == "PB/PT/SaveAsButton")
     {
 	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER, "Load button pushed.");
     }
-    else if (widgetName == "PB/PT/ButtonNew")
+    else if (widgetName == "PB/PT/LoadButton")
+    {
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER, "Load button pushed.");
+    }
+    else if (widgetName == "PB/PT/NewButton")
     {
 	orxDEBUG_PRINT(orxDEBUG_LEVEL_USER, "New button pushed.");
     }

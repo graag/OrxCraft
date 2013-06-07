@@ -63,6 +63,7 @@ public:
 
 private:
     ScrollPushButton  *m_buttonSave;
+    ScrollPushButton  *m_buttonSaveAs;
     ScrollPushButton  *m_buttonLoad;
     ScrollPushButton  *m_buttonNew;
 };

@@ -224,7 +224,6 @@ void OrxCraft::Update (const orxCLOCK_INFO &_rstInfo)
 		{
 		    // Adds action display
 		    AddActionDisplay (uiStringAutoSave);
-		    m_dirtyAutosave = false;
 		}
 	    }
 
@@ -248,7 +247,6 @@ void OrxCraft::Update (const orxCLOCK_INFO &_rstInfo)
 	if (eResult != orxSTATUS_FAILURE)
 	{
 	    AddActionDisplay (uiStringSave);
-	    m_dirtySave = false;
 	}
     }
 
@@ -396,7 +394,7 @@ orxSTATUS OrxCraft::SaveEditorConfig () const
     return eResult;
 }
 
-orxSTATUS OrxCraft::SaveProject (bool backup) const
+orxSTATUS OrxCraft::SaveProject (bool backup)
 {
     orxSTATUS eResult;
     string fileName;
@@ -453,6 +451,23 @@ orxSTATUS OrxCraft::SaveProject (bool backup) const
     }
 
     orxFile_Close(file);
+
+    // Successful?
+    if (eResult != orxSTATUS_FAILURE)
+    {
+	if(backup)
+	{
+	    m_dirtyAutosave = false;
+	    // Adds action display
+	    AddActionDisplay(uiStringAutoSave);
+	}
+	else
+	{
+	    m_dirtySave = false;
+	    // Adds action display
+	    AddActionDisplay(uiStringSave);
+	}
+    }
 
     return eResult;
 }
