@@ -32,6 +32,10 @@
 
 void ScrollTreebox::ConfigRead()
 {
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
+
     orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
             "ScrollTreebox::ConfigRead is not implemented.");
     orxASSERT( false );
@@ -39,6 +43,10 @@ void ScrollTreebox::ConfigRead()
 
 void ScrollTreebox::ConfigUpdate()
 {
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
+
     orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
             "ScrollTreebox::ConfigUpdate is not implemented.");
     orxASSERT( false );

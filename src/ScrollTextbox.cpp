@@ -32,6 +32,10 @@
 
 void ScrollTextbox::ConfigRead()
 {
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
+
     orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
             "ScrollTextbox::ConfigRead is not implemented.");
     orxASSERT( false );
@@ -39,6 +43,10 @@ void ScrollTextbox::ConfigRead()
 
 void ScrollTextbox::ConfigUpdate()
 {
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
+
     orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
             "ScrollTextbox::ConfigUpdate is not implemented.");
     orxASSERT( false );

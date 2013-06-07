@@ -40,7 +40,9 @@ using std::string;
 
 void ScrollEditbox::ConfigRead()
 {
-    orxASSERT(!m_configName.empty());
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
 
     orxU32 id;
 
@@ -72,7 +74,9 @@ void ScrollEditbox::ConfigRead()
 
 void ScrollEditbox::ConfigUpdate()
 {
-    orxASSERT(!m_configName.empty());
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
 
     orxU32 id;
     orxSTATUS status = orxSTATUS_FAILURE;

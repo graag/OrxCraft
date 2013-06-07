@@ -37,14 +37,20 @@
 
 void ScrollCombobox::ConfigRead()
 {
-    orxASSERT(!m_configName.empty());
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
+
     orxASSERT(m_dataType == orxCRAFT_WIDGET_DATA_STRING)
     SetSelection(orxConfig_GetString(m_configName.c_str()));
 }
 
 void ScrollCombobox::ConfigUpdate()
 {
-    orxASSERT(!m_configName.empty());
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
+
     orxASSERT(m_dataType == orxCRAFT_WIDGET_DATA_STRING)
 
     orxSTATUS status;

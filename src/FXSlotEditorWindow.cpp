@@ -129,8 +129,6 @@ void FXSlotEditorWindow::UpdateFields () const
 
     vector<ScrollWidget *>::const_iterator it;
     for(it = m_widgetList.begin(); it != m_widgetList.end(); it++) {
-	if((*it)->GetName() == "FXSlotConfigName")
-		continue;
 	(*it)->ConfigRead();
     }
 

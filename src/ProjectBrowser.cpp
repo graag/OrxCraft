@@ -80,17 +80,7 @@ void ProjectBrowser::UpdateFields () const
     orxConfig_PushSection(projectSectionName);
 
     vector<ScrollWidget *>::const_iterator it;
-    string widget_name;
     for(it = m_widgetList.begin(); it != m_widgetList.end(); it++) {
-	widget_name = (*it)->GetName();
-	if(widget_name == "PB/PT/SaveButton")
-	    continue;
-	if(widget_name == "PB/PT/SaveAsButton")
-	    continue;
-	if(widget_name == "PB/PT/LoadButton")
-	    continue;
-	if(widget_name == "PB/PT/NewButton")
-	    continue;
 	(*it)->ConfigRead();
     }
 

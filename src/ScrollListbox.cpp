@@ -40,7 +40,10 @@ using std::vector;
 
 void ScrollListbox::ConfigRead()
 {
-    orxASSERT(!m_configName.empty());
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
+
     orxASSERT(m_dataType == orxCRAFT_WIDGET_DATA_LIST);
 
     vector<string> propList;
@@ -50,14 +53,17 @@ void ScrollListbox::ConfigRead()
 
 void ScrollListbox::ConfigUpdate()
 {
-    orxASSERT(!m_configName.empty());
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
+
     orxASSERT(m_dataType == orxCRAFT_WIDGET_DATA_LIST)
 
     vector<string> propList = GetSelection();
     orxSTATUS status;
 
     if(propList.empty())
-        orxConfig_ClearValue(m_configName.c_str());
+        status = orxConfig_ClearValue(m_configName.c_str());
     else
         status = orxConf::SetList(m_configName, propList);
 

@@ -205,15 +205,7 @@ void ObjectEditor::UpdateFields() const
 	orxConfig_PushSection(obj_name.c_str());
 
 	vector<ScrollWidget *>::const_iterator it;
-	string widget_name;
 	for(it = m_widgetList.begin(); it != m_widgetList.end(); it++) {
-	    widget_name = (*it)->GetName();
-	    if(widget_name == "ObjectConfigName")
-		continue;
-	    if(widget_name == "ButtonChildList")
-		continue;
-	    if(widget_name == "ButtonFXList")
-		continue;
 	    (*it)->ConfigRead();
 	}
 

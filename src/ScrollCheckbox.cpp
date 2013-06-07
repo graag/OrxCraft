@@ -38,14 +38,20 @@ using std::string;
 
 void ScrollCheckbox::ConfigRead()
 {
-    orxASSERT(!m_configName.empty());
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
+
     orxASSERT(m_dataType == orxCRAFT_WIDGET_DATA_BOOL)
     SetSelection(orxConfig_GetBool (m_configName.c_str()));
 }
 
 void ScrollCheckbox::ConfigUpdate()
 {
-    orxASSERT(!m_configName.empty());
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
+
     orxASSERT(m_dataType == orxCRAFT_WIDGET_DATA_BOOL)
 
     orxSTATUS status;

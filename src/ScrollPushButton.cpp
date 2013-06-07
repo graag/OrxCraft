@@ -32,6 +32,10 @@
 
 void ScrollPushButton::ConfigRead()
 {
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
+
     orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
             "ScrollPushButton::ConfigRead is not implemented.");
     orxASSERT( false );
@@ -39,6 +43,10 @@ void ScrollPushButton::ConfigRead()
 
 void ScrollPushButton::ConfigUpdate()
 {
+    // Is the widget bound to config key? Return if not.
+    if(m_configName.empty())
+	return;
+
     orxDEBUG_PRINT(orxDEBUG_LEVEL_USER,
             "ScrollPushButton::ConfigUpdate is not implemented.");
     orxASSERT( false );
