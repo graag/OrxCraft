@@ -43,6 +43,7 @@
 // Dialogs
 #include "ObjectEditor.h"
 #include "FXSlotEditorWindow.h"
+#include "ProjectBrowser.h"
 
 #include "cegui/CEGUIListPopup.h"
 #include "cegui/CEGUITreePopup.h"
@@ -52,6 +53,7 @@
 
 #include "cegui/CEGUICombobox.h"
 #include "cegui/CEGUIEditbox.h"
+#include "cegui/CEGUIMultiLineEditbox.h"
 #include "cegui/CEGUIListbox.h"
 #include "cegui/CEGUITreebox.h"
 #include "cegui/CEGUICheckbox.h"
@@ -134,6 +136,15 @@ ScrollFrameWindow* CEGUIDialogManager::OpenDialog (const string& dialogName,
 	orxASSERT(result < num_size); // Make sure snprintf succeeded
 	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
 	    "FXSlotEditor.layout", num_buf);
+    }
+    else if (dialogName == "ProjectBrowser")
+    {
+	dialog = new ProjectBrowser(dialogName);
+	// Generate a unique prefix
+	int result = snprintf(num_buf, num_size, "%lu_", dialog->GetId());
+	orxASSERT(result < num_size); // Make sure snprintf succeeded
+	windowRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(
+	    "ProjectBrowser.layout", num_buf);
     }
     else if (dialogName == "ListPopup")
     {
@@ -264,6 +275,12 @@ void CEGUIDialogManager::LinkWidgetToDialog(CEGUI::Window* widget, ScrollFrameWi
     else if (orxString_Compare (type, "TaharezLook/Editbox") == 0)
     {
 	CEGUIEditbox *editbox = new CEGUIEditbox (dialog);
+	editbox->Init(name);
+	dialog->AddWidget (editbox);
+    }
+    else if (orxString_Compare (type, "TaharezLook/MultiLineEditbox") == 0)
+    {
+	CEGUIMultiLineEditbox *editbox = new CEGUIMultiLineEditbox (dialog);
 	editbox->Init(name);
 	dialog->AddWidget (editbox);
     }

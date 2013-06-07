@@ -36,6 +36,7 @@ const orxCHAR userSettingsFile[]    = "~/.orxcraft.rc";
 const orxCHAR userSettingsSection[] = "UserSettings";
 const orxCHAR orxCraftSectionName[] = "OrxCraftSection";
 const orxCHAR scrollEdSectionName[] = "ScrollEdSet";
+const orxCHAR projectSectionName[] = "OrxCraftProject";
 
 // Scroll Object
 const orxCHAR scrollGUIName[]    = "ScrollGUI";

@@ -144,6 +144,8 @@ orxSTATUS OrxCraft::Init ()
     m_dialogManager->OpenDialog ("ObjectEditor");
     // Init FX slot editor
     m_dialogManager->OpenDialog ("FXSlotEditor");
+    // Init project browser window
+    m_dialogManager->OpenDialog ("ProjectBrowser");
 
     orxEvent_AddHandler (orxEVENT_TYPE_INPUT, EventHandler);
 
@@ -237,7 +239,8 @@ void OrxCraft::Update (const orxCLOCK_INFO &_rstInfo)
     }
 
     // Save?
-    if (orxInput_IsActive (inputSave) && orxInput_HasNewStatus (inputSave))
+    if (orxInput_IsActive (inputSave) && orxInput_HasNewStatus (inputSave) &&
+    	m_dirtySave)
     {
 	// Save project
 	eResult = SaveProject ();
@@ -618,7 +621,6 @@ orxBOOL orxFASTCALL OrxCraft::SaveProjectFilter (const orxSTRING sectionName,
      *  All objects that do not have OrxCraftSection key are part of the project
      *  data and will be saved.
      */
-    //! @TODO filterout the RT* objects (auto created children of project objects)
     orxConfig_PushSection (sectionName);
     orxBOOL isOrxCraftSection = orxConfig_GetBool (orxCraftSectionName);
     string scrollEdSection = orxConfig_GetString(scrollEdSectionName);

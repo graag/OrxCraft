@@ -46,6 +46,7 @@ void ScrollEditbox::ConfigRead()
 
     switch(m_dataType) {
 	case orxCRAFT_WIDGET_DATA_STRING:
+	case orxCRAFT_WIDGET_DATA_STRING_BLOCK:
 	    SetText(orxConfig_GetString(m_configName.c_str()));
 	    break;
 	case orxCRAFT_WIDGET_DATA_FLOAT:
@@ -74,12 +75,16 @@ void ScrollEditbox::ConfigUpdate()
     orxASSERT(!m_configName.empty());
 
     orxU32 id;
-    orxSTATUS status;
+    orxSTATUS status = orxSTATUS_FAILURE;
     string value = GetText();
 
     switch(m_dataType) {
 	case orxCRAFT_WIDGET_DATA_STRING:
 	    status = orxConfig_SetString(
+		    m_configName.c_str(), value.c_str());
+	    break;
+	case orxCRAFT_WIDGET_DATA_STRING_BLOCK:
+	    status = orxConfig_SetStringBlock(
 		    m_configName.c_str(), value.c_str());
 	    break;
 	case orxCRAFT_WIDGET_DATA_FLOAT:
@@ -93,7 +98,7 @@ void ScrollEditbox::ConfigUpdate()
 	    break;
 	case orxCRAFT_WIDGET_DATA_LIST:
 	    if(value.empty())
-		orxConfig_ClearValue(m_configName.c_str());
+		status = orxConfig_ClearValue(m_configName.c_str());
 	    else
 		status = orxConf::SetList(m_configName, value);
 	    break;
