@@ -323,6 +323,8 @@ void CEGUIFileDialog::_okExecute (void)
     _currentOutput.SetFileExisting (_isFileExisting(_getCurrentFile()));
     _currentOutput.SetAction (ACTION_OK);
 
+    // Notify others that we are successfull
+    SignalFinish(m_name, m_id);
     _closeWindow ();
 }
 

@@ -231,7 +231,7 @@ void CEGUIGui::Update (const orxCLOCK_INFO &_rstInfo)
     orxMouse_GetPosition (&mousePos);
 
     orxVECTOR worldPos;
-    orxRender_GetWorldPosition (&mousePos, &worldPos);
+    orxRender_GetWorldPosition (&mousePos, orxNULL, &worldPos);
 
     // GUI windows are on top of Orx objects. Check if mouse is inside of a window.
     CEGUI::System::getSingleton ().injectMousePosition (mousePos.fX,
@@ -247,7 +247,9 @@ void CEGUIGui::Update (const orxCLOCK_INFO &_rstInfo)
     }
 }
 
-orxBOOL CEGUIGui::CEGUIScrollObject::OnRender ()
+orxBOOL CEGUIGui::CEGUIScrollObject::OnRender(
+	orxRENDER_EVENT_OBJECT_PAYLOAD *_pstPayload
+	)
 {
     DrawGrid ();
     System::getSingleton().renderGUI();

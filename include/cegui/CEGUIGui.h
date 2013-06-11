@@ -66,7 +66,7 @@ public:
     {
 	virtual void    OnCreate ();
 	virtual void    OnDelete ();
-	virtual orxBOOL OnRender ();
+	virtual orxBOOL OnRender(orxRENDER_EVENT_OBJECT_PAYLOAD *_pstPayload);
 	/** Calculate and render the editor grid */
 	void DrawGrid ();
     };
