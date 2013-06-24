@@ -47,7 +47,8 @@ solution "orxCraft"
 
     libdirs {orxlib_path, ceguilib_path}
 
-    links {"CEGUIBase", "CEGUIOpenGLRenderer"}
+    -- links {"CEGUIBase", "CEGUIOpenGLRenderer"}
+    links {"CEGUIBase"}
 
     configuration "Linux*"
       -- Support for C++11 if we would need it. c++0x is deprecated in newer
@@ -59,6 +60,15 @@ solution "orxCraft"
 		   "-Wl,-rpath=" .. ceguilib_path}
       postbuildcommands {"ln -sfn ../data ../../bin/data",
 			 "ln -sfn ../cegui ../../bin/cegui"}
+      -- Additional libraries for modified CEGUI::OpenGLRenderer
+      links {"GLEW", "GLU"}
+      -- Exclude non-linux platform specific code
+      excludes {
+	"../include/**/CEGUIOpenGLApplePBTextureTarget.h",
+	"../include/**/CEGUIOpenGLWGLPBTextureTarget.h",
+	"../src/**/CEGUIOpenGLApplePBTextureTarget.cpp",
+	"../src/**/CEGUIOpenGLWGLPBTextureTarget.cpp",
+      }
 
     configuration "Linux64 Embedded Dynamic Debug"
       targetname ("orxCraftd")
